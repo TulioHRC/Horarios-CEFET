@@ -2,7 +2,7 @@
 
 ### O que é o projeto?
 
-Bla bla bla
+Nosso objetivo é ...
 
 ### Resultado esperado
 
