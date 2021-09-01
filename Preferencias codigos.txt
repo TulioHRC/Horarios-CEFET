@@ -1,0 +1,5 @@
+﻿Sx, x é um número definindo um dia da semana preferível.
+Nx, igual o acima, só que dia não preferível.
+Sxbm, x é um número e define um bimestre preferível.
+Nxbm, oposto do acima.
+1P, 1 semana de pausa entre as aulas.
