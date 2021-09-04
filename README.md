@@ -11,4 +11,4 @@ Gerar horários aleatoriamente, porém seguindo o maior número de preferencias 
 ## Release Notes
 ### 0.0.1v
 - Demonstranção de utilização do pandas
-- Criação da planilha esperada com o código de prefêrencias
+- Criação da planilha esperada e resultado com o código de prefêrencias
