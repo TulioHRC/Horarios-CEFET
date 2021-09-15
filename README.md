@@ -12,3 +12,5 @@ Gerar horários aleatoriamente, porém seguindo o maior número de preferencias 
 ### 0.0.1v
 - Demonstranção de utilização do pandas
 - Criação da planilha esperada e resultado com o código de prefêrencias
+- Criação de funções organizadoras (organização das funções que seram utilizadas)
+- Criação básica do app
