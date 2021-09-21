@@ -5,13 +5,12 @@ df = pd.read_excel('Planilha esperada.xlsx', 'Sheet1')
 
 
 class Professor:
-    # Se o professor ao ser asicionado já estiver na lista, devemos adicionar mais uma matéria para ele
     def __init__(self, name):
         self.name = name
         # Grade de horários que o professor vai dar aula
-        self.aulas = {'segunda': [], 'terça': [], 'quarta': [], 'quinta': [], 'sexta': []}
+        self.classes = {'segunda': [], 'terça': [], 'quarta': [], 'quinta': [], 'sexta': []}
         # Matérias que o professor da aula
-        self.matérias = set()
+        self.subjects = set()
         # Preferências de dias que ele quer ou não dar aula
         self.prefer = [set(), set()]
         # Limitações de dias que ele não pode dar aula
@@ -22,12 +21,22 @@ class Sala:
     def __init__(self, local):
         # Número da sala
         self.local = local
-
         # Lista com todos os horários que a sala esta sendo sada por outro grupo.
         self.h_ocupados = {'segunda': [], 'terça': [], 'quarta': [], 'quinta': [], 'sexta': []}
-
         # Lista com os horários da sala
         self.horarios = {'segunda': [], 'terça': [], 'quarta': [], 'quinta': [], 'sexta': []}
+
+
+class Node:
+    def __init__(self, state_of_node, cost_of_node, parent=0):
+        self.state = state_of_node
+        self.cost = cost_of_node
+
+        # Se o número de filhos for igual ao número de possiveis filhos. O node deve ser removido do frontier
+        # caso contrário geraria um looping.
+        self.number_sons = 0
+        # A partir de qual node ela foi criada.
+        self.parent = parent
 
 
 
@@ -42,6 +51,7 @@ class Frontier:
         """
         Ao se colocar um novo estado, ele deve estar em ordem crescente de custo,
         de forma que o mais barato seja sempre o primeiro
+        :param node:
         :param state: Novo estado que será adicionado a lista de possiveis estados para se evoluir
         :return:
         """
@@ -50,12 +60,16 @@ class Frontier:
                 self.frontier.insert(node_in_frontier, node)
 
 
+    def select_node(self):
+        """
+        Retira um valor da lista que deverá ser espandido
+        :return: valor com o menor custo da lista, no caso o primeiro
+        """
+        lowest_cost_node = self.frontier[0]
+        self.frontier = self.frontier[1:]
+        return lowest_cost_node
 
-
-    def select_state(self):
-
-
-def cost(horários, new_h):
+def cost(state, new_h):
     """
     Recebe a grade de horários que foi criada até o momento e
     retorna quanto que aquele movimento custaria.
@@ -63,7 +77,7 @@ def cost(horários, new_h):
     Quão importante é um professor que quer dar aula nesse dia dar, 15
     Quão importante é para os professores não terem horários picados durante o dia 10
     Apenas uma pessoa saiu prejudicada ou a questão de horários seguidos e buracos foi distribuida igualmente
-    :param horários:
+    :param state: Grade de horários atual
     :param new_h:
     :return: custo do caminho
     """
@@ -71,10 +85,10 @@ def cost(horários, new_h):
         # Se isso for colocado provavelmente ele colocará todos os horários de uma pessoa para depois colocar os outros
 
 
-def proibitions(horários, new_h):
+def proibitions(state, new_h):
     """
     Nos diz se a atual grade de horários pode ser usada ou não
-    :param horários: Grade de horários atual
+    :param state: Grade de horários atual
     :param new_h: Novo horário
     :return: True se estiver tudo ok, False se não for uma entrada válida
     """
