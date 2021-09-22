@@ -69,7 +69,7 @@ class Frontier:
         self.frontier = self.frontier[1:]
         return lowest_cost_node
 
-def cost(state, new_h):
+def cost(state):
     """
     Recebe a grade de horários que foi criada até o momento e
     retorna quanto que aquele movimento custaria.
@@ -78,18 +78,16 @@ def cost(state, new_h):
     Quão importante é para os professores não terem horários picados durante o dia 10
     Apenas uma pessoa saiu prejudicada ou a questão de horários seguidos e buracos foi distribuida igualmente
     :param state: Grade de horários atual
-    :param new_h:
     :return: custo do caminho
     """
     # Diferença entre dois horários de um professor, não ter nenhum no meio
         # Se isso for colocado provavelmente ele colocará todos os horários de uma pessoa para depois colocar os outros
 
 
-def proibitions(state, new_h):
+def proibitions(state):
     """
     Nos diz se a atual grade de horários pode ser usada ou não
     :param state: Grade de horários atual
-    :param new_h: Novo horário
     :return: True se estiver tudo ok, False se não for uma entrada válida
     """
 
@@ -98,23 +96,12 @@ def proibitions(state, new_h):
     # Carga horária no dia de menor que 8h, pode
 
 
-def make_move(state): # O movimento deve ser sempre ao lado de algum horário que já tenha sido marcado
-                      # Evita que sejam criados um monte de estados iniciais aleatórios
-
-
-
-
-def agrupar_professores_sala(posição_sala):
+def is_final_result(state):
     """
-    Recebe a informação de qual sala estamos nos referindo
-    Agrupa todos os professores que dão aula nessa sala
-    :return: lista com todos os professores que dão aula nessa sala
+    Analiza se o estado do node é o resultado final, se todos os professores que tinham aula já foram colocados
+    :param state:
+    :return:
     """
-    list_p = []
-    for p in df['Professor'].values:
-        info = df(df['Professor'] == p)
-        if info[posição_sala] >= 0:
-            list_p.append(p)
 
 
 def check(resultado_do_programa):

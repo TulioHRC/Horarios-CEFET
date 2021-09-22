@@ -16,8 +16,9 @@ Até a linha xx o programa possui o objetivo é de armazenas as informações da
 Depois disso se cria o primeiro node e o frontier, que será usado para expandir os nodes.
 Para espandir os nodes fazemos da seguinte forma.
 - Selecionamos dentro do frontier o node com menor custo
-- quardamos suas informações em uma variável e depois excluimos esse node do frontier para que não haja lupins
-- Colocamos todos os possíveis estados que podem serivar do inicial
+- quardamos suas informações numa variável e depois excluímos esse node do frontier para que não haja lupins
+- Checamos para ver se o estado obtido é o estado final, se sim retornamos o seu valor. Se não for o código continua
+- Colocamos todos os possíveis estados que podem derivar do inicial. Expandimos ele.
 - Avaliamos se esses possíveis estados são válidos, respeitam as regras e também determinamos o seu custo
 - Criamos os nodes com as informações obtidas, os que forem válidos.
 - Adicionamos os nodes válidos ao frontier
