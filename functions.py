@@ -11,8 +11,8 @@ class Professor:
         self.classes = {'segunda': [], 'terça': [], 'quarta': [], 'quinta': [], 'sexta': []}
         # Matérias que o professor da aula
         self.subjects = set()
-        # Preferências de dias que ele quer ou não dar aula
-        self.prefer = [set(), set()]
+        # Preferências de dias que ele quer (primeira lista) ou não (segunda lista) dar aula para cada matéria
+        self.prefer = [[set(), set()]] # uma lista de 2 sets para cada matéria do professor
         # Limitações de dias que ele não pode dar aula
         self.limitations = set()
 
@@ -21,9 +21,9 @@ class Sala:
     def __init__(self, local):
         # Número da sala
         self.local = local
-        # Lista com todos os horários que a sala esta sendo sada por outro grupo.
+        # Lista com todos os horários que a sala esta sendo usada, e portanto não pode ser usada pelo técnico.
         self.h_ocupados = {'segunda': [], 'terça': [], 'quarta': [], 'quinta': [], 'sexta': []}
-        # Lista com os horários da sala
+        # Lista com os horários designados para a sala
         self.horarios = {'segunda': [], 'terça': [], 'quarta': [], 'quinta': [], 'sexta': []}
 
 

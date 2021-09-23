@@ -1,55 +1,67 @@
 
 from functions import *
+from funcs import convert2day as convert
 import pandas as pd
 
-# Demonstrando utilização do pandas
-df = pd.read_excel('Planilha esperada.xlsx', 'Sheet1')   # Lendo a planilha do excel, e Sheet1 é o nome da aba do excel para ler
-
 # Conjunto de todas as salas do DEMAT
-dfrooms = pd.read_execel('Disponibilidade de salas', 'Sheet1')
-rooms = set()   # Devemos adicionar manualmente as salas do DEMAT aqui
+dfrooms = pd.read_excel('Disponibilidade de salas.xlsx', 'Sheet1')
+rooms = set()   # Lista de salas (em objetos)
 for r in range(0, len(dfrooms['Salas'].values)):
     Room = Sala(int(dfrooms['Salas'].values[r]))
-    for day in range(1, 6):
-        Room.h_ocupados[dfrooms.columns[day]] = dfrooms[dfrooms.columns[day]].values[:]
+    for day in ['segunda', 'terça', 'quarta', 'quinta', 'sexta']:
+        Room.h_ocupados[dfrooms[day]] = dfrooms[day].values[:]
     rooms.add(Room)
 
 # Conjunto de todas as matérias do DEMAT
-# Devemos adicionar essas informações manualmente 'nome': quantidade de horários seguidos que deve ter
-subjects = {'Matéria':{'numero de horários seguidos': 'N', 'Salas que pode ser ocupadas': []}}
-
+# Devemos adicionar essas informações por meio de uma outra planilha separada
+"""
+    dfSubjects = pd.read_excel('Materias.xlsx', 'Sheet1')
+    for como o das salas, só que pode ser em dicionário ao ínves de objetos
+"""
 
 # Criar um set com todos os professores
 # Declarar todos eles também como sendo da classe professores
-professores_nome = set()
-all_teachers = set()
-for p in range(0, len(df['Professor'].values)):
-    teacher = Professor(df['Professor'].values[p])
+dfTeachers = pd.read_excel('Planilha esperada.xlsx', 'Sheet1')   # Lendo a planilha do excel, e Sheet1 é o nome da aba do excel para ler
 
-    str_prefer = df['Preferências'].values[p]
-    list_prefer = str_prefer.split('-')
+professores_nomes = [] # Somente listas permitem usar metodos como o index
+all_teachers = []
+for p in range(0, len(dfTeachers['Professor'].values)):
+    if dfTeachers['Professor'].values[p] in professores_nomes:
+        teacher = all_teachers[professores_nomes.index(dfTeachers['Professor'].values[p])]
+    else:
+        teacher = Professor(dfTeachers['Professor'].values[p])
+        professores_nomes.append(teacher.name)
+        all_teachers.append(teacher)
 
-    for preferencias_do_professor in list_prefer:
-        if 'N' in preferencias_do_professor.upper:
-            teacher.prefer[0].add(preferencias_do_professor)
-        elif 'S' in preferencias_do_professor.upper:
-            teacher.prefer[1].add(preferencias_do_professor)
+    list_prefer = df['Preferências'].values[p].split('-')
 
-    teacher.limitations.add(df['Limitações'].values[p])
-    teacher.subjects.add(df['Matéria'].values[p])
+    for prefer in list_prefer: # Adiciona os dias que se quer ou não dar aula ao objeto
+        prefer = str(prefer)
+        if 'S' in prefer.upper:
+            teacher.prefer[len(teacher.subjects)][0].add(convert.convertNumToDay(prefer[1]))
+        elif 'N' in prefer.upper:
+            teacher.prefer[len(teacher.subjects)][1].add(convert.convertNumToDay(prefer[1]))
 
-    if not(p in professores_nome):  # Se o professor ainda não estiver na lista, adiciona ele
-        professores_nome.add(df['Professor'].values[p])
-        all_teachers.add(teacher)
+    limitations = df['Obrigações'].values[p].split('-')
+    for limit in limitations:
+        teacher.limitations.add(convert.convertNumToDay(limit[1])) # Adiciona os dias que não se pode dar aula
+
+    """
+        Dividir por ano (1ª, 2ª ou 3ª) as matérias, pois um professor pode dar uma mesma matéria para anos diferentes,
+        mas contará como o mesmo no nosso código atual.
+    """
+    teacher.subjects.add(df['Matéria'].values[p]) # Adiciona a matéria ao objeto do professor
 
 
 # State vai ser o dicionário final. Ele é o que deve ser trasformado em um data frame
 # Apenas o state mais barato será trasformado em resultado final.
 result_state = {}
-for nome in range(len(professores_nome)):
-    for teacher_in_class in all_teachers:
-        if nome == teacher_in_class.name:
-            result_state[nome] = teacher_in_class.classes
+for nome in professores_nomes:
+    result_state[nome] = all_teachers[professores_nomes.index(nome)].classes
+
+"""
+    Olhei até aqui, Ass. Túlio
+"""
 
 dict_base = {}
 for rooms_for_creat_initial_state in rooms:
@@ -68,7 +80,7 @@ for day_of_week in initial_state.keys():
     # node será o node que será espandindo, dando origem a novos nodes
     # Os novos nodes serão analizados antes de serem adicionados ao frontier
     parent = greedy.select_node()
-    
+
     if is_final_result(parent.state):
         RESULTADO = parent.state
 
@@ -87,7 +99,3 @@ for day_of_week in initial_state.keys():
                     x = Node(n_state[:], cost(n_state), parent)
                     greedy.add_node(x)
                     # Node adicionado ao frontier com suscesso
-
-
-
-
