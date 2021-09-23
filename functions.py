@@ -12,7 +12,7 @@ class Professor:
         # Matérias que o professor da aula
         self.subjects = set()
         # Preferências de dias que ele quer (primeira lista) ou não (segunda lista) dar aula para cada matéria
-        self.prefer = [[set(), set()]] # uma lista de 2 sets para cada matéria do professor
+        self.prefer = [] # uma lista de 2 sets para cada matéria do professor
         # Limitações de dias que ele não pode dar aula
         self.limitations = set()
 

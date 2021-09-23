@@ -19,6 +19,8 @@ for r in range(0, len(dfrooms['Salas'].values)):
     for como o das salas, só que pode ser em dicionário ao ínves de objetos
 """
 
+# Criar planilha de matérias e salas
+
 # Criar um set com todos os professores
 # Declarar todos eles também como sendo da classe professores
 dfTeachers = pd.read_excel('Planilha esperada.xlsx', 'Sheet1')   # Lendo a planilha do excel, e Sheet1 é o nome da aba do excel para ler
@@ -34,6 +36,7 @@ for p in range(0, len(dfTeachers['Professor'].values)):
         all_teachers.append(teacher)
 
     list_prefer = df['Preferências'].values[p].split('-')
+    teacher.prefer.append([set(), set()])
 
     for prefer in list_prefer: # Adiciona os dias que se quer ou não dar aula ao objeto
         prefer = str(prefer)
@@ -56,8 +59,8 @@ for p in range(0, len(dfTeachers['Professor'].values)):
 # State vai ser o dicionário final. Ele é o que deve ser trasformado em um data frame
 # Apenas o state mais barato será trasformado em resultado final.
 result_state = {}
-for nome in professores_nomes:
-    result_state[nome] = all_teachers[professores_nomes.index(nome)].classes
+for teacher in all_teachers:
+    result_state[teacher.name] = teacher.classes
 
 """
     Olhei até aqui, Ass. Túlio
@@ -74,7 +77,7 @@ first_node = Node(initial_state[:], 0)
 greedy = Frontier()
 greedy.frontier.append(first_node)
 
-# Espandir
+# Expandir
 Empty = 0   # Sempre que um horário for marcado como vazio, se coloca Empty no lugar da aula.
 for day_of_week in initial_state.keys():
     # node será o node que será espandindo, dando origem a novos nodes
