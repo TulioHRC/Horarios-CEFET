@@ -52,27 +52,9 @@ class AddingData(MainApp):
         self.teacherSubject = Entry(self.addTeacherFrame, font=('Arial', 14))
         self.teacherSubject.grid(row=1, column=1, padx=20, pady=10)
 
-        Label(self.addTeacherFrame, text="Tipo de matéria:", font=('Arial', 14), bg="White").grid(row=3, column=0, padx=20, pady=5)
-        self.teacherSType = IntVar()
-        gridR = 2
-
-        options = [
-        	("Anual", 1),
-        	("Semestral", 2),
-        	("Bimestral", 3),
-        ]
-
-        for name, value in options:
-            Radiobutton(self.addTeacherFrame, text=name, variable=self.teacherSType, value=value).grid(row=gridR, column=1, padx=20, pady=5)
-            gridR += 1
-
-        Label(self.addTeacherFrame, text="Número de Grupos:", font=('Arial', 14), bg="White").grid(row=0, column=2, padx=20, pady=10)
-        self.teacherGroups = Entry(self.addTeacherFrame, font=('Arial', 14), width=5)
-        self.teacherGroups.grid(row=0, column=3, padx=20, pady=10)
-
-        Label(self.addTeacherFrame, text="Ano escolar:", font=('Arial', 14), bg="White").grid(row=2, column=2, padx=20, pady=10)
+        Label(self.addTeacherFrame, text="Ano escolar:", font=('Arial', 14), bg="White").grid(row=3, column=0, padx=20, pady=10)
         self.teacherYear = IntVar()
-        gridR = 1
+        gridR = 2
 
         options = [
         	("1ª", 1),
@@ -81,10 +63,12 @@ class AddingData(MainApp):
         ]
 
         for name, value in options:
-            Radiobutton(self.addTeacherFrame, text=name, variable=self.teacherYear, value=value).grid(row=gridR, column=3, padx=20, pady=5)
+            Radiobutton(self.addTeacherFrame, text=name, variable=self.teacherYear, value=value).grid(row=gridR, column=1, padx=20, pady=5)
             gridR += 1
 
-        Button(self.addTeacherFrame, text="Adicionar preferência", font=('Arial', 18)).grid(row=4, column=2, columnspan=2, padx=20, pady=10)
+        Button(self.addTeacherFrame, text="Adicionar limitação", font=('Arial', 18)).grid(row=1, column=2, columnspan=2, padx=20, pady=10)
+
+        Button(self.addTeacherFrame, text="Adicionar preferência", font=('Arial', 18)).grid(row=3, column=2, columnspan=2, padx=20, pady=10)
 
         self.classes = Frame(self.addTeacherFrame, bg='Black')
         self.classes.grid(row=5, column=0, rowspan=2, columnspan=4, pady=10)
