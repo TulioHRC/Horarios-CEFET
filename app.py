@@ -1,5 +1,6 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
+from functions import excel
 
 prefers = {'S': set(), 'N': set()}
 limits = set()
@@ -101,6 +102,13 @@ class AddingData(MainApp):
         self.addRoomFrame.pack(fill=BOTH, expand=True)
         self.tabs.add(self.addRoomFrame, text="Nova sala")
 
+    def putInExcel(self, type): # Type é sala ou professor
+        if type == 'Teacher':
+            """
+                Função para adicionar dados na planilha
+            """
+            pass
+
 class AddConditions(AddingData):
     def __init__(self, type):
         if type == "limit": self.name = "Limitações"
@@ -109,7 +117,7 @@ class AddConditions(AddingData):
         self.screen = Toplevel()
         self.screen.title(f"Adicionando {self.name}")
         self.sizes = [self.screen.winfo_screenwidth(), self.screen.winfo_screenheight()]
-        self.screen.geometry(f"{int(self.sizes[0]*0.4)}x{int(self.sizes[1]*0.2)}+{int(self.sizes[0]*0.3)}+{int(self.sizes[1]*0.3)}")
+        self.screen.geometry(f"{int(self.sizes[0]*0.4)}x{int(self.sizes[1]*0.3)}+{int(self.sizes[0]*0.3)}+{int(self.sizes[1]*0.3)}")
 
         self.tabs = ttk.Notebook(self.screen)
         self.tabs.pack(fill=BOTH, expand=True)
@@ -145,22 +153,45 @@ class AddConditions(AddingData):
 
     def seeFrame(self, type):
         global prefers, limits
+
+        line = 0
+        x = 40
+        y = 2
+        fontS = ('Arial', 14)
+
         if type == 'limit':
             for l in limits:
-                Label(self.see, text=f"Não posso dar aula na {l}").pack()
+                Label(self.see, text=f"Não posso dar aula na {l}", font=fontS, fg="#855862").grid(row=line, column=0, columnspan=2, padx=x, pady=y)
+                Button(self.see, text="Excluir", font=fontS, command=lambda: self.delete(type, limits, l)).grid(row=line, column=2, padx=x, pady=y)
+                line += 1
         else:
             for p in prefers['S']:
-                Label(self.see, text=f"Quero dar aula na {p}").pack()
+                Label(self.see, text=f"Quero dar aula na {p}", font=fontS, fg="#59915c").grid(row=line, column=0, columnspan=2, padx=x, pady=y)
+                Button(self.see, text="Excluir", font=fontS, command=lambda: self.delete(type, prefers["S"], p)).grid(row=line, column=2, padx=x, pady=y)
+                line += 1
             for p in prefers['N']:
-                Label(self.see, text=f"Não quero dar aula na {p}").pack()
+                Label(self.see, text=f"Não quero dar aula na {p}", font=fontS, fg="#855862").grid(row=line, column=0, columnspan=2, padx=x, pady=y)
+                Button(self.see, text="Excluir", font=fontS, command=lambda: self.delete(type, prefers["N"], p)).grid(row=line, column=2, padx=x, pady=y)
+                line += 1
+
+    def delete(self, type, setList, day):
+        setList.remove(day)
+        self.screen.destroy()
+        AddConditions(type)
 
     def addP(self, type):
         global prefers, limits
         if type == "limit":
-            limits.add(self.day.get())
+            if not self.day.get() in prefers['S']:
+                limits.add(self.day.get())
+            else:
+                messagebox.showerror('Este dia já é uma preferencia', 'Se você quiser adicionar esta limitação, exclua a preferencia primeiramente.')
         else:
             if self.type.get() == "Quero dar aula na":
-                prefers['S'].add(self.day.get())
+                if not self.day.get() in limits:
+                    prefers['S'].add(self.day.get())
+                else:
+                    messagebox.showerror('Este dia já é uma limitação', 'Se você quiser adicionar esta limitação, exclua a limitação primeiramente.')
             else:
                 prefers['N'].add(self.day.get())
         self.screen.destroy()
