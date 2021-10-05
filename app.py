@@ -52,11 +52,11 @@ class AddingData(MainApp):
         self.addTeacherFrame.pack(fill=BOTH, expand=True)
         self.tabs.add(self.addTeacherFrame, text="Nova matéria/professor")
 
-        Label(self.addTeacherFrame, text="Nome:", font=('Arial', 14), bg="White").grid(row=0, column=0, padx=20, pady=10)
+        Label(self.addTeacherFrame, text="Nome (sem acentos):", font=('Arial', 14), bg="White").grid(row=0, column=0, padx=20, pady=10)
         self.teacherName = Entry(self.addTeacherFrame, font=('Arial', 14))
         self.teacherName.grid(row=0, column=1, padx=20, pady=10)
 
-        Label(self.addTeacherFrame, text="Matéria:", font=('Arial', 14), bg="White").grid(row=1, column=0, padx=20, pady=10)
+        Label(self.addTeacherFrame, text="Matéria (sem acentos):", font=('Arial', 14), bg="White").grid(row=1, column=0, padx=20, pady=10)
         self.teacherSubject = Entry(self.addTeacherFrame, font=('Arial', 14))
         self.teacherSubject.grid(row=1, column=1, padx=20, pady=10)
 
@@ -95,19 +95,22 @@ class AddingData(MainApp):
 
             columnPos += 1
 
-        Button(self.addTeacherFrame, text="Criar matéria", font=('Arial', 24)).grid(row=7, column=1, columnspan=2, pady=10)
+        Button(self.addTeacherFrame, text="Criar matéria", font=('Arial', 24)
+                , command=lambda: self.putInExcel('Teacher')).grid(row=7, column=1, columnspan=2, pady=10)
 
     def addRoom(self):
         self.addRoomFrame = Frame(self.tabs, width=int(self.sizes[0]*0.6), bg="Black")
         self.addRoomFrame.pack(fill=BOTH, expand=True)
         self.tabs.add(self.addRoomFrame, text="Nova sala")
 
-    def putInExcel(self, type): # Type é sala ou professor
+    def putInExcel(self, type): # Type é sala ou professor]
+        global prefers, limits
+
         if type == 'Teacher':
-            """
-                Função para adicionar dados na planilha
-            """
-            pass
+            turmas = {}
+            for turma in self.turmasList:
+                turmas[f"{turma}"] = self.classesList[f'{turma}'].get()
+            excel.saveTeacher(self.teacherName.get(), self.teacherSubject.get(), turmas, self.teacherYear.get(), prefers, limits)
 
 class AddConditions(AddingData):
     def __init__(self, type):
