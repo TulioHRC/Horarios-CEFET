@@ -110,7 +110,12 @@ class AddingData(MainApp):
             turmas = {}
             for turma in self.turmasList:
                 turmas[f"{turma}"] = self.classesList[f'{turma}'].get()
-            excel.saveTeacher(self.teacherName.get(), self.teacherSubject.get(), turmas, self.teacherYear.get(), prefers, limits)
+            try:
+                excel.saveTeacher(self.teacherName.get(), self.teacherSubject.get(), turmas, self.teacherYear.get(), prefers, limits)
+                messagebox.showinfo('Salvo', 'O professor foi salvo com sucesso!')
+                self.screen.destroy()
+            except Exception as e:
+                messagebox.showerror('Erro', f'O professor não foi salvo!\n{e}')
 
 class AddConditions(AddingData):
     def __init__(self, type):
