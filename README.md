@@ -10,6 +10,9 @@ Gerar horários aleatoriamente, porém seguindo o maior número de preferencias 
 
 ### Próximas atualizações
 - Selecionar sala (se especifica) para cada matéria
+- Adaptar selecionar pastas para o resto do projeto, ou seja, colocar forma de selecionar planilha de aulas ou de salas e forma de salvar esses dados para uso posterior
+- Terminar app (opção para adicionar salas)
+- ...
 
 ## Release Notes
 
@@ -21,6 +24,7 @@ Gerar horários aleatoriamente, porém seguindo o maior número de preferencias 
 - Upgrade nas funções básicas criadas (Review)
 - Criação da planilha de salas e melhora nas outras
 - App função para adição de aulas/professores
+![image](https://user-images.githubusercontent.com/62257920/138364396-9e40b620-c60b-4cac-99a5-ef3c660c2297.png)
 
 ### 0.0.2v
 - Organização inicial das funções (para o processamento dos dados)
