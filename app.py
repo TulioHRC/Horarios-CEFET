@@ -29,6 +29,15 @@ class MainApp:
         self.new.place(bordermode=OUTSIDE, width=str(int(self.sizes[0]*0.8*0.2)), height=str(int(self.sizes[1]*0.8*0.1)),
                             relx=0.05, rely=0.85)
 
+        self.filebt = Button(self.master, text='escolher arquivo', command=self.choose, font=('Arial', 20))# botão para escolher o arquivo
+        self.filebt.config(bg='Gray', fg='White')
+        self.filebt.pack()
+        self.filebt.place(bordermode=OUTSIDE, width=str(int(self.sizes[0]*0.8*0.2)), height=str(int(self.sizes[1]*0.8*0.1)),
+                            relx=0.75, rely=0.85)
+
+    def choose (self):
+        file = filedialog.askopenfile(parent=self.master, mode='rb', title='abrir')
+
 class AddingData(MainApp):
     def __init__(self):
         global prefers, limits
