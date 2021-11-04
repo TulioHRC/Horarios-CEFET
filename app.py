@@ -112,7 +112,34 @@ class AddingData(MainApp):
         self.addRoomFrame.pack(fill=BOTH, expand=True)
         self.tabs.add(self.addRoomFrame, text="Nova sala")
 
-    def putInExcel(self, type): # Type é sala ou professor]
+        Label(self.addRoomFrame, text="Sala:", font=('Arial', 14), bg="White").grid(row=0, column=0, padx=20, pady=20)
+        self.room = Entry(self.addRoomFrame, font=('Arial', 14), width=25)
+        self.room.grid(row=0, column=1, padx=20, pady=20)
+
+        Label(self.addRoomFrame, text="Local:", font=('Arial', 14), bg="White").grid(row=1, column=0, padx=20, pady=20)
+        # List box with the locals, like 1N, 1S, 2N, etc.
+        self.locals = [
+            'DEMAT',
+            'Andar 1 N',
+            'Andar 1 S',
+            'Andar 2 N',
+            'Andar 2 S',
+            'Andar 3 N',
+            'Andar 3 S',
+        ]
+        self.localOption = StringVar()
+        self.localOption.set(self.locals[0])
+        self.local = OptionMenu(self.addRoomFrame, self.localOption, *self.locals)
+        self.local.grid(row=1, column=1, padx=20, pady=20)
+
+        Button(self.addRoomFrame, text="Adicionar limitação", # Command
+                    font=('Arial', 18)).grid(row=0, column=3, columnspan=2, padx=20, pady=20)
+
+        Button(self.addRoomFrame, text="Criar sala", command=lambda: self.putInExcel('Room'),
+                    font=('Arial', 18), bg="green", fg="white").grid(row=4, column=1, columnspan=3, padx=20, pady=20)
+
+
+    def putInExcel(self, type): # Type é sala ou professor
         global prefers, limits
 
         if type == 'Teacher':
@@ -125,6 +152,13 @@ class AddingData(MainApp):
                 self.screen.destroy()
             except Exception as e:
                 messagebox.showerror('Erro', f'O professor não foi salvo!\n{e}')
+        else:
+            try:
+                excel.saveRoom(self.room.get(), self.localOption.get(), '')
+                messagebox.showinfo('Salvo', 'A sala foi salva com sucesso!')
+                self.screen.destroy()
+            except Exception as e:
+                messagebox.showerror('Erro', f'A sala não foi salva corretamente!\n{e}')
 
 class AddConditions(AddingData):
     def __init__(self, type):

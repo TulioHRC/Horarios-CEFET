@@ -16,6 +16,11 @@ Gerar horários aleatoriamente, porém seguindo o maior número de preferencias 
 
 ## Release Notes
 
+### 0.0.5v (New Room)
+- New room tab
+- New room functions
+- Save teacher fixed error
+
 ### 0.0.4v
 - Selecionamento de arquivo para arquivo de planilha
 - Estilo básico no aplicativo
