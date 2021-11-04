@@ -40,7 +40,7 @@ def saveTeacher(name, subject, classes, grade, prefers, limits):
 
         newDf.to_excel('Planilha.xlsx', index=False)
 
-def saveRoom(name, local, limitations):
+def saveRoom(name, local, limits):
     err = 0
     if len(name) <= 2:
         messagebox.showerror('Erro', 'O nome da sala está muito pequeno!\nMude e tente novamente.')
@@ -49,8 +49,11 @@ def saveRoom(name, local, limitations):
     if not err:
         df = pd.read_excel('Planilha sala.xlsx', 'Sheet1')
 
-        # Falta definir limites
         limitsResult = ''
+        for day in limits:
+            if len(limitsResult) != 0:
+                limitsResult += '-'
+            limitsResult += f"N{convert.convertDayToNum(day)}"
 
         df2 = pd.DataFrame({'Sala': [name], 'Local': [local], 'Limitações': [limitsResult]})
 

@@ -19,6 +19,7 @@ Gerar horários aleatoriamente, porém seguindo o maior número de preferencias 
 ### 0.0.5v (New Room)
 - New room tab
 - New room functions
+- New room Limitations
 - Save teacher fixed error
 
 ### 0.0.4v
