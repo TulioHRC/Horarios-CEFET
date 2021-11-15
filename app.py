@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk, messagebox
 from functions import excel
+from functions.go import *
 
 prefers = {'S': set(), 'N': set()}
 limits = set()
@@ -8,6 +9,7 @@ limitsRoom = set()
 
 def go():
     print('Criando novos horários...')
+    mainFunction()
 
 class MainApp:
     def __init__(self, master):
