@@ -23,15 +23,24 @@ def mainFunction(): # A função principal do código, que retornará o resultad
     for i in range(5, len(teachersColumns)): # Pega apenas as matérias
         classes.append(teachersColumns[i])
 
+    for index, turm in enumerate(classes): # Transforma cada turma em um objeto de uma classe
+        classes[index] = c.Turm(turm)
+
     teachers = [] # Lista de objetos (professores)
 
-    for index, teacher  in enumerate(teachersData["Professor"]):
+    for index, teacher  in enumerate(teachersData["Professor"]): # Transforma cada professor em um objeto de uma classe
         # Aulas por professor em cada turma
         teachersClasses = []
         for turm in classes:
-            teachersClasses.append(f'{turm}-{int(teachersData[f"{turm}"][index])}')
+            teachersClasses.append(f'{turm.name}-{int(teachersData[f"{turm.name}"][index])}')
 
         teachers.append(c.Teacher(teacher, teachersData["Materia"][index], teachersData["Ano"][index], teachersData["Preferencias"][index], teachersData["Limitacoes"][index], teachersClasses))
-    print(teachers[0].classes)
+
+    # Gerando o resultado dos melhores horários
+
+    for teacher in teachers:
+        for turm in classes:
+            teacher.bestHour(turm.name) # Melhor horário para cada turma
+
 
 mainFunction()
