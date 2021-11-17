@@ -1,17 +1,21 @@
 # Aqui se encontraram as funções que vamos usar no código teste
 import pandas as pd
 
+
 class Professor:
     def __init__(self, name):
         self.name = name
         # Grade de horários que o professor vai dar aula
         self.classes = {'segunda': [], 'terça': [], 'quarta': [], 'quinta': [], 'sexta': []}
-        # Matérias que o professor da aula
+        # Matérias que o professor da aula, tuplas: (Matéria_Nome, Número de aulas, Sala)
         self.subjects = set()
         # Preferências de dias que ele quer (primeira lista) ou não (segunda lista) dar aula para cada matéria
-        self.prefer = [] # uma lista de 2 sets para cada matéria do professor
+        self.prefer = [set(), set()]  # uma lista de 2 sets para cada matéria do professor
         # Limitações de dias que ele não pode dar aula
         self.limitations = set()
+        # Número de aulas em todas as matérias que ela dá aula
+        self.n_aulas = 0
+
 
 
 class Sala:
@@ -25,15 +29,21 @@ class Sala:
 
 
 class Node:
-    def __init__(self, state_of_node, cost_of_node, parent=0):
-        self.state = state_of_node
-        self.cost = cost_of_node
+    """Nodes são os horários, cada bloquinho de horário que corresponde a uma aula do professor"""
+    def __init__(self, subject, teacher, classroom):
+        self.teacher = teacher
+        self.classroom = classroom
+        self.subject = subject
 
-        # Se o número de filhos for igual ao número de possiveis filhos. O node deve ser removido do frontier
-        # caso contrário geraria um looping.
-        self.number_sons = 0
-        # A partir de qual node ela foi criada.
-        self.parent = parent
+        self.position = None
+
+    def __repr__(self):
+        return f'{self.teacher}_{self.subject}'
+
+    def get_position(self, position):
+        # Posição é uma tupla contendo (dia, horário)
+        self.position = position
+
 
 
 
@@ -41,6 +51,7 @@ class Frontier:
     """
     Frontier é uma lista que possui todos os possíveis valore s dos quais ainda se pode evoluir
     """
+
     def __init__(self):
         self.frontier = []
 
@@ -56,7 +67,6 @@ class Frontier:
             if node.cost <= self.frontier[node_in_frontier].cost:
                 self.frontier.insert(node_in_frontier, node)
 
-
     def select_node(self):
         """
         Retira um valor da lista que deverá ser espandido
@@ -66,19 +76,59 @@ class Frontier:
         self.frontier = self.frontier[1:]
         return lowest_cost_node
 
-def cost(state):
+
+def cost(state, all_teachers):
     """
-    Recebe a grade de horários que foi criada até o momento e
-    retorna quanto que aquele movimento custaria.
-    Para isso devemos estipular valores para cada cituação
-    Quão importante é um professor que quer dar aula nesse dia dar, 15
-    Quão importante é para os professores não terem horários picados durante o dia 10
-    Apenas uma pessoa saiu prejudicada ou a questão de horários seguidos e buracos foi distribuida igualmente
+    Recebe a grade de horários que foi criada até o momento e retorna quanto que aquele movimento custaria.
+    Para isso devemos estipular valores para cada situação
+    (X)Quão importante é um professor que quer dar aula nesse dia dar, 15
+    ( )Quão importante é para os professores não terem horários picados durante o dia 10
+    ( )Apenas uma pessoa saiu prejudicada ou a questão de horários seguidos e buracos foi distribuida igualmente
     :param state: Grade de horários atual
     :return: custo do caminho
     """
+    week_h = {2: list(0 for c in range(0, 5)),
+              3: list(0 for c in range(0, 5)),
+              4: list(0 for c in range(0, 5)),
+              5: list(0 for c in range(0, 5)),
+              6: list(0 for c in range(0, 5))}
+    value = 0
+    for teacher in all_teachers:
+        week_s = week_h.copy()
+        for subj in teacher.subjects:
+            # Primeira categoria de avaliação
+            if subj.position[0] in teacher.prefer[0]:
+                value += 15
+            elif subj.position[0] in teacher.prefer[1]:
+                value -= 15
+
+            # Segunda categoria de avaliação
+            del week_s[subj.position[0]][subj.position[1]]
+            week_s[subj.position[0]].insert(subj.position[1])
+        for day_h in week_s.values():
+            # Se tem algum furo nesses horários
+            for character in range(0, len(day_h)):
+                if day_h[character] == 0:
+                    del day_h[character]
+            else:
+                pass
+            for charac in range(len(day_h), 0, -1):
+                if day_h[charac] == 0:
+                    del day_h[charac]
+                else:
+                    pass
+            zeros = day_h.count(0)
+            value -= zeros * 5
+            if zeros == 0:
+                value += 10
+    return value
+
+
+
+
+
     # Diferença entre dois horários de um professor, não ter nenhum no meio
-        # Se isso for colocado provavelmente ele colocará todos os horários de uma pessoa para depois colocar os outros
+    # Se isso for colocado provavelmente ele colocará todos os horários de uma pessoa para depois colocar os outros
 
 
 def proibitions(state):

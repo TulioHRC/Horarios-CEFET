@@ -1,104 +1,167 @@
-
 from functions.base import *
 from functions import convert2day as convert
 import pandas as pd
+import random
 
-# Conjunto de todas as salas do DEMAT
-dfrooms = pd.read_excel('Disponibilidade de salas.xlsx', 'Sheet1')
-rooms = set()   # Lista de salas (em objetos)
-for r in range(0, len(dfrooms['Salas'].values)):
-    Room = Sala(int(dfrooms['Salas'].values[r]))
-    for day in ['segunda', 'terça', 'quarta', 'quinta', 'sexta']:
-        Room.h_ocupados[dfrooms[day]] = dfrooms[day].values[:]
-    rooms.add(Room)
+# ================================================
+# ============== RECEBE INFORMAÇÕES ==============
+# ================================================
 
-# Conjunto de todas as matérias do DEMAT
-# Devemos adicionar essas informações por meio de uma outra planilha separada
-"""
-    dfSubjects = pd.read_excel('Materias.xlsx', 'Sheet1')
-    for como o das salas, só que pode ser em dicionário ao ínves de objetos
-"""
-
-# Criar planilha de matérias e salas
-
-# Criar um set com todos os professores
-# Declarar todos eles também como sendo da classe professores
-dfTeachers = pd.read_excel('Planilha esperada.xlsx', 'Sheet1')   # Lendo a planilha do excel, e Sheet1 é o nome da aba do excel para ler
-
-professores_nomes = [] # Somente listas permitem usar metodos como o index
+df = pd.read_excel('Planilha.xlsx', 'Sheet1')
+# Coloca todos os professores na classe professor
+all_teacher_names = set()
 all_teachers = []
-for p in range(0, len(dfTeachers['Professor'].values)):
-    if dfTeachers['Professor'].values[p] in professores_nomes:
-        teacher = all_teachers[professores_nomes.index(dfTeachers['Professor'].values[p])]
-    else:
-        teacher = Professor(dfTeachers['Professor'].values[p])
-        professores_nomes.append(teacher.name)
-        all_teachers.append(teacher)
+for teacher in range(0, len(df['Professor'])):
+    if df['Professor'][teacher] not in all_teacher_names:
+        P = Professor(df['Professor'][teacher])
+        all_teachers.append(P)
 
-    list_prefer = df['Preferências'].values[p].split('-')
-    teacher.prefer.append([set(), set()])
+    # Transformamos os inputs em listas e então adicionamos aos seus respectivos lugares na classe professor
+    preferencias = str(df['Preferencias'][teacher]).split('-')
+    limitacoes = str(df['Limitacoes'][teacher]).split('-')
+    P.prefer[0].add(p for p in preferencias if 'S' in p)
+    P.prefer[1].add(p for p in preferencias if 'N' in p)
+    P.limitations.add(l[1] for l in limitacoes if str(l) != 'nan')
 
-    for prefer in list_prefer: # Adiciona os dias que se quer ou não dar aula ao objeto
-        prefer = str(prefer)
-        if 'S' in prefer.upper:
-            teacher.prefer[len(teacher.subjects)][0].add(convert.convertNumToDay(prefer[1]))
-        elif 'N' in prefer.upper:
-            teacher.prefer[len(teacher.subjects)][1].add(convert.convertNumToDay(prefer[1]))
+    n_aulas = 0   # Será usado para checar se há algum erra no código ao final
 
-    limitations = df['Obrigações'].values[p].split('-')
-    for limit in limitations:
-        teacher.limitations.add(convert.convertNumToDay(limit[1])) # Adiciona os dias que não se pode dar aula
+    for colum_name in df.columns[5:]:
+        n_aulas += df[colum_name][teacher]
+    P.n_aulas += n_aulas
+    lin = list(df.loc[teacher])
+    for classes in range(5, len(lin)):
+        if str(lin[classes]) != 'nan':
+            for aulas in range(0, int(lin[classes])):
+                x = Node(
+                    subject=df['Materia'][teacher],
+                    teacher=P,
+                    classroom=df.columns[classes]
+                )
+                P.subjects.add(x)
 
-    """
-        Dividir por ano (1ª, 2ª ou 3ª) as matérias, pois um professor pode dar uma mesma matéria para anos diferentes,
-        mas contará como o mesmo no nosso código atual.
-    """
-    teacher.subjects.add(df['Matéria'].values[p]) # Adiciona a matéria ao objeto do professor
+# Lista com os dias da semana
+week_days = [1, 2, 3, 4, 5, 6]
 
-
-# State vai ser o dicionário final. Ele é o que deve ser trasformado em um data frame
-# Apenas o state mais barato será trasformado em resultado final.
-result_state = {}
+# Organizar all_teacher de modo que os primeiros sejam os com maiores restrições
 for teacher in all_teachers:
-    result_state[teacher.name] = teacher.classes
+    c = 0
+    while len(teacher.limitations) < len(all_teachers[c].limitations):
+        c += 1
+    all_teachers.remove(teacher)
+    all_teachers.insert(c, teacher)
 
-"""
-    Olhei até aqui, Ass. Túlio
-"""
+# Lista com todas as aulas
+all_classes = []
 
-dict_base = {}
-for rooms_for_creat_initial_state in rooms:
-    dict_base[rooms_for_creat_initial_state] = []
-initial_state = {'segunda': dict_base[:], 'terça': dict_base[:], 'quarta': dict_base[:], 'quinta': dict_base[:], 'sexta': dict_base[:]}
+# ===================================================
+# ============== PROCESSAR INFORMAÇÕES ==============
+# ===================================================
 
+# Criar planilha inicial (aleatória)
+planilha = {}  # {Sala: [horários], ...}
+for colum_name in df.columns[5:]:
+    planilha[colum_name] = {2: [],
+                            3: [],
+                            4: [],
+                            5: [],
+                            6: []}
 
-# primeiro node
-first_node = Node(initial_state[:], 0)
-greedy = Frontier()
-greedy.frontier.append(first_node)
+for teacher in all_teachers:
+    for subj in teacher.subjects:
+        # (matéria, numero de aulas, sala)
+        # Colocar cada uma das aulas desse professor na planilha
+        # Colocar todas as aulas do professor na segunda, se não couber colocar na terça, e assim por adiante
+        day = 2
+        while len(planilha[subj.classroom][day]) == 6:   # Não está passando daqui
+            day += 1
+            if len(planilha[subj.classroom][day]) > 6:
+                print(planilha[subj.classroom][day])
+                print('Error: len(planilha[subj[2]][day) > 6')
+        if day in teacher.limitations:
+            day += 1
+        planilha[subj.classroom][day].append(subj)
+        subj.get_position((day, planilha[subj.classroom][day].index(subj)))
+        all_classes.append(subj)
 
-# Expandir
-Empty = 0   # Sempre que um horário for marcado como vazio, se coloca Empty no lugar da aula.
-for day_of_week in initial_state.keys():
-    # node será o node que será espandindo, dando origem a novos nodes
-    # Os novos nodes serão analizados antes de serem adicionados ao frontier
-    parent = greedy.select_node()
+for key in planilha.keys():
+    print(planilha[key])
 
-    if is_final_result(parent.state):
-        RESULTADO = parent.state
+# Expandir planilha e selecionar qual o melhor | Aprimoramento
+# Quando um estado transitório possui esse ganho ou maior, ele já será automaticamente escolhido
+minimum_increase = XXX
+while True:
+    achamos_o_resultado_individual = True  # Se depois de tudo ainda for 'Sim' então a planilha inicial vai ser a melhor
+    achamos_o_resultado_membro = True
+    # Selecionar um grupo de 10 horários
+    big_group = all_classes[:10]
+    # Selecionar outros 10 que serão modificados separadamente
+    individuals = [i for i in all_classes[10:20]]
 
-    for teacher in all_teachers:
-        # Como adicionar os nodes?
-        # Para cada matéria que o professor der aula
-            # Para cada sala que possa ter aquela matéria
-            # Criar um node com esse estado.
-        for subj_teacher in teacher.subjects:
-            for rooms_of_subject in subjects[subj_teacher]['Salas que podem ser ocupadas']:
-                n_state = parent.state[:]
-                # A definição do horário será dada dessa maneira: (Qual o professor, qual a matéria)
-                n_state[day_of_week][rooms_of_subject] = (teacher.name, subj_teacher)
-                if proibitions(n_state):
-                    # Vamos declarar isso como node apenas se for aceito o estado
-                    x = Node(n_state[:], cost(n_state), parent)
-                    greedy.add_node(x)
-                    # Node adicionado ao frontier com suscesso
+    # expandir cada um 10X: criar 10 estados a partir de cada um deles
+    best_state = cost(planilha)
+    used_position = set()
+    for indivi in individuals:
+        used_position.clear()
+        # selecionar qual a sala
+        for c in range(0, 10):
+            planilha_transitoria = planilha.copy()
+            # Item aleatório da lista de dias da semana
+            while True:
+                day = random.choice(week_days)
+                if not (day in indivi.teacher.limitations):
+                    break
+            # Item aleatório dos horários desse dia
+            while True:   # Falta ainda colocar se esse horário está condizendo com as leis trabalhistas
+                selected_h = random.choice(planilha_transitoria[indivi.classroom][day])
+                if not ((day, selected_h) in used_position):
+                    break
+            # Efetuar a troca entre esses horários
+            position_h = planilha_transitoria[classroom][day].index(slected_h)
+            planilha_transitoria[indivi.classroom][day].remove(selected_h)
+            planilha_transitoria[indivi.classroom][day].insert(indivi)
+
+            planilha_transitoria[indivi.classroom][indivi.position[0]].remove(indivi)
+            planilha_transitoria[indivi.classroom][indivi.position[0]].insert(indivi.position[1], selected_h)
+
+            selected_h.get_position((indivi.position[0], indivi.position[1]))
+            indivi.get_position((day, position_h))
+
+            # Adicionar esse novo estado à states.
+            used_position.append((day, position_h))
+
+            # Avaliar se o estado atual é o melhor ou não
+            value = cost(planilha_transitoria)
+            if best_state[1] < value:
+                best_state = planilha_transitoria.copy()
+                achamos_o_resultado = False
+
+    # Expandir o grupo de 10
+    planilha_transitoria2 = planilha.copy()
+    for member in big_group:
+        # Repetimos o mesmo processo acima representado
+        # Selecionamos um horário aleatório, trocamos de posição com o horário member e então criamos um novo estado
+        day = random.choice(week_days)
+        selected_h = rendom.choice(planilha_transitoria2[member.classroom][day])
+        position_h = planilha_transitoria2[member.classroom][day].index(selected_h)
+
+        planilha_transitoria2[member.classroom][day].remove(selected_h)
+        planilha_transitoria2[member.classroom][day].insert(member)
+
+        planilha_transitoria2[member.classroom][member.position[0]].remove(member)
+        planilha_transitoria2[member.classroom][member.position[0]].insert(member.position[1], selected_h)
+
+        selected_h.get_position((member.position[0], member.position[1]))
+        member.get_position((day, position_h))
+
+        if cost(planilha) < cost(planilha_transitória2):
+            achamos_o_resultado_membro = False
+            if cost(planilha_transitoria2) > cost(best_state):
+                best_state = planilha_transitoria2.copy()
+# Se a melhor planilha for a inicial, antes de ser expandida, achamos o nosso resultado
+    if achamos_o_resultado_individual or achamos_o_resultado_membro:
+        result = planilha.copy()
+        break
+    else:
+        planilha = best_state.copy()
+
+# Converter resultado em um resultado final
