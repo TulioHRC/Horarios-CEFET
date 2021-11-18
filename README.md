@@ -16,6 +16,10 @@ Gerar horários aleatoriamente, porém seguindo o maior número de preferencias 
 
 ## Release Notes
 
+### 0.0.6v (Random classes)
+- Random mode of generating classes
+- Creating sheets of turms
+
 ### 0.0.5v (New Room)
 - New room tab
 - New room functions

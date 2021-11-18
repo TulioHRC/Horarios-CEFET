@@ -9,7 +9,7 @@ import result
 
 def mainFunction(): # A função principal do código, que retornará o resultado que nós esperamos
 
-    # =================== Pegando os dados que nós fornecemos
+# =================== Pegando os dados que nós fornecemos
     try:
         teachersData = loadData.getDatabase('Planilha.xlsx')
         teachersColumns = loadData.getDatabase('Planilha.xlsx', get="columns")
@@ -17,7 +17,7 @@ def mainFunction(): # A função principal do código, que retornará o resultad
     except Exception as e:
         print(f"Houve um erro ao tentar pegar os dados das planilhas.\n{e}")
 
-    # ==================== Processando os dados para deixa-los melhor de mexer
+# ==================== Processando os dados para deixa-los melhor de mexer
 
     classesNames = [] # -- Turmas
     classes = []
@@ -55,7 +55,7 @@ def mainFunction(): # A função principal do código, que retornará o resultad
     for index, room in enumerate(roomsData["Sala"]):
         rooms.append(c.Room(room, roomsData["Local"][index], roomsData["Limitacoes"][index]))
 
-    # ====================== Gerando o resultado dos melhores horários
+# ====================== Gerando o resultado dos melhores horários
 
     for teacher in teachers:
         for subject in teacher.subjects: # Por matéria do professor
@@ -65,12 +65,20 @@ def mainFunction(): # A função principal do código, que retornará o resultad
                         resp = teacher.bestHour(turm, subject[0:-2], alreadyChose=turm.schedule) # Melhor horário para cada turma,
 
                         if resp == 0: continue # Pula professor, não tem aula nessa matéria
-                        turm.schedule[resp[0]].append(resp[1])
+                        # Salvando novo horário nos horários
+                        turm.schedule[resp[0]].append(resp[1]) # -------------- turma
                         turm.schedule[resp[0]].sort(key=sortFunction) # Coloca em ordem 1,2,3 nos horários
-                        # Print de teste - print(f'{turm.name}: {turm.schedule}')
 
+                        teacher.schedule[resp[0]].append(f"{resp[1]} - {turm.name}") # ------------ professor
+                        teacher.schedule[resp[0]].sort(key=sortFunction)
+
+                        # Print de teste - print(f'{teacher.name}: {teacher.schedule}')
+
+    # Criando planilhas
     for turm in classes:
-        result.saveSheet(turm.name, turm.schedule)
+        result.saveSheet(turm.name, turm.schedule, type='turm')
+    for teacher in teachers:
+        result.saveSheet(teacher.name, teacher.schedule, type='teacher')
 
 def sortFunction(e):
     return int(e.split('-')[0]) # Função do sort de turm.schedule

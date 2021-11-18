@@ -6,6 +6,7 @@ class Teacher:
         self.prefers = [prefers] # Formato = ['{subject}:{prefers}']
         self.limits = limits
         self.classes = [classes] # Formato = [['{turma}-{ano}A-{número de horários}', ...]] Uma lista pra cada matéria
+        self.schedule = {'2': [],'3': [],'4': [],'5': [],'6': []}
 
     def getClassesNum(self, className, subject): # Retorna o número de aulas dadas para tal turma em tal matéria
         pos = self.subjects.index(subject)
