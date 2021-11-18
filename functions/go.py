@@ -60,16 +60,17 @@ def mainFunction(): # A função principal do código, que retornará o resultad
     for teacher in teachers:
         for subject in teacher.subjects: # Por matéria do professor
             for turm in classes:
-                resp = teacher.bestHour(turm, subject[0:-2], alreadyChose=turm.schedule) # Melhor horário para cada turma,
+                if turm.name[-2] == subject[-1]: # Se o ano da turma for igual ao da matéria
+                    for i in range(teacher.getClassesNum(turm.name, subject)): # Gera um para cada aula da matéria
+                        resp = teacher.bestHour(turm, subject[0:-2], alreadyChose=turm.schedule) # Melhor horário para cada turma,
 
-                if resp == 0: continue # Pula professor, não tem aula nessa matéria
-
-                turm.schedule[resp[0]].append(resp[1])
-                turm.schedule[resp[0]].sort(key=sortFunction) # Coloca em ordem 1,2,3 nos horários
-                # Print de teste - print(f'{turm.name}: {turm.schedule}')
+                        if resp == 0: continue # Pula professor, não tem aula nessa matéria
+                        turm.schedule[resp[0]].append(resp[1])
+                        turm.schedule[resp[0]].sort(key=sortFunction) # Coloca em ordem 1,2,3 nos horários
+                        # Print de teste - print(f'{turm.name}: {turm.schedule}')
 
     for turm in classes:
-        result.saveSheet(turm.name, {"Horarios": ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']}, turm.schedule)
+        result.saveSheet(turm.name, turm.schedule)
 
 def sortFunction(e):
     return int(e.split('-')[0]) # Função do sort de turm.schedule

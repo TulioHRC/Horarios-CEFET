@@ -5,7 +5,13 @@ class Teacher:
         self.types = [type] # Formato = ['Manha', ...] manhã ou tarde
         self.prefers = [prefers] # Formato = ['{subject}:{prefers}']
         self.limits = limits
-        self.classes = [classes] # Formato = [['{turma}{ano}-{número de horários}', ...]] Uma lista pra cada matéria
+        self.classes = [classes] # Formato = [['{turma}-{ano}A-{número de horários}', ...]] Uma lista pra cada matéria
+
+    def getClassesNum(self, className, subject): # Retorna o número de aulas dadas para tal turma em tal matéria
+        pos = self.subjects.index(subject)
+        start = str(self.classes[pos]).find(f"{className}-")
+        end = str(self.classes[pos]).find(f"-", start+4) # Segundo '-'
+        return int(str(self.classes[pos])[end+1])
 
     def bestHour(self, turm, subject, preDefinedHour="", alreadyChose=""): # Definição do melhor horário para o professor
 
@@ -55,8 +61,11 @@ class Turm:
 
 
 class Room:
-    def __init__(self, name, position, limits, preDefinedSchedule={'2': [],'3': [],'4': [],'5': [],'6': []}):
+    def __init__(self, name, position, limits, preDefinedSchedule=''):
         self.name = name
         self.position = position
         self.limits = limits
-        self.schedule = preDefinedSchedule # Horários de cada sala
+        if preDefinedSchedule:
+            self.schedule = preDefinedSchedule # Horários de cada sala
+        else:
+            self.schedule = {'2': [],'3': [],'4': [],'5': [],'6': []}

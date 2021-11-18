@@ -2,7 +2,7 @@ import pandas as pd
 #from functions import convert2day as conv App function import
 import convert as conv
 
-def saveSheet(name, yData, xData, path="./data/", type="turm"):
+def saveSheet(name, xData, yData={"Horarios": ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']}, path="./data/", type="turm"):
     # xData terão o formato: {"COLLUMN 1": [valores], ...}
     # Formato dos valores -> ['2-Desenho Técnico:1', '3-Desenho Técnico', '5-EAP', '7-Circuitos Elétricos 2:2', '9-Circuitos Elétricos 2:2', '10-EAP:3', '11-EAP:2', '12-Circuitos Elétricos 2:2']
     # yData será a primeira coluna da planilha, tendo o formato: {"Nome das linhas": [lista de nomes das linhas]}
