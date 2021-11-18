@@ -69,7 +69,6 @@ def mainFunction(): # A função principal do código, que retornará o resultad
                 # Print de teste - print(f'{turm.name}: {turm.schedule}')
 
     for turm in classes:
-        # print(turm.name)
         result.saveSheet(turm.name, {"Horarios": ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']}, turm.schedule)
 
 def sortFunction(e):
