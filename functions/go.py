@@ -20,7 +20,7 @@ def mainFunction(): # A função principal do código, que retornará o resultad
 
     classes = [] # -- Turmas
 
-    for i in range(5, len(teachersColumns)): # Pega apenas as matérias
+    for i in range(6, len(teachersColumns)): # Pega apenas as matérias
         classes.append(teachersColumns[i])
 
     for index, turm in enumerate(classes): # Transforma cada turma em um objeto de uma classe
@@ -37,15 +37,16 @@ def mainFunction(): # A função principal do código, que retornará o resultad
             teachersClasses.append(f'{turm.name}-{int(teachersData[f"{turm.name[0:-3]}"][index])}')
 
         if not teacher in teachersNames:
-            teachers.append(c.Teacher(teacher, f'{teachersData["Materia"][index]}:{teachersData["Ano"][index]}', f'{teachersData["Materia"][index]}:{teachersData["Preferencias"][index]}', teachersData["Limitacoes"][index], teachersClasses))
+            teachers.append(c.Teacher(teacher, f'{teachersData["Materia"][index]}:{teachersData["Ano"][index]}', f'{teachersData["Tipo"][index]}', f'{teachersData["Materia"][index]}:{teachersData["Preferencias"][index]}', teachersData["Limitacoes"][index], teachersClasses))
             teachersNames.append(teacher)
         else:
             teachers[teachersNames.index(teacher)].subjects.append(f'{teachersData["Materia"][index]}:{teachersData["Ano"][index]}')
+            teachers[teachersNames.index(teacher)].types.append(f'{teachersData["Tipo"][index]}')
             teachers[teachersNames.index(teacher)].prefers.append(f'{teachersData["Materia"][index]}:{teachersData["Preferencias"][index]}')
             teachers[teachersNames.index(teacher)].limits  = teachersData["Limitacoes"][index] # Substitui pela mais recente
             teachers[teachersNames.index(teacher)].classes.append(teachersClasses)
 
-        # print(f'{teachers[teachersNames.index(teacher)].name}, {teachers[teachersNames.index(teacher)].subjects}\n{teachers[teachersNames.index(teacher)].classes}')
+        # Print de teste - print(f'{teachers[teachersNames.index(teacher)].name}, {teachers[teachersNames.index(teacher)].types}\n{teachers[teachersNames.index(teacher)].classes}')
 
     rooms = [] # -- Salas
 

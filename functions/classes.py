@@ -1,7 +1,8 @@
 class Teacher:
-    def __init__(self, name, subject, prefers, limits, classes):
+    def __init__(self, name, subject, type, prefers, limits, classes):
         self.name = name
         self.subjects = [subject] # Formato = ['{subject}:{year}']
+        self.types = [type] # Formato = ['Manha', ...] manhã ou tarde
         self.prefers = [prefers] # Formato = ['{subject}:{prefers}']
         self.limits = limits
         self.classes = [classes] # Formato = [['{turma}{ano}-{número de horários}', ...]] Uma lista pra cada matéria
@@ -22,7 +23,8 @@ class Teacher:
         goodOptions = 0
         for prefer in self.prefers[self.subjects.index(subject)].split(":")[1].split('-'):
             if 'S' in prefer and alreadyChose[f"{prefer[1]}"]:
-                for hour in alreadyChose[f"{prefer[1]}"]:
+                for hour in alreadyChose[f"{prefer[1]}"]: # Horários já escolhidos
+                    print(hour)
                     #...
 
 ############# Falta forma de se pegar os "pontos" que o Samuel falou, ou seja, avaliação de cada possibilidade com um valor dependendo das suas
