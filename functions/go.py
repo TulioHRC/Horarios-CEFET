@@ -5,6 +5,7 @@
 # Dev Imports
 import loadData
 import classes as c
+import result
 
 def mainFunction(): # A função principal do código, que retornará o resultado que nós esperamos
 
@@ -18,14 +19,15 @@ def mainFunction(): # A função principal do código, que retornará o resultad
 
     # ==================== Processando os dados para deixa-los melhor de mexer
 
-    classes = [] # -- Turmas
+    classesNames = [] # -- Turmas
+    classes = []
 
     for i in range(6, len(teachersColumns)): # Pega apenas as matérias
-        classes.append(teachersColumns[i])
+        classesNames.append(teachersColumns[i])
 
-    for index, turm in enumerate(classes): # Transforma cada turma em um objeto de uma classe
+    for index, turm in enumerate(classesNames): # Transforma cada turma em um objeto de uma classe
         for i in range(1, 4): # Turma para cada ano
-            classes[index] = c.Turm(turm, str(i))
+            classes.append(c.Turm(turm, str(i)))
 
     teachers = [] # -- Lista de objetos (professores)
     teachersNames = []
@@ -58,8 +60,19 @@ def mainFunction(): # A função principal do código, que retornará o resultad
     for teacher in teachers:
         for subject in teacher.subjects: # Por matéria do professor
             for turm in classes:
-                resp = teacher.bestHour(turm, subject, alreadyChose=turm.schedule) # Melhor horário para cada turma
-                #print(resp)
+                resp = teacher.bestHour(turm, subject[0:-2], alreadyChose=turm.schedule) # Melhor horário para cada turma,
+
                 if resp == 0: continue # Pula professor, não tem aula nessa matéria
+
+                turm.schedule[resp[0]].append(resp[1])
+                turm.schedule[resp[0]].sort(key=sortFunction) # Coloca em ordem 1,2,3 nos horários
+                # Print de teste - print(f'{turm.name}: {turm.schedule}')
+
+    for turm in classes:
+        # print(turm.name)
+        result.saveSheet(turm.name, {"Horarios": ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']}, turm.schedule)
+
+def sortFunction(e):
+    return int(e.split('-')[0]) # Função do sort de turm.schedule
 
 mainFunction()

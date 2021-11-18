@@ -20,21 +20,38 @@ class Teacher:
         if f'{turm.name[0:-3]}-0' in self.classes: return 0 # Se não houver horários da turma
 
         # Pegando o melhor horário possível para o professor
+        """
         goodOptions = 0
         for prefer in self.prefers[self.subjects.index(subject)].split(":")[1].split('-'):
             if 'S' in prefer and alreadyChose[f"{prefer[1]}"]:
                 for hour in alreadyChose[f"{prefer[1]}"]: # Horários já escolhidos
                     print(hour)
                     #...
+        """
+        # Random mode
+        import random
+        import re
 
-############# Falta forma de se pegar os "pontos" que o Samuel falou, ou seja, avaliação de cada possibilidade com um valor dependendo das suas
-# conveniencias e dificuldades
+        day = random.randint(2, 6)
+        hour = random.randint(1, 12)
+        try: # Se alreadyChose não existir dará um erro
+            while re.findall(f"\'{hour}-", str(alreadyChose[f"{day}"])): # Tenta encontrar "'{hour}-" na lista de horários já escolhidos:
+                day = random.randint(2, 6)
+                hour = random.randint(1, 12)
+        except:
+            print('alreadyChose não existe ainda, o código continuará normalmente!')
+
+        return [str(day), f'{str(hour)}-{subject}'] # Lista de retorno
+
 
 class Turm:
-    def __init__(self, name, year, preDefinedSchedule={'2': [],'3': [],'4': [],'5': [],'6': []}):
+    def __init__(self, name, year, preDefinedSchedule=''):
         self.name = f'{name}-{year}A'
-        self.schedule = preDefinedSchedule # Horários de cada turma
-        # Formato dos horários = '{horário de 0 a 9}-{matéria/subject}'
+        if preDefinedSchedule:
+            self.schedule = preDefinedSchedule # Horários de cada turma
+        else:
+            self.schedule = {'2': [],'3': [],'4': [],'5': [],'6': []}
+        # Formato dos horários = '{horário de 1 a 12}-{matéria/subject}'
 
 
 class Room:
