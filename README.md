@@ -16,6 +16,9 @@ Gerar horários aleatoriamente, porém seguindo o maior número de preferencias 
 
 ## Release Notes
 
+### 0.0.61v (App adapt)
+- Adaptation to the new teachers sheet, with type (morning or afternoon)
+
 ### 0.0.5v (New Room)
 - New room tab
 - New room functions

@@ -50,7 +50,7 @@ class AddingData(MainApp):
         self.screen = Toplevel()
         self.screen.title('Adicionando dados')
         self.sizes = [self.screen.winfo_screenwidth(), self.screen.winfo_screenheight()]
-        self.screen.geometry(f"{int(self.sizes[0]*0.6)}x{int(self.sizes[1]*0.6)}+{int(self.sizes[0]*0.2)}+{int(self.sizes[1]*0.2)}")
+        self.screen.geometry(f"{int(self.sizes[0]*0.6)}x{int(self.sizes[1]*0.7)}+{int(self.sizes[0]*0.2)}+{int(self.sizes[1]*0.15)}")
         self.screen.resizable(0,0)
 
         prefers = {'S': set(), 'N': set()}
@@ -75,9 +75,20 @@ class AddingData(MainApp):
         self.teacherSubject = Entry(self.addTeacherFrame, font=('Arial', 14))
         self.teacherSubject.grid(row=1, column=1, padx=20, pady=10)
 
+        # Tipo (manhã ou tarde)
+        Label(self.addTeacherFrame, text="Tipo:", font=('Arial', 14), bg="White").grid(row=2, column=0, padx=20, pady=20)
+        self.types = [
+            'Manha',
+            'Tarde',
+        ]
+        self.typeOp = StringVar()
+        self.typeOp.set(self.types[0])
+        self.type = OptionMenu(self.addTeacherFrame, self.typeOp, *self.types)
+        self.type.grid(row=2, column=1, padx=20, pady=20)
+
         Label(self.addTeacherFrame, text="Ano escolar:", font=('Arial', 14), bg="White").grid(row=3, column=0, padx=20, pady=10)
         self.teacherYear = IntVar()
-        gridR = 2
+        gridR = 3
 
         options = [
         	("1ª", 1),
@@ -96,7 +107,7 @@ class AddingData(MainApp):
                     font=('Arial', 18)).grid(row=3, column=2, columnspan=2, padx=20, pady=10)
 
         self.classes = Frame(self.addTeacherFrame, bg='Black')
-        self.classes.grid(row=5, column=0, rowspan=2, columnspan=4, pady=10)
+        self.classes.grid(row=6, column=0, rowspan=2, columnspan=4, pady=10)
 
         self.turmasList = ['MCT', 'ELT', 'MEC']# Colocar forma de pegar a lista de turmas do CEFET
         self.classesList = {}
@@ -111,7 +122,7 @@ class AddingData(MainApp):
             columnPos += 1
 
         Button(self.addTeacherFrame, text="Criar matéria", font=('Arial', 24)
-                , command=lambda: self.putInExcel('Teacher')).grid(row=7, column=1, columnspan=2, pady=10)
+                , command=lambda: self.putInExcel('Teacher')).grid(row=8, column=1, columnspan=2, pady=10)
 
     def addRoom(self):
         self.addRoomFrame = Frame(self.tabs, width=int(self.sizes[0]*0.6), bg="Black")
@@ -153,7 +164,7 @@ class AddingData(MainApp):
             for turma in self.turmasList:
                 turmas[f"{turma}"] = self.classesList[f'{turma}'].get()
             try:
-                excel.saveTeacher(self.teacherName.get(), self.teacherSubject.get(), turmas, self.teacherYear.get(), prefers, limits)
+                excel.saveTeacher(self.teacherName.get(), self.teacherSubject.get(), self.typeOp.get(), turmas, self.teacherYear.get(), prefers, limits)
                 messagebox.showinfo('Salvo', 'O professor foi salvo com sucesso!')
                 self.screen.destroy()
             except Exception as e:
