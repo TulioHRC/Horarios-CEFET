@@ -35,16 +35,26 @@ class Teacher:
                     print(hour)
                     #...
         """
+
+        positionInList = self.subjects.index(f"{subject}:{turm.name.split('-')[1][0]}") # Pegar o local na lista onde está tal matéria
+
         # Random mode
         import random
         import re
 
         day = random.randint(2, 6)
-        hour = random.randint(1, 12)
+        if self.types[positionInList] == 'Manha':
+            hour = random.randint(1, 5) # 11:30 não pode começar um horário
+        else:
+            hour = random.randint(7, 11) # 17:30 não pode começar um horário
+
         try: # Se alreadyChose não existir dará um erro
             while re.findall(f"\'{hour}-", str(alreadyChose[f"{day}"])): # Tenta encontrar "'{hour}-" na lista de horários já escolhidos:
                 day = random.randint(2, 6)
-                hour = random.randint(1, 12)
+                if self.types[positionInList] == 'Manha':
+                    hour = random.randint(1, 5)
+                else:
+                    hour = random.randint(7, 11)
         except:
             print('alreadyChose não existe ainda, o código continuará normalmente!')
 
