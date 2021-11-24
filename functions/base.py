@@ -7,7 +7,7 @@ class Professor:
         self.name = name
         # Grade de horários que o professor vai dar aula
         self.classes = {'segunda': [], 'terça': [], 'quarta': [], 'quinta': [], 'sexta': []}
-        # Matérias que o professor da aula, tuplas: (Matéria_Nome, Número de aulas, Sala)
+        # Todos os horários do professor, Nodes
         self.subjects = set()
         # Preferências de dias que ele quer (primeira lista) ou não (segunda lista) dar aula para cada matéria
         self.prefer = [set(), set()]  # uma lista de 2 sets para cada matéria do professor
@@ -38,7 +38,7 @@ class Node:
         self.position = None
 
     def __repr__(self):
-        return f'{self.teacher}_{self.subject}'
+        return f'{self.teacher.name}_{self.subject}'
 
     def get_position(self, position):
         # Posição é uma tupla contendo (dia, horário)
@@ -77,12 +77,12 @@ class Frontier:
         return lowest_cost_node
 
 
-def cost(state, all_teachers):
+def cost(all_teachers):
     """
-    Recebe a grade de horários que foi criada até o momento e retorna quanto que aquele movimento custaria.
+    Recebe a lista com os professores e retorna o valor daquela estrutura de horários
     Para isso devemos estipular valores para cada situação
     (X)Quão importante é um professor que quer dar aula nesse dia dar, 15
-    ( )Quão importante é para os professores não terem horários picados durante o dia 10
+    (X)Quão importante é para os professores não terem horários picados durante o dia 10
     ( )Apenas uma pessoa saiu prejudicada ou a questão de horários seguidos e buracos foi distribuida igualmente
     :param state: Grade de horários atual
     :return: custo do caminho
@@ -103,18 +103,19 @@ def cost(state, all_teachers):
                 value -= 15
 
             # Segunda categoria de avaliação
+            print('week', week_s[subj.position[0]], subj.position[1])
             del week_s[subj.position[0]][subj.position[1]]
-            week_s[subj.position[0]].insert(subj.position[1])
+            week_s[subj.position[0]].insert(subj.position[1], subj)
         for day_h in week_s.values():
             # Se tem algum furo nesses horários
             for character in range(0, len(day_h)):
-                if day_h[character] == 0:
-                    del day_h[character]
-            else:
-                pass
-            for charac in range(len(day_h), 0, -1):
-                if day_h[charac] == 0:
-                    del day_h[charac]
+                if day_h[0] == 0:
+                    del day_h[0]
+                else:
+                    pass
+            for charac in range(0, len(day_h)):
+                if day_h[-1] == 0:
+                    del day_h[-1]
                 else:
                     pass
             zeros = day_h.count(0)
