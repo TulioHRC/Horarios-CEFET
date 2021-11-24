@@ -17,7 +17,7 @@ class Teacher:
     def bestHour(self, turm, subject, preDefinedHour="", alreadyChose=""): # Definição do melhor horário para o professor
 
         # Formato dos argumentos: class="{turma}"
-        #           preDefinedHour="{day}-{horario de 0 (7:50-8:40) até 9 (16:40-17:30)}"
+        #           preDefinedHour="{day}-{horario de 1 (7:00-7:50) até 14 (16:40-17:30)}"
         #           alreadyChose={'2': '{lista com os números dos horários já escolhidos}', ... (outros dias, até o 6)}
 
         if preDefinedHour and not f"N{preDefinedHour[0]}" in limits and not f"N{preDefinedHour[0]}" in prefers:
@@ -44,17 +44,17 @@ class Teacher:
 
         day = random.randint(2, 6)
         if self.types[positionInList] == 'Manha':
-            hour = random.randint(1, 5) # 11:30 não pode começar um horário
+            hour = random.choice([1,2,3,5,6]) # 11:30 (7) não pode começar um horário e nem (9:30/4)
         else:
-            hour = random.randint(7, 11) # 17:30 não pode começar um horário
+            hour = random.randint([8,9,10,12,13]) # 17:30 (14) não pode começar um horário e nem (15:30/11)
 
         try: # Se alreadyChose não existir dará um erro
             while re.findall(f"\'{hour}-", str(alreadyChose[f"{day}"])): # Tenta encontrar "'{hour}-" na lista de horários já escolhidos:
                 day = random.randint(2, 6)
                 if self.types[positionInList] == 'Manha':
-                    hour = random.randint(1, 5)
+                    hour = random.choice([1,2,3,5,6])
                 else:
-                    hour = random.randint(7, 11)
+                    hour = random.randint([8,9,10,12,13])
         except:
             print('alreadyChose não existe ainda, o código continuará normalmente!')
 
