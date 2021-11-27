@@ -1,5 +1,6 @@
 import pandas as pd
-#from functions import convert2day as conv App function import
+#App function import
+#from functions import convert as conv
 import convert as conv
 
 def saveSheet(name, xData, yData={"Horarios": ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14']}, path="./data/", type="turm", intervals=1):

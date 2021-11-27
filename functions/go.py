@@ -1,6 +1,7 @@
 # App Imports
 #from functions import loadData
 #from functions import classes as c
+#from functions import result
 
 # Dev Imports
 import loadData
@@ -45,10 +46,10 @@ def mainFunction(): # A função principal do código, que retornará o resultad
             teachers[teachersNames.index(teacher)].subjects.append(f'{teachersData["Materia"][index]}:{teachersData["Ano"][index]}')
             teachers[teachersNames.index(teacher)].types.append(f'{teachersData["Tipo"][index]}')
             teachers[teachersNames.index(teacher)].prefers.append(f'{teachersData["Materia"][index]}:{teachersData["Preferencias"][index]}')
-            teachers[teachersNames.index(teacher)].limits  = teachersData["Limitacoes"][index] # Substitui pela mais recente
+            teachers[teachersNames.index(teacher)].limits.append(teachersData["Limitacoes"][index])
             teachers[teachersNames.index(teacher)].classes.append(teachersClasses)
 
-        # Print de teste - print(f'{teachers[teachersNames.index(teacher)].name}, {teachers[teachersNames.index(teacher)].types}\n{teachers[teachersNames.index(teacher)].classes}')
+        # Print de teste - print(f'{teachers[teachersNames.index(teacher)].name}, {teachers[teachersNames.index(teacher)].prefers}\n{teachers[teachersNames.index(teacher)].classes}')
 
     rooms = [] # -- Salas
 
