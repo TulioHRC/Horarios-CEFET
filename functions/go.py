@@ -62,8 +62,9 @@ def mainFunction(): # A função principal do código, que retornará o resultad
         for subject in teacher.subjects: # Por matéria do professor
             for turm in classes:
                 if turm.name[-2] == subject[-1]: # Se o ano da turma for igual ao da matéria
+                    lastResp = "a" # Ultima resposta
                     for i in range(teacher.getClassesNum(turm.name, subject)): # Gera um para cada aula da matéria
-                        resp = teacher.bestHour(turm, subject[0:-2], alreadyChose=turm.schedule) # Melhor horário para cada turma,
+                        resp = teacher.bestHour(turm, subject[0:-2], alreadyChose=turm.schedule, classNumber=i, lastResp= lastResp) # Melhor horário para cada turma,
 
                         if resp == 0: continue # Pula professor, não tem aula nessa matéria
                         # Salvando novo horário nos horários
@@ -72,6 +73,8 @@ def mainFunction(): # A função principal do código, que retornará o resultad
 
                         teacher.schedule[resp[0]].append(f"{resp[1]} - {turm.name}") # ------------ professor
                         teacher.schedule[resp[0]].sort(key=sortFunction)
+
+                        lastResp = resp
 
                         # Print de teste - print(f'{teacher.name}: {teacher.schedule}')
 
