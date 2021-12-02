@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk, messagebox
+import os
 from functions import excel
 from functions.go import *
 
@@ -10,6 +11,9 @@ limitsRoom = set()
 def go():
     print('Criando novos horários...')
     mainFunction()
+    path = "./data"
+    path = os.path.realpath(path)
+    os.startfile(path)
 
 class MainApp:
     def __init__(self, master):

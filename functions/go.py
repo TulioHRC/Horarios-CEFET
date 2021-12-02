@@ -1,12 +1,12 @@
 # App Imports
-#from functions import loadData
-#from functions import classes as c
-#from functions import result
+from functions import loadData
+from functions import classes as c
+from functions import result
 
 # Dev Imports
-import loadData
-import classes as c
-import result
+#import loadData
+#import classes as c
+#import result
 
 def mainFunction(): # A função principal do código, que retornará o resultado que nós esperamos
 
