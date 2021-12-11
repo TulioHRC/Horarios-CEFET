@@ -34,106 +34,108 @@ class Teacher:
 
     # ------------ No Random mode
 
-        # Dias possiveis e suas pontuações
-        dayPos = []
-        dayPoints = []
+        days = { # 'day': [dayNote, [hoursNotes]]
+            '2': [0, [0,0,0,0,0]],
+            '3': [0, [0,0,0,0,0]],
+            '4': [0, [0,0,0,0,0]],
+            '5': [0, [0,0,0,0,0]],
+            '6': [0, [0,0,0,0,0]],
+        }
 
-        for i in range(2, 7):
-            if not f"N{i}" in str(self.limits[positionInList]):
-                dayPos.append(i)
-                
-                # Pontuações para a sala
-                p = 0
-                hourFilled = 0 # Quantidade de horários já preenchidos na sala no turno
-
-                if self.types[positionInList] == "Manha":
-                    minHour = 0
-                    maxHour = 7
-                else:
-                    minHour = 8
-                    maxHour = 14
-
-                for h in alreadyChose[str(i)]:
-                    if int(h.split('-')[0]) > minHour and int(h.split('-')[0]) < maxHour: hourFilled += 1
-
-                if hourFilled == 0: pass
-                if hourFilled > 0 and (not i and lastResp[0] == str(i)) : p += -1
-                if hourFilled >= 5: p += -9999 # Não pode no dia na turma já preenchido
-
-                # Pontuações para o professor
-                hourFilled = 0 # Quantidade de horários já preenchidos para o professor no turno
-
-                if self.types[positionInList] == "Manha":
-                    minHour = 0
-                    maxHour = 7
-                else:
-                    minHour = 8
-                    maxHour = 14
-
-                for h in self.schedule[str(i)]:
-                    if int(h.split('-')[0]) > minHour and int(h.split('-')[0]) < maxHour: hourFilled += 1
-
-                if hourFilled == 0: pass
-                if hourFilled > 0 and (not i and lastResp[0] == str(i)): p += -1
-                if hourFilled >= 5: p += -9999 # Não pode no dia na turma já preenchido
-                # Outras Pontuações
-
-                if lastResp[0] == str(i): p += 1 # Acontecer no mesmo dia da outra aula da mesma matéria
-
-                dayPoints.append(p)
-
-        prefers = str(self.prefers[positionInList].split(":")[1]).split('-')
-        for prefer in prefers:
-            point = 0
-            if prefer[0] == "N":
-                dayPoints[dayPos.index(int(prefer[1]))] += -1 # 3333333333333333333333 Função pegará a pontuação definida futuramente
-            elif prefer[0] == "S":
-                dayPoints[dayPos.index(int(prefer[1]))] += 1
-
-        # Horários possíveis e suas pontuações
-        hourPos = []
-        hourPoints = [0,0,0,0,0]
-
-        if self.types[positionInList] == 'Manha':
+        if self.types[positionInList] == "Manha": # Tipo de matéria
+            minHour = 0
+            maxHour = 7
             hourPos = [1,2,3,5,6] # 11:30 (7) não pode começar um horário e nem (9:30/4)
         else:
+            minHour = 8
+            maxHour = 14
             hourPos = [8,9,10,12,13] # 17:30 (14) não pode começar um horário e nem (15:30/11)
 
-        for i in hourPos:
-            if i in [1,6,8,13]: # Pontuações dependendo do horários, serão pegas depois
-                hourPoints[hourPos.index(i)] += -1
-            # Outras pontuações ...
+        # Day Pontuations
+        for day in range(2, 7):
+            if f"N{day}" in str(self.limits[positionInList]): del days[f"{day}"] # Se dia for uma limitação remove ele
+            else:
+                # Compromissos da sala durante o dia
+                pontuation = 0
+                hourFilled = 0 # Quantidade de horários preenchidos
+
+                for h in alreadyChose[str(day)]: # Contagem de horários já preenchidos
+                    if int(h.split('-')[0]) > minHour and int(h.split('-')[0]) < maxHour: hourFilled += 1
+
+                # Mais de 1 horário preenchido e não é outro horário de uma matéria do mesmo dia
+                if hourFilled > 0: pontuation += -1*hourFilled
+                if hourFilled >= 3: pontuation += -3
+                if hourFilled >= 5:
+                    del days[f"{day}"] # Não pode no dia na turma já preenchido
+                    break
+
+                # Compromissos do professor durante o dia
+                hourFilled = 0
+
+                for h in self.schedule[str(day)]: # Contagem de horários preenchidos do professor
+                    if int(h.split('-')[0]) > minHour and int(h.split('-')[0]) < maxHour: hourFilled += 1
+
+                if hourFilled > 0: pontuation += -1*hourFilled
+                if hourFilled >= 3: pontuation += -3
+                if hourFilled >= 5:
+                    del days[f"{day}"] # Não pode no dia na turma já preenchido
+                    break
+
+                # Outras Pontuações
+
+                if lastResp[0] == str(day): pontuation += 2 # Acontecer no mesmo dia da outra aula da mesma matéria
+                if f"N{day}" in str(self.prefers[positionInList].split(":")[1]): pontuation += -2
+                if f"S{day}" in str(self.prefers[positionInList].split(":")[1]): pontuation += +2
+
+                days[f"{day}"][0] = pontuation # Definição da ontuação do dia
+
+                # Hour Pontuations
+                h = 0
+                while h < len(days[f"{day}"][1]):
+                    if hourPos[h] in [1,6,8,13]: # Pontuações dependendo do horários, serão pegas depois
+                        days[f"{day}"][1][h] -= 1
+                    h += 1
+
+
+        # Hour Already Chosen
+        for day in list(days.keys()):
+            if len(alreadyChose[str(day)]):
+                for hour in alreadyChose[str(day)]: # Para a turma ( formato = hour-materia)
+                    if int(hour.split('-')[0]) in hourPos: # Se horário está nas possibilidades
+                        days[day][1][hourPos.index(int(hour.split('-')[0]))] = -9999 # Se o horário não pode
+                for hourT in self.schedule[str(day)]: # Para o porfessor ( formato = hour-materia - turma )
+                    if int(hourT.split('-')[0]) in hourPos:
+                        days[day][1][hourPos.index(int(hourT.split('-')[0]))] = -9999 # Se o horário não pode
 
         # Escolha do melhor resultado
-        pos = 0
-        for d in range(len(dayPos)): # Tira os dias que não são os melhores
-            if not dayPoints[pos] == max(dayPoints):
-                dayPos.pop(pos)
-                dayPoints.pop(pos)
-                pos -= 1
-            pos += 1
+        daysChoosed = []
+        daysNotes = []
+        for day in list(days.keys()): # Escolha do dia
+            daysNotes.append(days[day][0]) # Nota
+        for n in range(len(daysNotes)):
+            if daysNotes[n] == max(daysNotes): # Se a nota é a maior
+                daysChoosed.append(list(days.keys())[n])
 
-        pos = 0
-        for h in range(len(hourPos)): # Tira os horários que não são os melhores
-            if not hourPoints[pos] == max(hourPoints):
-                hourPos.pop(pos)
-                hourPoints.pop(pos)
-                pos -= 1
-            pos += 1
+        day = random.choice(daysChoosed)
 
-        day = random.choice(dayPos)
-        hour = random.choice(hourPos)
+        hoursChoosed = []
+        hoursNotes = days[day][1]
+        for hour in range(len(hoursNotes)): # Escolha do horário
+            if hoursNotes[hour] == max(hoursNotes): # Se a nota é a maior
+                hoursChoosed.append(hourPos[hour]) # Adiciona na lista, o número do horário na lista
 
-        # Se já existir pegará outro horário
-        try: # Se alreadyChose não existir dará um erro
-            while re.findall(f"\'{hour}-", str(alreadyChose[f"{day}"])): # Tenta encontrar "'{hour}-" na lista de horários já escolhidos:
-                day = random.choice(dayPos)
-                hour = random.choice(hourPos)
-        except:
-            print('alreadyChose não existe ainda, o código continuará normalmente!')
-
+        hour = random.choice(hoursChoosed)
 
         return [str(day), f'{str(hour)}-{subject}'] # Lista de retorno
+
+
+# ---------------- Erros/Todo
+"""
+
+- Fazer mais testes
+
+"""
+
 
 
         # ------------ Random mode
@@ -153,9 +155,9 @@ class Teacher:
                     hour = random.randint([8,9,10,12,13])
         except:
             print('alreadyChose não existe ainda, o código continuará normalmente!')
-"""
-        #return [str(day), f'{str(hour)}-{subject}'] # Lista de retorno
 
+        return [str(day), f'{str(hour)}-{subject}'] # Lista de retorno
+"""
 
 class Turm:
     def __init__(self, name, year, preDefinedSchedule=''):
