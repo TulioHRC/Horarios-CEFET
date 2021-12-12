@@ -17,7 +17,7 @@ class Teacher:
         end = str(self.classes[pos]).find(f"-", start+4) # Segundo '-'
         return int(str(self.classes[pos])[end+1])
 
-    def bestHour(self, turm, subject, preDefinedHour="", alreadyChose="", classNumber="", lastResp="a"): # Definição do melhor horário para o professor
+    def bestHour(self, turm, subject, preDefinedHour="", alreadyChose="", classNumber="", points="", lastResp="a"): # Definição do melhor horário para o professor
     # Formato dos argumentos: class="{turma}"
         #           preDefinedHour="{day}-{horario de 1 (7:00-7:50) até 14 (16:40-17:30)}"
         #           alreadyChose={'2': '{lista com os números dos horários já escolhidos}', ... (outros dias, até o 6)}
@@ -63,8 +63,8 @@ class Teacher:
                     if int(h.split('-')[0]) > minHour and int(h.split('-')[0]) < maxHour: hourFilled += 1
 
                 # Mais de 1 horário preenchido e não é outro horário de uma matéria do mesmo dia
-                if hourFilled > 0: pontuation += -1*hourFilled
-                if hourFilled >= 3: pontuation += -3
+                if hourFilled > 0: pontuation += points['nHorariosDia']*hourFilled # Pontuação para cada dia já preenchido no dia
+                if hourFilled >= 3: pontuation += points['tresHorariosDia'] # Pontuação para mais de 3 dias já preenchidos (pontuação a mais da acima)
                 if hourFilled >= 5:
                     del days[f"{day}"] # Não pode no dia na turma já preenchido
                     break
@@ -75,17 +75,17 @@ class Teacher:
                 for h in self.schedule[str(day)]: # Contagem de horários preenchidos do professor
                     if int(h.split('-')[0]) > minHour and int(h.split('-')[0]) < maxHour: hourFilled += 1
 
-                if hourFilled > 0: pontuation += -1*hourFilled
-                if hourFilled >= 3: pontuation += -3
+                if hourFilled > 0: pontuation += points['nHorariosDia']*hourFilled
+                if hourFilled >= 3: pontuation += points['tresHorariosDia']
                 if hourFilled >= 5:
                     del days[f"{day}"] # Não pode no dia na turma já preenchido
                     break
 
                 # Outras Pontuações
 
-                if lastResp[0] == str(day): pontuation += 2 # Acontecer no mesmo dia da outra aula da mesma matéria
-                if f"N{day}" in str(self.prefers[positionInList].split(":")[1]): pontuation += -2
-                if f"S{day}" in str(self.prefers[positionInList].split(":")[1]): pontuation += +2
+                if lastResp[0] == str(day): pontuation += points['lastResp'] # Acontecer no mesmo dia da outra aula da mesma matéria
+                if f"N{day}" in str(self.prefers[positionInList].split(":")[1]): pontuation += points['preferNegativa']
+                if f"S{day}" in str(self.prefers[positionInList].split(":")[1]): pontuation += points['preferPositiva']
 
                 days[f"{day}"][0] = pontuation # Definição da ontuação do dia
 
@@ -93,7 +93,7 @@ class Teacher:
                 h = 0
                 while h < len(days[f"{day}"][1]):
                     if hourPos[h] in [1,6,8,13]: # Pontuações dependendo do horários, serão pegas depois
-                        days[f"{day}"][1][h] -= 1
+                        days[f"{day}"][1][h] += points['horariosPoints']
                     h += 1
 
 

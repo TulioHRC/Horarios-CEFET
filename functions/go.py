@@ -15,6 +15,7 @@ def mainFunction(): # A função principal do código, que retornará o resultad
         teachersData = loadData.getDatabase('Planilha.xlsx')
         teachersColumns = loadData.getDatabase('Planilha.xlsx', get="columns")
         roomsData = loadData.getDatabase('Planilha sala.xlsx')
+        pointsData = loadData.getPoints('./data/preferencias.txt')
     except Exception as e:
         print(f"Houve um erro ao tentar pegar os dados das planilhas.\n{e}")
 
@@ -64,7 +65,7 @@ def mainFunction(): # A função principal do código, que retornará o resultad
                 if turm.name[-2] == subject[-1]: # Se o ano da turma for igual ao da matéria
                     lastResp = "a" # Ultima resposta
                     for i in range(teacher.getClassesNum(turm.name, subject)): # Gera um para cada aula da matéria
-                        resp = teacher.bestHour(turm, subject[0:-2], alreadyChose=turm.schedule, classNumber=i, lastResp=lastResp) # Melhor horário para cada turma,
+                        resp = teacher.bestHour(turm, subject[0:-2], alreadyChose=turm.schedule, classNumber=i, points=pointsData, lastResp=lastResp) # Melhor horário para cada turma
 
                         if resp == 0: continue # Pula professor, não tem aula nessa matéria
                         # Salvando novo horário nos horários

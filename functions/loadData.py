@@ -15,3 +15,13 @@ def getDatabase(path, get="dict"): # Retorna um dicionário com os itens, como a
         result[f"{col}"] = list(df[f"{col}"].values)
 
     return result
+
+def getPoints(path): # Retorna um dicionário com as pontuações
+    with open(path) as file:
+        text = file.readlines() # Lista das linhas do arquivo .txt
+
+    points = {}
+    for line in text: # Salvando no dicionário
+        points[f"{line.split('=')[0]}"] = float(line.split(';')[0].split('=')[1])
+
+    return points
