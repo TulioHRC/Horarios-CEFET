@@ -16,12 +16,15 @@ def getDatabase(path, get="dict"): # Retorna um dicionário com os itens, como a
 
     return result
 
-def getPoints(path): # Retorna um dicionário com as pontuações
+def getPoints(path, desc=False): # Retorna um dicionário com as pontuações
     with open(path) as file:
         text = file.readlines() # Lista das linhas do arquivo .txt
 
     points = {}
     for line in text: # Salvando no dicionário
-        points[f"{line.split('=')[0]}"] = float(line.split(';')[0].split('=')[1])
+        if not desc:
+            points[f"{line.split('=')[0]}"] = float(line.split(';')[0].split('=')[1])
+        else:
+            points[f"{line.split('=')[0]}"] = str(line.split('//')[1]) # Descrição de cada
 
     return points
