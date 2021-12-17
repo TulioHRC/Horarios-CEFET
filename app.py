@@ -11,10 +11,14 @@ limitsRoom = set()
 
 def go():
     print('Criando novos horários...')
-    mainFunction()
-    path = "./data"
-    path = os.path.realpath(path)
-    os.startfile(path)
+    try:
+        mainFunction()
+        path = "./data"
+        path = os.path.realpath(path)
+        messagebox.showinfo("Horários criados", "Agora você já pode ver os horários criados, na pasta a seguir.")
+        os.startfile(path)
+    except Exception as e:
+        messagebox.showerror("Error", f"Houve um erro ao tentar criar os horários\n{e}")
 
 class MainApp:
     def __init__(self, master):
@@ -256,6 +260,8 @@ class AddConditions(AddingData):
         self.day.set(dayOptions[0])
 
         self.dayMenu = OptionMenu(self.add, self.day, *dayOptions).grid(row=0, column=2, pady=20, padx=15)
+
+        ######## Botão para escolher tipo de preferencia (dia; dia e hora; sala;)
 
         Button(self.add, text="Criar", font=('Arial', 15), command=lambda: self.addP(type, room)).grid(row=1, column=1, pady=10, padx=15)
 
