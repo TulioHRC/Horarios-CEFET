@@ -90,4 +90,4 @@ def mainFunction(): # A função principal do código, que retornará o resultad
 def sortFunction(e):
     return int(e.split('-')[0]) # Função do sort de turm.schedule
 
-mainFunction()
+#mainFunction()

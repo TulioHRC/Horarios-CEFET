@@ -96,7 +96,6 @@ class Teacher:
                         days[f"{day}"][1][h] += points['horariosPoints']
                     h += 1
 
-
         # Hour Already Chosen
         for day in list(days.keys()):
             if len(alreadyChose[str(day)]):

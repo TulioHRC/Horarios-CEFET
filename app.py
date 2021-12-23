@@ -2,17 +2,17 @@ from tkinter import *
 from tkinter import ttk, messagebox
 import os
 from functions import excel
-from functions.go import *
+from functions import go
 from functions import loadData
 
 prefers = {'S': set(), 'N': set()}
 limits = set()
 limitsRoom = set()
 
-def go():
+def start():
     print('Criando novos horários...')
     try:
-        mainFunction()
+        go.mainFunction()
         path = "./data"
         path = os.path.realpath(path)
         messagebox.showinfo("Horários criados", "Agora você já pode ver os horários criados, na pasta a seguir.")
@@ -35,7 +35,7 @@ class MainApp:
         self.configP.place(bordermode=OUTSIDE, width=str(int(self.sizes[0]*0.8*0.2)), height=str(int(self.sizes[1]*0.8*0.1)),
                             relx=0.75, rely=0.05)
 
-        self.bt = Button(self.master, text="Criar horários", command=go, font=('Arial', 26)) # Rodará o código principal
+        self.bt = Button(self.master, text="Criar horários", command=start, font=('Arial', 26)) # Rodará o código principal
         self.bt.config(bg="Gray", fg="White")
         self.bt.pack()
         self.bt.place(bordermode=OUTSIDE, width=str(int(self.sizes[0]*0.8*0.4)), height=str(int(self.sizes[1]*0.8*0.3)),
