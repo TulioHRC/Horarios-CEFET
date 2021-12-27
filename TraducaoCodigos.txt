@@ -1,0 +1,25 @@
+Nx - Não dia x (2/segunda até 6/sexta)
+Sx - Sim dia x
+
+Nx;1.2 - Não dia x, nos horários de 1/7:00 até 7:50
+Sx;4.6 - Sim dia x, nos horários de 1/9:30 até 11:30
+
+Horários
+
+1 - 7:00
+2 - 7:50
+3 - 8:40
+4 - 9:30
+(Intervalo de 20m até 9:50)
+5 - 10:40
+6 - 11:30
+(Intervalo de 1h30m de almoço até 13:00)
+7 - 13:00
+8 - 13:50
+9 - 14:40
+10 - 15:30
+(Intervalo de 20m até 15:50)
+11 - 16:40
+12 - 17:30
+
+Rn - Room/Sala n=nome da sala

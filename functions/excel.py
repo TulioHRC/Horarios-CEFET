@@ -1,6 +1,6 @@
 import pandas as pd
 from tkinter import messagebox
-from functions import convert2day as convert
+from functions import convert
 
 def saveTeacher(name, subject, type, classes, grade, prefers, limits):
     err = 0
