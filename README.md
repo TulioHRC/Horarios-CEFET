@@ -16,6 +16,7 @@ Gerar horários aleatoriamente, porém seguindo o maior número de preferencias 
 
 ## Release Notes
 
+<<<<<<< HEAD
 ### 0.0.7.1v (Prefereces .txt)
 - Created file to store the preferences values on the pontuation
 - Edit option on configs
@@ -31,6 +32,10 @@ Gerar horários aleatoriamente, porém seguindo o maior número de preferencias 
 ### 0.0.6v (Random classes)
 - Random mode of generating classes
 - Creating sheets of turms and teachers
+=======
+### 0.0.61v (App adapt)
+- Adaptation to the new teachers sheet, with type (morning or afternoon)
+>>>>>>> master
 
 ### 0.0.5v (New Room)
 - New room tab
