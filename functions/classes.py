@@ -1,6 +1,7 @@
 import random
 import re
 
+
 class Teacher:
     def __init__(self, name, subject, type, prefers, limits, classes):
         self.name = name
@@ -126,16 +127,6 @@ class Teacher:
         hour = random.choice(hoursChoosed)
 
         return [str(day), f'{str(hour)}-{subject}'] # Lista de retorno
-
-
-# ---------------- Erros/Todo
-"""
-
-- Fazer mais testes
-
-"""
-
-
 
         # ------------ Random mode
 """

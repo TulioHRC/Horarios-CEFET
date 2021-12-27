@@ -1,14 +1,6 @@
-#""" App Imports
 from functions import loadData
 from functions import classes as c
 from functions import result
-#"""
-
-""" Dev Imports
-import loadData
-import classes as c
-import result
-"""
 
 def mainFunction(): # A função principal do código, que retornará o resultado que nós esperamos
 
@@ -79,8 +71,6 @@ def mainFunction(): # A função principal do código, que retornará o resultad
 
                         lastResp = resp
 
-                        # Print de teste - print(f'{teacher.name}: {teacher.schedule}')
-
     # Criando planilhas
     for turm in classes:
         result.saveSheet(turm.name, turm.schedule, type='turm')
@@ -89,5 +79,3 @@ def mainFunction(): # A função principal do código, que retornará o resultad
 
 def sortFunction(e):
     return int(e.split('-')[0]) # Função do sort de turm.schedule
-
-#mainFunction()

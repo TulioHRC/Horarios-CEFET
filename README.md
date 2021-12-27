@@ -16,6 +16,18 @@ Gerar horários aleatoriamente, porém seguindo o maior número de preferencias 
 
 ## Release Notes
 
+### 0.0.7.1v (Prefereces .txt)
+- Created file to store the preferences values on the pontuation
+- Edit option on configs
+
+### 0.0.7v (No random mode)
+- Generating results not randonly
+- Pontuation system
+
+### 0.0.6.1v (Teachers saving)
+- Full functional teachers saving tab
+- Limitations and Preferences
+
 ### 0.0.6v (Random classes)
 - Random mode of generating classes
 - Creating sheets of turms and teachers
