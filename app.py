@@ -4,6 +4,7 @@ import os
 from functions import excel
 from functions import go
 from functions import loadData
+from functions import utilitaries
 
 prefers = {'S': set(), 'N': set()}
 limits = set()
@@ -187,6 +188,9 @@ class AddingData(MainApp):
         Button(self.addTeacherFrame, text="Criar matéria", font=('Arial', 24)
                 , command=lambda: self.putInExcel('Teacher')).grid(row=8, column=1, columnspan=2, pady=10)
 
+        Button(self.addTeacherFrame, text="Abrir planilha", command=lambda: utilitaries.openWorksheet(),
+                    font=('Arial', 14)).grid(row=8, column=3, columnspan=1, padx=20, pady=10)
+
     def addRoom(self):
         self.addRoomFrame = Frame(self.tabs, width=int(self.sizes[0]*0.6), bg="Black")
         self.addRoomFrame.pack(fill=BOTH, expand=True)
@@ -217,6 +221,9 @@ class AddingData(MainApp):
 
         Button(self.addRoomFrame, text="Criar sala", command=lambda: self.putInExcel('Room'),
                     font=('Arial', 18), bg="green", fg="white").grid(row=4, column=1, columnspan=3, padx=20, pady=20)
+
+        Button(self.addRoomFrame, text="Abrir planilha", command=lambda: utilitaries.openWorksheet('Planilha sala.xlsx'),
+                    font=('Arial', 14)).grid(row=4, column=3, columnspan=1, padx=20, pady=10)
 
 
     def putInExcel(self, type): # Type é sala ou professor
