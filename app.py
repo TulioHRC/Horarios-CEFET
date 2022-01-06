@@ -140,17 +140,28 @@ class AddingData(MainApp):
 
         Label(self.addTeacherFrame, text="Ano escolar:", font=('Arial', 14), bg="White").grid(row=3, column=0, padx=20, pady=10)
         self.teacherYear = IntVar()
-        gridR = 3
 
         options = [
-        	("1ª", 1),
-        	("2ª", 2),
-        	("3ª", 3),
+        	1,
+            2,
+            3,
         ]
 
-        for name, value in options:
-            Radiobutton(self.addTeacherFrame, text=name, variable=self.teacherYear, value=value).grid(row=gridR, column=1, padx=20, pady=5)
-            gridR += 1
+        self.teacherYear.set(1)
+        self.year = OptionMenu(self.addTeacherFrame, self.teacherYear, *options)
+        self.year.grid(row=3, column=1, padx=20, pady=5)
+
+        # SubGrupo
+        Label(self.addTeacherFrame, text="Sub-Grupo:", font=('Arial', 14), bg="White").grid(row=4, column=0, padx=20, pady=20)
+        self.group = StringVar()
+        groupOptions = [
+            'A',
+            'B',
+            'C'
+        ]
+
+        self.group.set(groupOptions[0])
+        OptionMenu(self.addTeacherFrame, self.group, *groupOptions).grid(row=4, column=1, padx=20, pady=5)
 
         Button(self.addTeacherFrame, text="Adicionar limitação", command=lambda: AddConditions('limit'),
                     font=('Arial', 18)).grid(row=1, column=2, columnspan=2, padx=20, pady=10)
@@ -216,7 +227,7 @@ class AddingData(MainApp):
             for turma in self.turmasList:
                 turmas[f"{turma}"] = self.classesList[f'{turma}'].get()
             try:
-                excel.saveTeacher(self.teacherName.get(), self.teacherSubject.get(), self.typeOp.get(), turmas, self.teacherYear.get(), prefers, limits)
+                excel.saveTeacher(self.teacherName.get(), self.teacherSubject.get(), self.typeOp.get(), turmas, self.teacherYear.get(), self.group.get(), prefers, limits)
                 messagebox.showinfo('Salvo', 'O professor foi salvo com sucesso!')
                 self.screen.destroy()
             except Exception as e:
