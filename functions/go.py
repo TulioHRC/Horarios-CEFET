@@ -6,27 +6,28 @@ def mainFunction(): # A função principal do código, que retornará o resultad
 
 # =================== Pegando os dados que nós fornecemos
     try:
-        teachersData = loadData.getDatabase('Planilha.xlsx')
+        teachersData = loadData.getDatabase('Planilha.xlsx') # Leitura inicial da planilha excel
         teachersColumns = loadData.getDatabase('Planilha.xlsx', get="columns")
-        roomsData = loadData.getDatabase('Planilha sala.xlsx')
-        pointsData = loadData.getPoints('./data/preferencias.txt')
+        #roomsData = loadData.getDatabase('Planilha sala.xlsx')
+        pointsData = loadData.getPoints('./data/preferencias.txt') # Leitura das pontuações para o cost
     except Exception as e:
         print(f"Houve um erro ao tentar pegar os dados das planilhas.\n{e}")
 
 # ==================== Processando os dados para deixa-los melhor de mexer
 
     classesNames = [] # -- Turmas
-    classes = []
+    classes = [] # Lista de objetos de cada turma
 
-    for i in range(6, len(teachersColumns)): # Pega apenas as matérias
+    for i in range(7, len(teachersColumns)): # Pega apenas as matérias
         classesNames.append(teachersColumns[i])
 
     for index, turm in enumerate(classesNames): # Transforma cada turma em um objeto de uma classe
         for i in range(1, 4): # Turma para cada ano
-            classes.append(c.Turm(turm, str(i)))
+            for group in ['A', 'B']: # Adiciona os subgrupos A e B para todas as turmas
+                classes.append(c.Turm(turm, str(i), group))
 
-    teachers = [] # -- Lista de objetos (professores)
-    teachersNames = []
+    teachersNames = [] # -- Professores
+    teachers = [] # Lista de objetos de cada professor
 
     for index, teacher  in enumerate(teachersData["Professor"]): # Transforma cada professor em um objeto de uma classe
         # Aulas por professor em cada turma
@@ -35,47 +36,24 @@ def mainFunction(): # A função principal do código, que retornará o resultad
             teachersClasses.append(f'{turm.name}-{int(teachersData[f"{turm.name[0:-3]}"][index])}')
 
         if not teacher in teachersNames:
-            teachers.append(c.Teacher(teacher, f'{teachersData["Materia"][index]}:{teachersData["Ano"][index]}', f'{teachersData["Tipo"][index]}', f'{teachersData["Materia"][index]}:{teachersData["Preferencias"][index]}', teachersData["Limitacoes"][index], teachersClasses))
+            teachers.append(c.Teacher(teacher, f'{teachersData["Materia"][index]}-{teachersData["Ano"][index]}{teachersData["Sub-Grupo"][index]}', f'{teachersData["Tipo"][index]}', str(teachersData["Preferencias"][index]).split('-'), str(teachersData["Limitacoes"][index]).split('-')))
             teachersNames.append(teacher)
         else:
-            teachers[teachersNames.index(teacher)].subjects.append(f'{teachersData["Materia"][index]}:{teachersData["Ano"][index]}')
+            teachers[teachersNames.index(teacher)].subjects.append(f'{teachersData["Materia"][index]}-{teachersData["Ano"][index]}{teachersData["Sub-Grupo"][index]}')
             teachers[teachersNames.index(teacher)].types.append(f'{teachersData["Tipo"][index]}')
-            teachers[teachersNames.index(teacher)].prefers.append(f'{teachersData["Materia"][index]}:{teachersData["Preferencias"][index]}')
-            teachers[teachersNames.index(teacher)].limits.append(teachersData["Limitacoes"][index])
-            teachers[teachersNames.index(teacher)].classes.append(teachersClasses)
+            teachers[teachersNames.index(teacher)].prefers.append(str(teachersData["Preferencias"][index]).split('-'))
+            teachers[teachersNames.index(teacher)].limits.append(str(teachersData["Limitacoes"][index]).split('-'))
 
-        # Print de teste - print(f'{teachers[teachersNames.index(teacher)].name}, {teachers[teachersNames.index(teacher)].prefers}\n{teachers[teachersNames.index(teacher)].classes}')
+        # print(f'{teachers[teachersNames.index(teacher)].name}, {teachers[teachersNames.index(teacher)].prefers}\n{teachers[teachersNames.index(teacher)].subjects}')
 
-    rooms = [] # -- Salas
 
-    for index, room in enumerate(roomsData["Sala"]):
-        rooms.append(c.Room(room, roomsData["Local"][index], roomsData["Limitacoes"][index]))
 
 # ====================== Gerando o resultado dos melhores horários
 
-    for teacher in teachers:
-        for subject in teacher.subjects: # Por matéria do professor
-            for turm in classes:
-                if turm.name[-2] == subject[-1]: # Se o ano da turma for igual ao da matéria
-                    lastResp = "a" # Ultima resposta
-                    for i in range(teacher.getClassesNum(turm.name, subject)): # Gera um para cada aula da matéria
-                        resp = teacher.bestHour(turm, subject[0:-2], alreadyChose=turm.schedule, classNumber=i, points=pointsData, lastResp=lastResp) # Melhor horário para cada turma
 
-                        if resp == 0: continue # Pula professor, não tem aula nessa matéria
-                        # Salvando novo horário nos horários
-                        turm.schedule[resp[0]].append(resp[1]) # -------------- turma
-                        turm.schedule[resp[0]].sort(key=sortFunction) # Coloca em ordem 1,2,3 nos horários
 
-                        teacher.schedule[resp[0]].append(f"{resp[1]} - {turm.name}") # ------------ professor
-                        teacher.schedule[resp[0]].sort(key=sortFunction)
-
-                        lastResp = resp
-
-    # Criando planilhas
+# ====================== Criando planilhas
     for turm in classes:
         result.saveSheet(turm.name, turm.schedule, type='turm')
     for teacher in teachers:
         result.saveSheet(teacher.name, teacher.schedule, type='teacher')
-
-def sortFunction(e):
-    return int(e.split('-')[0]) # Função do sort de turm.schedule
