@@ -16,6 +16,9 @@ class Teacher:
         self.classes = 0 # Número de aulas totais que está lecionando
         self.h_individuais = []
 
+    def __repr__(self):
+        return f'{self.name}'
+
 
 class Turm:
     def __init__(self, name, year, group):
