@@ -31,3 +31,14 @@ class Room:
         else:
             self.schedule = {'2': [],'3': [],'4': [],'5': [],'6': []}
 """
+
+class Horario:
+    def __init__(self, teacher, subject, turm, possible_h=0):
+        self.teacher = teacher
+        self.subject = subject
+        self.turm = turm
+        self.possible_h = possible_h
+        #self.position = None
+
+    def __repr__(self):
+        return f'{self.teacher}-{self.subject}'
