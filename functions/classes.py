@@ -3,7 +3,7 @@ import re
 
 
 class Teacher:
-    def __init__(self, name, subject, type, prefers, limits, horaries):
+    def __init__(self, name, subject, type, prefers, limits, horaries=""):
         self.name = name
         self.subjects = [subject] # Formato = cada matéria será adicionada nesta lista, com a seguinte formatação nome:turma, ex.: Matematica:MCT-2A
         self.types = [type] # Formato = semelhante ao de cima, tendo as opções: manha, tarde ou noite
@@ -11,8 +11,10 @@ class Teacher:
         # prefere dar aula na sexta entre os horários 2 e 4
         self.limits = [limits] # Formato = segue o mesmo do acima, tendo a formatação N dia:horário inicial - horário final, ex.: N5:3-5, ou seja, não pode quinta nos horários 3 a 5
         self.schedule = {'2': [],'3': [],'4': [],'5': [],'6': []} # Horários durante a semana do professor
-        self.horaries = {subject: horaries} # Formato = {subject: {Turm: classesInTheTurm}}, ex.: {'Matematica': {MCT-1A: 4, ...}}
+        self.horaries = {} # Formato = {subject: {Turm: classesInTheTurm}}, ex.: {'Matematica': {MCT-1A: 4, ...}}
+        self.horaries[subject.split('-')[0]] = horaries
         self.classes = 0 # Número de aulas totais que está lecionando
+        self.h_individuais = []
 
 
 class Turm:

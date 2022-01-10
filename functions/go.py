@@ -1,7 +1,6 @@
 from functions import loadData
-#from functions import classes as c
+from functions import classes as c
 from functions import result
-from classes import Horario
 import random
 
 NUMERO_DE_REPETIÇÕES = 10
@@ -34,47 +33,46 @@ def mainFunction():  # A função principal do código, que retornará o resulta
     teachers = [] # Lista de objetos de cada professor
 
     for index, teacher  in enumerate(teachersData["Professor"]): # Transforma cada professor em um objeto de uma classe
-        # Aulas por professor em cada turma
-        teachersClasses = []
-        for turm in classes:
-            teachersClasses.append(f'{turm.name}-{int(teachersData[f"{turm.name[0:-3]}"][index])}')
+        horaries = {} # Horários para cada turma e matéria
+        for i in range(7, len(teachersColumns)):
+            horaries[f"{teachersColumns[i]}-" + f'{teachersData["Ano"][index]}' + f'{teachersData["Sub-Grupo"][index]}'] = int(teachersData[f"{teachersColumns[i]}"][index])
 
         if not teacher in teachersNames:
-            teachers.append(c.Teacher(teacher, f'{teachersData["Materia"][index]}-{teachersData["Ano"][index]}{teachersData["Sub-Grupo"][index]}', f'{teachersData["Tipo"][index]}', str(teachersData["Preferencias"][index]).split('-'), str(teachersData["Limitacoes"][index]).split('-')))
+            teachers.append(c.Teacher(teacher, f'{teachersData["Materia"][index]}-{teachersData["Ano"][index]}{teachersData["Sub-Grupo"][index]}', f'{teachersData["Tipo"][index]}', str(teachersData["Preferencias"][index]).split('-'), str(teachersData["Limitacoes"][index]).split('-'), horaries))
             teachersNames.append(teacher)
         else:
             teachers[teachersNames.index(teacher)].subjects.append(f'{teachersData["Materia"][index]}-{teachersData["Ano"][index]}{teachersData["Sub-Grupo"][index]}')
             teachers[teachersNames.index(teacher)].types.append(f'{teachersData["Tipo"][index]}')
             teachers[teachersNames.index(teacher)].prefers.append(str(teachersData["Preferencias"][index]).split('-'))
             teachers[teachersNames.index(teacher)].limits.append(str(teachersData["Limitacoes"][index]).split('-'))
+            teachers[teachersNames.index(teacher)].horaries[f'{teachersData["Materia"][index]}'] = horaries
 
-        # print(f'{teachers[teachersNames.index(teacher)].name}, {teachers[teachersNames.index(teacher)].prefers}\n{teachers[teachersNames.index(teacher)].subjects}')
+
+        # print(f'{teachers[teachersNames.index(teacher)].name}, {teachers[teachersNames.index(teacher)].horaries}')
 
     # ==================== Processando os dados: Gerando a planilha final com base nos dados
+
     for c in range(0, NUMERO_DE_REPETIÇÕES):
 
-        lista_embaralhada = todos_os_horarios.copy()  # Lista com todos os nodes que ainda dever ser colocados
-        random.shuffle(lista_embaralhada)
-        """
-        ramdom.shuffle(lista_dos_professore)
-        for professor in lista_de_professores:
-            horarios = professor.horarios
-            horarios_individuais = []
+
+        random.shuffle(teachers)
+
+        for professor in teachers:
+            horarios = professor.horaries
             for h in horarios.items():
                 materia = h[0]
                 for turma in h[1].items():
-                    turma_do_ horario = turma[0]
+                    turma_do_horario = turma[0]
                     for c in range(0, turma[1]):
-                        horarios_indiciduais.append({professor}{turma}{materia})
-            {MATEMATICA: {MCT: 2, MEC: 1, }
-        """
+                        professor.h_individuais.append(f'{professor}-{turma}-{materia}')
+            print(professor.h_individuais)
+
         while len(lista_embaralhada) != 0:
             # Retiro o primeiro item da lista e o coloco na variável node
             horario = lista_embaralhada[0]
             lista_embaralhada = lista_embaralhada[1:]
             # Seleciono qual o melhor estado para aquele node e o coloco nele
-
-# ====================== Criando planilhas
+    # ====================== Criando planilhas
     for turm in classes:
         result.saveSheet(turm.name, turm.schedule, type='turm')
     for teacher in teachers:
