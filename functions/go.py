@@ -7,7 +7,6 @@ import random
 NUMERO_DE_REPETIÇÕES = 10
 
 def mainFunction():  # A função principal do código, que retornará o resultado que nós esperamos
-    # Mct 1 A  ->   MCT-1A
     # =================== Pegando os dados que nós fornecemos
     try:
         teachersData = loadData.getDatabase('Planilha.xlsx') # Leitura inicial da planilha excel
@@ -16,8 +15,8 @@ def mainFunction():  # A função principal do código, que retornará o resulta
         pointsData = loadData.getPoints('./data/preferencias.txt') # Leitura das pontuações para o cost
     except Exception as e:
         print(f"Houve um erro ao tentar pegar os dados das planilhas.\n{e}")
-        
-        
+
+
     # ==================== Processando os dados para deixa-los melhor de mexer
 
     classesNames = [] # -- Turmas
@@ -51,37 +50,6 @@ def mainFunction():  # A função principal do código, que retornará o resulta
 
         # print(f'{teachers[teachersNames.index(teacher)].name}, {teachers[teachersNames.index(teacher)].prefers}\n{teachers[teachersNames.index(teacher)].subjects}')
 
-    
-
-    # Unificando os nomes das salas
-    #for turma in teachersData.keys()[7:]:
-
-    # ==================== Criando os nodes
-    """
-    todos_os_horarios = []
-    for l in range(0, len(teachersData.values())):
-        for coluna in list(teachersData.keys())[7:]:
-            if not (str(teachersData[coluna][l]) == 'nan'):
-                for h in range(0, int(teachersData[coluna][l])):  # Pego a quantidade de aulas que ele vai dar para essa turma nessa matéria
-                    if teachersData['Tipo'][l] == 'Manha':
-                        horario = Horario(
-                            teacher=teachersData['Professor'][l],                                 # Professor
-                            subject=teachersData['Materia'][l],                                   # Matéria
-                            turm=f'{coluna}-{teachersData["Ano"][l]}',                            # Turma
-                            possible_h=[1, 2, 3, 4, 5]                                            # Possíveis horários que podemos colocá-lo
-                        )
-                        todos_os_horarios.append(horario)
-                    else:
-                        horario = Horario(
-                            teacher=teachersData['Professor'][l],                                 # Professor
-                            subject=teachersData['Materia'][l],                                   # Matéria
-                            turm=f'{coluna}-{teachersData["Ano"][l]}{teachersData["Letra"][l]}',  # Turma
-                            possible_h=[6, 7, 8, 9, 10]                                           # Possíveis horários que podemos colocá-lo
-                        )
-                        todos_os_horarios.append(horario)
-    print(todos_os_horarios)
-    """
-    
     # ==================== Processando os dados: Gerando a planilha final com base nos dados
     for c in range(0, NUMERO_DE_REPETIÇÕES):
 
@@ -97,21 +65,17 @@ def mainFunction():  # A função principal do código, que retornará o resulta
                 for turma in h[1].items():
                     turma_do_ horario = turma[0]
                     for c in range(0, turma[1]):
-                        horarios_indiciduais.append({professor}{turma}{materia})   
-            {MATEMATICA: {MCT: 2, MEC: 1, } 
+                        horarios_indiciduais.append({professor}{turma}{materia})
+            {MATEMATICA: {MCT: 2, MEC: 1, }
         """
         while len(lista_embaralhada) != 0:
             # Retiro o primeiro item da lista e o coloco na variável node
             horario = lista_embaralhada[0]
             lista_embaralhada = lista_embaralhada[1:]
-
-
             # Seleciono qual o melhor estado para aquele node e o coloco nele
-
 
 # ====================== Criando planilhas
     for turm in classes:
         result.saveSheet(turm.name, turm.schedule, type='turm')
     for teacher in teachers:
         result.saveSheet(teacher.name, teacher.schedule, type='teacher')
-
