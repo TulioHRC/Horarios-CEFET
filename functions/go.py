@@ -46,8 +46,6 @@ def mainFunction(): # A função principal do código, que retornará o resultad
 
         # print(f'{teachers[teachersNames.index(teacher)].name}, {teachers[teachersNames.index(teacher)].prefers}\n{teachers[teachersNames.index(teacher)].subjects}')
 
-
-
 # ====================== Gerando o resultado dos melhores horários
 
 
