@@ -1,7 +1,13 @@
 import pandas as pd
 from functions import convert as conv
 
+# ?????????????????????? Editar para 10 horários
+
 def saveSheet(name, xData, yData={"Horarios": ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14']}, path="./data/", type="turm", intervals=1):
+    # 1 = 7h-7h50, 2 = -8h40, 3 = -9h30, 4 = 9h50-10h40, 5 = -11h30
+    # 6 = 13h-13h50, 7 = -14h40, 8 = -15h30, 9 = 15h50-16h40, 10 = -17h30
+    # Horários vão até o 14 para acomodar os intervalos, 4 e 11 são intervalos, 7 é o almoço, 14 é o ultimo que não pode ser preenchido
+
     # xData terão o formato: {"COLLUMN 1": [valores], ...}
     # Valores de xData de turma ['2-Desenho Tecnico']; de professores ['2-Desenho Tecnico - MCT-1A']
     # yData será a primeira coluna da planilha, tendo o formato: {"Nome das linhas": [lista de nomes das linhas]}
@@ -18,29 +24,22 @@ def saveSheet(name, xData, yData={"Horarios": ['1', '2', '3', '4', '5', '6', '7'
 
     if intervals:
         vals = ['Intervalo', 'Almoço']
+        hoursPreSelected = [4,7,11]
 
-    if type == "turm":
-        for day in ['2','3','4','5','6']:
-            dayConv = conv.convertNumToDay(day)
-            df[dayConv] = []
-            for hour in list(yData.values())[0]:
-                df[dayConv].append('-')
-                if not str(xData[day]).find(f"\'{hour}-") == -1:
+    for day in ['2','3','4','5','6']:
+        dayConv = conv.convertNumToDay(day)
+        df[dayConv] = []
+        factor = 0 # Se tiver intervalos esta variavel irá aumentar para gerar as separações
+        for hour in list(yData.values())[0]: # cada um dos 10 horários do yData
+            df[dayConv].append('-')
+
+            if intervals and (int(hour) in hoursPreSelected): # Mudar o factor se necessário
+                factor += 1
+                if hour in ['4', '11']: df[dayConv][int(hour)-1] = vals[0]  # Intervalo
+                elif hour in ['7']: df[dayConv][int(hour)-1] = vals[1] # Almoço
+            else:
+                if not str(xData[day]).find(f"\'{int(hour) - factor}-") == -1: # Se existir aula no horário, (hour - factor) significa que o horário q vai até 14 - o factor que determina se houve intervalos
                     df[dayConv][int(hour)-1] = str(xData[day])[str(xData[day]).find(f"-", str(xData[day]).find(f"\'{hour}-")) + 1:str(xData[day]).find(f"'", str(xData[day]).find(f"\'{hour}-")+1)]
-                elif vals:
-                    if hour in ['4', '11']: df[dayConv][int(hour)-1] = vals[0]  # Intervalo
-                    elif hour in ['7']: df[dayConv][int(hour)-1] = vals[1] # Almoço
-    elif type == "teacher":
-        for day in ['2','3','4','5','6']:
-            dayConv = conv.convertNumToDay(day)
-            df[dayConv] = []
-            for hour in list(yData.values())[0]:
-                df[dayConv].append('-')
-                if not str(xData[day]).find(f"\'{hour}-") == -1:
-                    df[dayConv][int(hour)-1] = str(xData[day])[str(xData[day]).find(f"-", str(xData[day]).find(f"\'{hour}-")) + 1:str(xData[day]).find(f"'", str(xData[day]).find(f"\'{hour}-")+1)]
-                elif vals:
-                    if hour in ['4', '11']: df[dayConv][int(hour)-1] = vals[0]  # Intervalo
-                    elif hour in ['7']: df[dayConv][int(hour)-1] = vals[1] # Almoço
 
     df = pd.DataFrame(data=df)
     df.to_excel(f"{path}{type}/{name}.xlsx", index=False)

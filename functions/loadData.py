@@ -9,7 +9,7 @@ def getDatabase(path, get="dict"): # Retorna um dicionário com os itens, como a
     df_columns = list(df.columns.values)
     df = df.fillna(0) # Preenche as celulas da planilha vazias, com 0.
 
-    if get == "columns":
+    if get == "columns": # Lista das colunas
         return df_columns
 
     for col in df_columns:
