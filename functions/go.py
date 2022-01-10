@@ -52,7 +52,7 @@ def mainFunction():  # A função principal do código, que retornará o resulta
 
     # ==================== Processando os dados: Gerando a planilha final com base nos dados
 
-    for c in range(0, NUMERO_DE_REPETIÇÕES):
+    for time in range(0, NUMERO_DE_REPETIÇÕES):
 
 
         random.shuffle(teachers)
@@ -63,7 +63,7 @@ def mainFunction():  # A função principal do código, que retornará o resulta
                 materia = h[0]
                 for turma in h[1].items():
                     turma_do_horario = turma[0]
-                    for c in range(0, turma[1]):
+                    for time in range(0, turma[1]):
                         professor.h_individuais.append(f'{professor}-{turma}-{materia}')
             print(professor.h_individuais)
 
