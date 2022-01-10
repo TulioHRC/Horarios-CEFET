@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk, messagebox
 import os
 from functions import excel
-from functions import go
+#from functions import go
 from functions import loadData
 
 prefers = {'S': set(), 'N': set()}
@@ -11,6 +11,7 @@ limitsRoom = set()
 
 def start():
     print('Criando novos horários...')
+    """
     try:
         go.mainFunction()
         path = "./data"
@@ -19,7 +20,7 @@ def start():
         os.startfile(path)
     except Exception as e:
         messagebox.showerror("Error", f"Houve um erro ao tentar criar os horários\n{e}")
-
+    """
 class MainApp:
     def __init__(self, master):
         self.master = master
