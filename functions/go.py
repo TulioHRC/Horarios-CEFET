@@ -76,12 +76,17 @@ def mainFunction():  # A função principal do código, que retornará o resulta
         quadro = {}
         for turm in classes:
             quadro[turm.name] = {
-                '2': [0,0,0,0,0],
-                '3': [0,0,0,0,0],
-                '4': [0,0,0,0,0],
-                '5': [0,0,0,0,0],
-                '6': [0,0,0,0,0],
+                '2': [[0,0,0,0,0], [0,0,0,0,0]], # manhã e tarde
+                '3': [[0,0,0,0,0], [0,0,0,0,0]],
+                '4': [[0,0,0,0,0], [0,0,0,0,0]],
+                '5': [[0,0,0,0,0], [0,0,0,0,0]],
+                '6': [[0,0,0,0,0], [0,0,0,0,0]]
             }
+
+            """
+            [0, 1, 0, 4, 0]
+            [-, A, -, B, -] +4 +1
+            """
             # Preencher horários já preenchidos com algo diferente de 0
 
         while len(lista_embaralhada) != 0:
