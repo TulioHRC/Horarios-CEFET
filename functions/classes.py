@@ -37,10 +37,6 @@ class Teacher:
         return f'{self.name}'
 
 
-    def __repr__(self):
-        return f'{self.name}'
-
-
 class Turm:
     def __init__(self, name, year, group):
         self.name = f'{name}-{year}{group}'  # ex.: MEC-3B
