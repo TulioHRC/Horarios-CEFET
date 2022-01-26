@@ -24,7 +24,6 @@ class Teacher:
         self.schedule = {'2': [], '3': [], '4': [], '5': [], '6': []}
 
         # Formato = {subject: {Turm: classesInTheTurm}}, ex.: {'Matematica': {MCT-1A: 4, ...}}
-        self.horaries = {}
         self.horaries[subject.split('-')[0]] = horaries
 
         # Quantidade de objetos "Horários" que o professor tem -> total de aulas que ele dá na semana
@@ -32,7 +31,6 @@ class Teacher:
 
         # Todos os objetos "Horários" relacionados a esse professor
         self.h_individuais = []
-
 
     def __repr__(self):
         return f'{self.name}'

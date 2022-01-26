@@ -5,7 +5,6 @@ import random
 
 NUMERO_DE_REPETIÇÕES = 10
 
-
 def mainFunction():  # A função principal do código, que retornará o resultado que nós esperamos
     # =================== Pegando os dados que nós fornecemos
     try:
@@ -100,7 +99,15 @@ def mainFunction():  # A função principal do código, que retornará o resulta
                 # Coloco o horário naquela posição
                 quadro[position_info[2]][position_info[0]][position_info[1]] = horario
 
+"""
+- Get Better (Túlio)
+- Avaliação dos Custo (Túlio)
+    valido(horário) => horario -> matéria -> salas que podem ser dadas essa matéria -> horários ocupados nessa sala (Samuelsu)
+        se for inválido retorna -99
+        else, retorna 0
 
+- Salas desde o app e planilha até a parte lógica (depois)
+"""
 
     # ====================== Criando planilhas
     for turm in classes:
