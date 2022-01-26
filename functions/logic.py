@@ -1,10 +1,30 @@
 # Arquivo com as funções envolvendo a lógica do nosso programa
 
-def getBetterHour():
+import random
+
+def getBetterHour(horario, board):
+    quadro = board.copy()
+    betterH = [('', -99)] # (day-hour, pontuação), melhores horários
+
+    teacher = horario.teacher
+    turm = horario.turm
+    subject = horario.subject
+
+    for d in range(5): # para cada dia
+        for h in range(10): # para cada horário no dia
+            quadro[d][h] = validation()
+            if quadro[d][h] == 0:
+                quadro[d][h] = cost(quadro[d][h])
+                if quadro[d][h] > betterH[0][1]:
+                    betterH = [(f'{d}-{h}', quadro[d][h])]
+                elif quadro[d][h] == betterH[0][1]:
+                    betterH.append((f'{d}-{h}', quadro[d][h]))
+
+    return random.choice(betterH)[0] # Retorna f'{day}-{hour}'
 
 def cost():
 
-def validation(horario, position, board):
+def validation(horario, position, board): # board é o quadro de horários
     INVALIDO = -99
 
     h_room = position[0]
@@ -21,12 +41,10 @@ def validation(horario, position, board):
                 return INVALIDO
 
     # Limitações da sala
-    room_invalids_h =
+    #room_invalids_h =
 
     # Horário já está ocupado por outro no Quadro de horários?
-    if type(board[horario.turm][h_day][h_time]) != type(0):
+    if type(board[horario.turm.name][h_day][h_time]) != type(0):
         return INVALIDO
 
     return 0
-
-

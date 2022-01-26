@@ -24,6 +24,7 @@ class Teacher:
         self.schedule = {'2': [], '3': [], '4': [], '5': [], '6': []}
 
         # Formato = {subject: {Turm: classesInTheTurm}}, ex.: {'Matematica': {MCT-1A: 4, ...}}
+        self.horaries = {}
         self.horaries[subject.split('-')[0]] = horaries
 
         # Quantidade de objetos "Horários" que o professor tem -> total de aulas que ele dá na semana

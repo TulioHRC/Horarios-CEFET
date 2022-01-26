@@ -62,7 +62,7 @@ def mainFunction():  # A função principal do código, que retornará o resulta
             for turma in h[1].items():
                 turma_do_horario = turma[0]
                 for time in range(0, turma[1]):
-                    ho = Horario(professor, turma, materia) # Objeto do horário
+                    ho = c.Horario(professor, materia,turma) # Objeto do horário
                     professor.h_individuais.append(ho) # Uma lista com todos os objetos Horario do professor []
 
     # ==================== Processando os dados: Gerando a planilha final com base nos dados
@@ -73,16 +73,16 @@ def mainFunction():  # A função principal do código, que retornará o resulta
         random.shuffle(lista_embaralhada)
 
         # Quadro de horários em branco
-        quadro =
-        """
-        {Mct-2A: {
-            2: [Pedro, 0, Joel, 0, 0],
-            3: [0, 0, Pedro, 0, 0],
-            4: [0, Joel, 0, 0, 0],
-            5: [0, Pedro, 0, Joel, 0],
-            6: [0, 2, 0, 0, 0],
-        }, ...}
-        """
+        quadro = {}
+        for turm in classes:
+            quadro[turm.name] = {
+                '2': [0,0,0,0,0],
+                '3': [0,0,0,0,0],
+                '4': [0,0,0,0,0],
+                '5': [0,0,0,0,0],
+                '6': [0,0,0,0,0],
+            }
+            # Preencher horários já preenchidos com algo diferente de 0
 
         while len(lista_embaralhada) != 0:
             # Retiro o primeiro item da lista e o coloco na variável teacher
@@ -99,15 +99,15 @@ def mainFunction():  # A função principal do código, que retornará o resulta
                 # Coloco o horário naquela posição
                 quadro[position_info[2]][position_info[0]][position_info[1]] = horario
 
-"""
-- Get Better (Túlio)
-- Avaliação dos Custo (Túlio)
-    valido(horário) => horario -> matéria -> salas que podem ser dadas essa matéria -> horários ocupados nessa sala (Samuelsu)
-        se for inválido retorna -99
-        else, retorna 0
+    """
+    - Get Better (Túlio)
+    - Avaliação dos Custo (Túlio)
+        valido(horário) => horario -> matéria -> salas que podem ser dadas essa matéria -> horários ocupados nessa sala (Samuelsu)
+            se for inválido retorna -99
+            else, retorna 0
 
-- Salas desde o app e planilha até a parte lógica (depois)
-"""
+    - Salas desde o app e planilha até a parte lógica (depois)
+    """
 
     # ====================== Criando planilhas
     for turm in classes:
