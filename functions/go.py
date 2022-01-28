@@ -101,11 +101,13 @@ def mainFunction():  # A função principal do código, que retornará o resulta
                 if type == 'Tarde': typeNum = 1
 
                 # Seleciono qual o melhor estado para aquele horário
-                position = logic.getBetterHour(horario, quadro[horario.turm[0]], subjectPos, typeNum) # type é 0 - manha ou 1 - tarde. retorna 'day-hour-turm-room'
+                position = logic.getBetterHour(horario, quadro.copy()[horario.turm[0]], subjectPos, typeNum) # type é 0 - manha ou 1 - tarde. retorna 'day;hour;turm;room'
                 position_info = position.split(';')
 
                 # Coloco o horário naquela posição
                 quadro[position_info[2]][position_info[0]][typeNum][int(position_info[1])] = horario
+
+        print(quadro)
 
     """
     - Get Better (Túlio)

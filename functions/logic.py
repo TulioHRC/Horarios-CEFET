@@ -3,6 +3,11 @@
 import random
 from functions import loadData
 
+"""
+Regras Básicas:
+- não mudar o board dentro das funções
+"""
+
 def getBetterHour(horario, board, subjectPos, typeNum):
     quadro = board.copy()
     betterH = [('', -99)] # (day-hour, pontuação), melhores horários
@@ -14,23 +19,31 @@ def getBetterHour(horario, board, subjectPos, typeNum):
     for d in range(2,7): # para cada dia
         d = str(d)
         for h in range(5): # para cada horário no dia
-            print('b')
-            quadro[d][typeNum][h] = validation(horario, [d, h], quadro, subjectPos, typeNum)
-            print("c")
-            if quadro[d][typeNum][h] == 0:
-                quadro[d][typeNum][h] = cost_individual(horario, [d, h], quadro, subjectPos)
-                if quadro[d][typeNum][h] > betterH[0][1]:
-                    betterH = [(f'{d};{h}', quadro[d][typeNum][h])]
-                elif quadro[d][typeNum][h] == betterH[0][1]:
-                    betterH.append((f'{d};{h}', quadro[d][typeNum][h]))
+            pontuation = validation(horario, [d, h], quadro, subjectPos, typeNum)
+            if pontuation == 0:
+                pontuation = cost_individual(horario, [d, h], quadro, subjectPos, typeNum)
+                if pontuation > betterH[0][1]:
+                    betterH = [(f'{d};{h}', pontuation)]
+                elif pontuation == betterH[0][1]:
+                    betterH.append((f'{d};{h}', pontuation))
 
     return f"{random.choice(betterH)[0]};{turm[0]}" # Retorna f'{day};{hour};{turm}' depois nós colocaremos a room variable
 
 
-def cost_individual(horario, position, board, subjectPos, sala=''):
+def cost_individual(horario, position, board, subjectPos, typeNum, sala=''):
     points = loadData.getPoints('./data/preferencias.txt')
-    print(points)
-    return 0
+    pointsKeys = points.keys()
+
+    pontuation = 0
+    dayBoard = board[position[0]][typeNum]
+
+    for p in pointsKeys:
+        if p == "nHorariosDia": # Para a quantidade de horários já preenchidos no dia
+            for h in dayBoard:
+                if h != 0:
+                    pontuation += points[p]
+
+    return pontuation
 
 
 def cost_board(board, path):
