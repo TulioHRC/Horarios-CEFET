@@ -1,5 +1,5 @@
 # Arquivo com as funções envolvendo a lógica do nosso programa
-from loadData import getPoints
+
 import random
 from functions import loadData
 
@@ -26,10 +26,10 @@ def getBetterHour(horario, board, subjectPos, typeNum):
 
     return f"{random.choice(betterH)[0]};{turm[0]}" # Retorna f'{day};{hour};{turm}' depois nós colocaremos a room variable
 
-  
+
 def cost_individual(horario, position, board, subjectPos, sala=''):
-    #points = loadData.getPoints('../data/preferencias.txt')
-    #print(points)
+    points = loadData.getPoints('./data/preferencias.txt')
+    print(points)
     return 0
 
 
@@ -85,8 +85,7 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''): # board 
 
     #h_room = sala    # Sala
     h_day = position[0]  # Dia
-    h_turn = position[1]
-    h_time = position[2] # Horário
+    h_time = position[1] # Horário
 
     # Limitações do professor
     limitation = horario.teacher.limits[subjectPos]
