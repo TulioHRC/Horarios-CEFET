@@ -1,6 +1,7 @@
 from functions import loadData
 from functions import classes as c
 from functions import result
+from functions import logic
 import random
 
 NUMERO_DE_REPETIÇÕES = 10
@@ -83,26 +84,28 @@ def mainFunction():  # A função principal do código, que retornará o resulta
                 '6': [[0,0,0,0,0], [0,0,0,0,0]]
             }
 
-            """
-            [0, 1, 0, 4, 0]
-            [-, A, -, B, -] +4 +1
-            """
             # Preencher horários já preenchidos com algo diferente de 0
 
         while len(lista_embaralhada) != 0:
             # Retiro o primeiro item da lista e o coloco na variável teacher
-            teacher = lista_embaralhada[0].copy()
+            teacher = lista_embaralhada[0]
             lista_embaralhada = lista_embaralhada[1:]
             # lista com os objetos horários do professores
-            h_professor = teacher.h_individuais.copy()
+            h_professor = teacher.h_individuais
 
             for horario in h_professor:
+                subjectPos = horario.teacher.subjects.index(f"{horario.subject}-{horario.turm[0].split('-')[1]}")
+
+                type = horario.teacher.types[subjectPos]
+                typeNum = 0
+                if type == 'Tarde': typeNum = 1
+
                 # Seleciono qual o melhor estado para aquele horário
-                position = getBetterHour() # 'day-hour-turm-room'
-                position_info = position.split('-')
+                position = logic.getBetterHour(horario, quadro[horario.turm[0]], subjectPos, typeNum) # type é 0 - manha ou 1 - tarde. retorna 'day-hour-turm-room'
+                position_info = position.split(';')
 
                 # Coloco o horário naquela posição
-                quadro[position_info[2]][position_info[0]][position_info[1]] = horario
+                quadro[position_info[2]][position_info[0]][typeNum][int(position_info[1])] = horario
 
     """
     - Get Better (Túlio)
