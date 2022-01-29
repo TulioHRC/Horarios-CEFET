@@ -60,14 +60,14 @@ def cost_individual(horario, position, board, subjectPos, typeNum, sala=''):
     return pontuation
 
 
-def cost_board(board, path):
-    points = getPoints(path)
+def cost_board(board):
+    points = loadData.getPoints('./data/preferencias.txt')
 
     result_value = 0
-    for quadro in board.values():
-        for day in quadro.values():
+    for quadro in board.values(): # Para cada turma
+        for day in quadro.values(): # Para cada dia nesta turma
             t = 0
-            for turno in day:
+            for turno in day: # Para manhã e depois tarde
                 t += 1
                 num_of_0 = turno.count(0)
                 # Pontuação para cada dia já preenchido
@@ -75,7 +75,7 @@ def cost_board(board, path):
 
                 # Pontuação para mais de 3 horários já preenchidos no mesmo dia
                 if num_of_0 < 3:
-                    result_value += points['tresHorariosDia'] * 5
+                    result_value += points['tresHorariosDia'] # * 5 # ???????? Não precisaria multiplicar por 5
 
                 # Primeiros e últimos horários do turno
                 if turno[0] != 0:
@@ -85,23 +85,41 @@ def cost_board(board, path):
 
                 # Horários de mesma matéria agrupados
                 for h in range(0, len(turno)):
+                    """ Acho que não seria assim
                     if (h != 0) and (turno[h].subject == turno[h + 1].subject):
                             result_value += points['lastResp']
-
+                    """
+                    if (h != 4):
+                        if turno[h] != 0 and turno[h+1] != 0: # ?????? Evitar erros na lógica seguinte
+                            if turno[h].subject == turno[h + 1].subject:
+                                result_value += points['lastResp']
                 # Professor dando aula no dia que ele quer
                 for h in range(0, len(turno)):
-                    for prefer in turno[h].teacher.prefers:
+                    if turno[h] != 0: # ???? Evitar erros
+                        for prefer in turno[h].teacher.prefers:
+                            """ Acho que não seria exatamente assim
+                            limite_inferior = prefer.split(':')[1].split('-')[0]
+                            limite_superior = prefer.split(':')[1].split('-')[1]
+                            if t > 1:
+                                limite_inferior -= 5
+                                limite_superior -= 5
+                            """
+                            try:
+                                limite_inferior = prefer.split(':')[1].split('-')[0]
+                                limite_superior = prefer.split(':')[1].split('-')[1]
+                            except: # Considerando o caso de não ter selecionado uma variação de horários
+                                limite_inferior = 1
+                                limite_superior = 5
 
-                        limite_inferior = prefer.split(':')[1].split('-')[0]
-                        limite_superior = prefer.split(':')[1].split('-')[1]
-                        if t > 1:
-                            limite_inferior -= 5
-                            limite_superior -= 5
+                            if t > 1:
+                                limite_inferior -= 5
+                                limite_superior -= 5
 
-                        if (f'S{day}' in prefer) and (h >= limite_inferior) and (h <= limite_superior):
-                            result_value += points['preferPositiva']
-                        elif (f'N{day}' in prefer) and (h >= limite_inferior) and (h <= limite_superior):
-                            result_value += points['preferNegativa']
+                            if (f'S{day}' in str(prefer)) and (h+1 >= limite_inferior) and (h+1 <= limite_superior): # ????? adicionei 1 no h
+                                result_value += points['preferPositiva']
+                            elif (f'N{day}' in prefer) and (h+1 >= limite_inferior) and (h+1 <= limite_superior):
+                                result_value += points['preferNegativa']
+
     return result_value
 
 
