@@ -37,11 +37,25 @@ def cost_individual(horario, position, board, subjectPos, typeNum, sala=''):
     pontuation = 0
     dayBoard = board[position[0]][typeNum]
 
+    horariosPreenchidos = 0 # Horarios já preenchidos no dia
+
     for p in pointsKeys:
         if p == "nHorariosDia": # Para a quantidade de horários já preenchidos no dia
             for h in dayBoard:
                 if h != 0:
+                    horariosPreenchidos += 1
                     pontuation += points[p]
+        elif p == "tresHorariosDia":
+            if horariosPreenchidos >= 3: pontuation += points[p]
+        elif p == "horariosPoints":
+            if position[1] in [0, 4]: pontuation += points[p]
+        # Falta adaptar lastResp
+        elif p == "preferPositiva":
+            if f"S{position[0]}" in horario.teacher.prefers:
+                pontuation += points[p]
+        elif p == "preferNegativa":
+            if f"N{position[0]}" in horario.teacher.prefers:
+                pontuation += points[p]
 
     return pontuation
 
@@ -116,7 +130,5 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''): # board 
     # Horário já está ocupado por outro no Quadro de horários?
     if board[str(h_day)][typeNum][h_time] != 0:
         return INVALIDO
-
-    print("d")
 
     return 0
