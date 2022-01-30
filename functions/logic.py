@@ -49,7 +49,13 @@ def cost_individual(horario, position, board, subjectPos, typeNum, sala=''):
             if horariosPreenchidos >= 3: pontuation += points[p]
         elif p == "horariosPoints":
             if position[1] in [0, 4]: pontuation += points[p]
-        # Falta adaptar lastResp
+        elif p == "lastResp":
+            if position[1] != 0:
+                if dayBoard[position[1]-1] != 0:
+                    if dayBoard[position[1]-1].subject == horario.subject: pontuation += points[p]
+            if position[1] != 4:
+                if dayBoard[position[1]+1] != 0:
+                    if dayBoard[position[1]+1].subject == horario.subject: pontuation += points[p]
         elif p == "preferPositiva":
             if f"S{position[0]}" in horario.teacher.prefers:
                 pontuation += points[p]
