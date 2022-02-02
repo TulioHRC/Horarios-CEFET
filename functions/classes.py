@@ -13,7 +13,7 @@ class Teacher:
         self.types = [type]
 
         # Formato = haverá uma lista para cada uma das matérias, tendo o seguinte formato S ou N dia:horário inicial
-        # - horário final, ex.: S6:2-4, ou seja, prefere dar aula na sexta entre os horários 2 e 4
+        # - horário final, ex.: "S6:2,4", ou seja, prefere dar aula na sexta entre os horários 2 e 4
         self.prefers = [prefers]
 
         # Formato = segue o mesmo do acima, tendo a formatação N dia:horário inicial - horário final, ex.: N5:3-5,

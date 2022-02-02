@@ -107,10 +107,10 @@ def mainFunction():  # A função principal do código, que retornará o resulta
                 # Coloco o horário naquela posição
                 quadro[position_info[2]][position_info[0]][typeNum][int(position_info[1])] = horario
 
-        #for turm in classes:
-        #    print(turm.name, quadro[turm.name])
+        for turm in classes:
+            print(turm.name, quadro[turm.name])
 
-        print(logic.cost_board(quadro))
+        print(time, logic.cost_board(quadro))
 
     """
     - Get Better (Túlio)

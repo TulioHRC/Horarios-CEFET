@@ -10,7 +10,7 @@ Regras Básicas:
 
 def getBetterHour(horario, board, subjectPos, typeNum):
     quadro = board.copy()
-    betterH = [('', -99)] # (day-hour, pontuação), melhores horários
+    betterH = [['', -99]] # (day;hour, pontuação), melhores horários
 
     teacher = horario.teacher
     turm = horario.turm
@@ -18,7 +18,7 @@ def getBetterHour(horario, board, subjectPos, typeNum):
 
     for d in range(2,7): # para cada dia
         d = str(d)
-        for h in range(5): # para cada horário no dia
+        for h in range(0, 5): # para cada horário no dia
             pontuation = validation(horario, [d, h], quadro, subjectPos, typeNum)
             if pontuation == 0:
                 pontuation = cost_individual(horario, [d, h], quadro, subjectPos, typeNum)
@@ -26,6 +26,8 @@ def getBetterHour(horario, board, subjectPos, typeNum):
                     betterH = [(f'{d};{h}', pontuation)]
                 elif pontuation == betterH[0][1]:
                     betterH.append((f'{d};{h}', pontuation))
+            else:
+                print(d, h, pontuation, teacher.name, turm)
 
     return f"{random.choice(betterH)[0]};{turm[0]}" # Retorna f'{day};{hour};{turm}' depois nós colocaremos a room variable
 
@@ -48,7 +50,8 @@ def cost_individual(horario, position, board, subjectPos, typeNum, sala=''):
         elif p == "tresHorariosDia":
             if horariosPreenchidos >= 3: pontuation += points[p]
         elif p == "horariosPoints":
-            if position[1] in [0, 4]: pontuation += points[p]
+            if position[1] in [0, 4]:
+                pontuation += points[p]
         elif p == "lastResp":
             if position[1] != 0:
                 if dayBoard[position[1]-1] != 0:
@@ -57,11 +60,26 @@ def cost_individual(horario, position, board, subjectPos, typeNum, sala=''):
                 if dayBoard[position[1]+1] != 0:
                     if dayBoard[position[1]+1].subject == horario.subject: pontuation += points[p]
         elif p == "preferPositiva":
-            if f"S{position[0]}" in horario.teacher.prefers:
-                pontuation += points[p]
+            # For das preferencias, obs.: unir com o prefer negativa pra evitar códigos
+            if f"S{position[0]}" in str(horario.teacher.prefers[subjectPos]):
+                pontuation += points['preferPositiva']
+                """try:
+                    limite_inferior = int(prefer.split(':')[1].split(',')[0])
+                    limite_superior = int(prefer.split(':')[1].split(',')[1])
+                    if t > 1:
+                        limite_inferior -= 5
+                        limite_superior -= 5
+                except: # Considerando o caso de não ter selecionado uma variação de horários
+                    limite_inferior = 1
+                    limite_superior = 5
+
+                if (f'S{day}' in str(prefer)) and (h+1 >= limite_inferior) and (h+1 <= limite_superior): # ????? adicionei 1 no h
+                    result_value += points['preferPositiva']"""
         elif p == "preferNegativa":
-            if f"N{position[0]}" in horario.teacher.prefers:
+            if f"N{position[0]}" in horario.teacher.prefers[subjectPos]:
                 pontuation += points[p]
+
+        #print(pontuation)
 
     return pontuation
 
@@ -74,7 +92,6 @@ def cost_board(board):
         for day in quadro.values(): # Para cada dia nesta turma
             t = 0
             for turno in day: # Para manhã e depois tarde
-                t += 1
                 num_of_0 = turno.count(0)
                 # Pontuação para cada dia já preenchido
                 result_value += (5 - num_of_0) * points['nHorariosDia']
@@ -111,20 +128,20 @@ def cost_board(board):
                                 limite_superior -= 5
                             """
                             try:
-                                limite_inferior = prefer.split(':')[1].split('-')[0]
-                                limite_superior = prefer.split(':')[1].split('-')[1]
+                                limite_inferior = int(prefer.split(':')[1].split(',')[0])
+                                limite_superior = int(prefer.split(':')[1].split(',')[1])
+                                if t > 1:
+                                    limite_inferior -= 5
+                                    limite_superior -= 5
                             except: # Considerando o caso de não ter selecionado uma variação de horários
                                 limite_inferior = 1
                                 limite_superior = 5
 
-                            if t > 1:
-                                limite_inferior -= 5
-                                limite_superior -= 5
-
                             if (f'S{day}' in str(prefer)) and (h+1 >= limite_inferior) and (h+1 <= limite_superior): # ????? adicionei 1 no h
                                 result_value += points['preferPositiva']
-                            elif (f'N{day}' in prefer) and (h+1 >= limite_inferior) and (h+1 <= limite_superior):
+                            elif (f'N{day}' in str(prefer)) and (h+1 >= limite_inferior) and (h+1 <= limite_superior):
                                 result_value += points['preferNegativa']
+                t += 1
 
     return result_value
 
@@ -140,14 +157,23 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''): # board 
 
     # Limitações do professor
     limitation = horario.teacher.limits[subjectPos]
-    t_limitations = [] # N3:1-4
-    """
+    t_limitations = [] # N3:1,4
+
     for l in limitation: # para cada limitação do professor
         if f'N{h_day}' in l: # Se a limitação estiver no dia do horário
-            nums = l.split(':')[1].split('-')
-            if (nums[0] <= h_time) and (nums[1] >= h_time): # Se o horário estiver compreendido durante a limitação
+            try:
+                limite_inferior = int(l.split(':')[1].split(',')[0])
+                limite_superior = int(l.split(':')[1].split(',')[1])
+                if typeNum > 1:
+                    limite_inferior -= 5
+                    limite_superior -= 5
+            except: # Considerando o caso de não ter selecionado uma variação de horários
+                limite_inferior = 1
+                limite_superior = 10
+
+            if (limite_inferior <= int(h_time)+1) and (limite_superior >= int(h_time)+1): # Se o horário estiver compreendido durante a limitação
                 return INVALIDO
-    """
+
     # Limitações da sala
     #room_invalids_h =
 
