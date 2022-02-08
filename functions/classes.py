@@ -16,7 +16,7 @@ class Teacher:
         # - horário final, ex.: "S6:2,4", ou seja, prefere dar aula na sexta entre os horários 2 e 4
         self.prefers = [prefers]
 
-        # Formato = segue o mesmo do acima, tendo a formatação N dia:horário inicial - horário final, ex.: N5:3-5,
+        # Formato = segue o mesmo do acima, tendo a formatação N dia:horário inicial - horário final, ex.: N5:3,5,
         # ou seja, não pode quinta nos horários 3 a 5
         self.limits = [limits]
 

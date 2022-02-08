@@ -68,6 +68,8 @@ def mainFunction():  # A função principal do código, que retornará o resulta
 
     # ==================== Processando os dados: Gerando a planilha final com base nos dados
 
+    bestSchedule = []
+
     for time in range(0, NUMERO_DE_REPETIÇÕES):
         # Embaralha a lista de professores
         lista_embaralhada = teachers.copy()
@@ -107,10 +109,24 @@ def mainFunction():  # A função principal do código, que retornará o resulta
                 # Coloco o horário naquela posição
                 quadro[position_info[2]][position_info[0]][typeNum][int(position_info[1])] = horario
 
-        for turm in classes:
-            print(turm.name, quadro[turm.name])
+        #for turm in classes:
+        #    print(turm.name, quadro[turm.name])
 
-        print(time, logic.cost_board(quadro))
+        pontuacao = logic.cost_board(quadro)
+
+        if time == 0: bestSchedule.append([quadro.copy(), pontuacao])
+        elif bestSchedule[0][1] == pontuacao: bestSchedule.append([quadro.copy(), pontuacao])
+        elif pontuacao > bestSchedule[0][1]: bestSchedule = [[quadro.copy(), pontuacao]]
+
+
+        print(time, pontuacao)
+
+    horarios = random.choice(bestSchedule)[0]
+
+    for turm in classes:
+        print(turm.name, horarios[turm.name])
+
+    # Adicionar os dados acima aos objetos ou adaptar forma de colocar nas planilhas
 
     """
     - Get Better (Túlio)
@@ -121,9 +137,10 @@ def mainFunction():  # A função principal do código, que retornará o resulta
 
     - Salas desde o app e planilha até a parte lógica (depois)
     """
-
+"""
     # ====================== Criando planilhas
     for turm in classes:
         result.saveSheet(turm.name, turm.schedule, type='turm')
     for teacher in teachers:
         result.saveSheet(teacher.name, teacher.schedule, type='teacher')
+"""
