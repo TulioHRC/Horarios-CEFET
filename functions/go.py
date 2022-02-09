@@ -124,19 +124,12 @@ def mainFunction():  # A função principal do código, que retornará o resulta
     horarios = random.choice(bestSchedule)[0]
 
     for turm in classes:
+        result.saveSheet(turm.name, horarios[turm.name], type='turm')
         print(turm.name, horarios[turm.name])
 
     # Adicionar os dados acima aos objetos ou adaptar forma de colocar nas planilhas
 
-    """
-    - Get Better (Túlio)
-    - Avaliação dos Custo (Túlio)
-        valido(horário) => horario -> matéria -> salas que podem ser dadas essa matéria -> horários ocupados nessa sala (Samuelsu)
-            se for inválido retorna -99
-            else, retorna 0
 
-    - Salas desde o app e planilha até a parte lógica (depois)
-    """
 """
     # ====================== Criando planilhas
     for turm in classes:
