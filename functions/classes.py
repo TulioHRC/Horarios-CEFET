@@ -21,7 +21,13 @@ class Teacher:
         self.limits = [limits]
 
         # Horários durante a semana do professor
-        self.schedule = {'2': [], '3': [], '4': [], '5': [], '6': []}
+        self.schedule = {
+            '2': [[0,0,0,0,0], [0,0,0,0,0]], # manhã e tarde
+            '3': [[0,0,0,0,0], [0,0,0,0,0]],
+            '4': [[0,0,0,0,0], [0,0,0,0,0]],
+            '5': [[0,0,0,0,0], [0,0,0,0,0]],
+            '6': [[0,0,0,0,0], [0,0,0,0,0]]
+        }
 
         # Formato = {subject: {Turm: classesInTheTurm}}, ex.: {'Matematica': {MCT-1A: 4, ...}}
         self.horaries = {}

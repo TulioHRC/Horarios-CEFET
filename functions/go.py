@@ -6,6 +6,19 @@ import random
 
 NUMERO_DE_REPETIÇÕES = 10
 
+def restartTeachers(teachers):
+    for t in teachers:
+        t.schedule = {
+            '2': [[0,0,0,0,0], [0,0,0,0,0]], # manhã e tarde
+            '3': [[0,0,0,0,0], [0,0,0,0,0]],
+            '4': [[0,0,0,0,0], [0,0,0,0,0]],
+            '5': [[0,0,0,0,0], [0,0,0,0,0]],
+            '6': [[0,0,0,0,0], [0,0,0,0,0]]
+        }
+
+    return teachers
+
+
 def mainFunction():  # A função principal do código, que retornará o resultado que nós esperamos
     # =================== Pegando os dados que nós fornecemos
     try:
@@ -71,6 +84,8 @@ def mainFunction():  # A função principal do código, que retornará o resulta
     bestSchedule = []
 
     for time in range(0, NUMERO_DE_REPETIÇÕES):
+        teachers_copy = restartTeachers(teachers)
+
         # Embaralha a lista de professores
         lista_embaralhada = teachers.copy()
         random.shuffle(lista_embaralhada)
@@ -101,31 +116,32 @@ def mainFunction():  # A função principal do código, que retornará o resulta
                 type = horario.teacher.types[subjectPos]
                 typeNum = 0
                 if type == 'Tarde': typeNum = 1
-
                 # Seleciono qual o melhor estado para aquele horário
                 position = logic.getBetterHour(horario, quadro.copy()[horario.turm[0]], subjectPos, typeNum) # type é 0 - manha ou 1 - tarde. retorna 'day;hour;turm;room'
                 position_info = position.split(';')
 
                 # Coloco o horário naquela posição
                 quadro[position_info[2]][position_info[0]][typeNum][int(position_info[1])] = horario
-
+                # Professores
+                horario.teacher.schedule[position_info[0]][typeNum][int(position_info[1])] = f"{horario.turm[0]}-{str(horario).split('-')[1]}"  # Alterando objeto do professor
+                teachers_copy[teachersNames.index(horario.teacher.name)].schedule[position_info[0]][typeNum][int(position_info[1])] = f"{horario.turm[0]}-{str(horario).split('-')[1]}"
         #for turm in classes:
         #    print(turm.name, quadro[turm.name])
 
         pontuacao = logic.cost_board(quadro)
 
-        if time == 0: bestSchedule.append([quadro.copy(), pontuacao])
-        elif bestSchedule[0][1] == pontuacao: bestSchedule.append([quadro.copy(), pontuacao])
-        elif pontuacao > bestSchedule[0][1]: bestSchedule = [[quadro.copy(), pontuacao]]
-
+        if time == 0: bestSchedule.append([quadro.copy(), pontuacao, teachers_copy])
+        elif bestSchedule[0][1] == pontuacao: bestSchedule.append([quadro.copy(), pontuacao, teachers_copy])
+        elif pontuacao > bestSchedule[0][1]: bestSchedule = [[quadro.copy(), pontuacao, teachers_copy]]
 
         print(time, pontuacao)
 
-    horarios = random.choice(bestSchedule)[0]
+    horarios = random.choice(bestSchedule)
 
     for turm in classes:
-        result.saveSheet(turm.name, horarios[turm.name], type='turm')
-        print(turm.name, horarios[turm.name])
+        result.saveSheet(turm.name, horarios[0][turm.name], type='turm')
+    for teacher in teachers:
+        result.saveSheet(teacher.name, horarios[2][teachersNames.index(teacher.name)].schedule, type='teacher')
 
     # Adicionar os dados acima aos objetos ou adaptar forma de colocar nas planilhas
 

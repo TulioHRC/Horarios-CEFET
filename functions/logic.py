@@ -173,4 +173,8 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''): # board 
     if board[str(h_day)][typeNum][h_time] != 0:
         return INVALIDO
 
+    # Verificar também a parte dos professores
+    if horario.teacher.schedule[str(h_day)][typeNum][h_time] != 0:
+        return INVALIDO
+
     return 0
