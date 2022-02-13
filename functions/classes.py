@@ -6,7 +6,7 @@ class Teacher:
     def __init__(self, name, subject, type, prefers, limits, horaries=""):
         self.name = name
 
-        # Formato = cada matéria será adicionada nesta lista, com a seguinte formatação nome:turma,ex.:Matematica:MCT-2A
+        # Formato = cada matéria será adicionada nesta lista, com a seguinte formatação nome:turma,ex.:Matematica-2A
         self.subjects = [subject]
 
         # Formato = semelhante ao de cima, tendo as opções: manha, tarde ou noite
@@ -29,9 +29,9 @@ class Teacher:
             '6': [[0,0,0,0,0], [0,0,0,0,0]]
         }
 
-        # Formato = {subject: {Turm: classesInTheTurm}}, ex.: {'Matematica': {MCT-1A: 4, ...}}
+        # Formato = {subject: {Turm: classesInTheTurm}}, ex.: {'Matematica-1A': {MCT-1A: 4, ...}}
         self.horaries = {}
-        self.horaries[subject.split('-')[0]] = horaries
+        self.horaries[subject] = horaries
 
         # Quantidade de objetos "Horários" que o professor tem -> total de aulas que ele dá na semana
         self.classes = 0

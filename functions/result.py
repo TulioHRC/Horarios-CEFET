@@ -43,6 +43,8 @@ def saveSheet(name, xData, yData={"Horarios": ['1', '2', '3', '4', '5', '6', '7'
                 if hour in ['4', '11']: df[dayConv][int(hour)-1] = vals[0]  # Intervalo
                 elif hour in ['7']: df[dayConv][int(hour)-1] = vals[1] # Almoço
             elif horario: # Se não for 0
+                if type == "turm":
+                    horario = str(horario)[0:-3]
                 df[dayConv][int(hour)-1] = str(horario)
 
     df = pd.DataFrame(data=df)

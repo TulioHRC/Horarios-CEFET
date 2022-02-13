@@ -65,7 +65,7 @@ def mainFunction():  # A função principal do código, que retornará o resulta
             teachers[teachersNames.index(teacher)].types.append(f'{teachersData["Tipo"][index]}')
             teachers[teachersNames.index(teacher)].prefers.append(str(teachersData["Preferencias"][index]).split('-'))
             teachers[teachersNames.index(teacher)].limits.append(str(teachersData["Limitacoes"][index]).split('-'))
-            teachers[teachersNames.index(teacher)].horaries[f'{teachersData["Materia"][index]}'] = horaries
+            teachers[teachersNames.index(teacher)].horaries[f'{teachersData["Materia"][index]}-{teachersData["Ano"][index]}{teachersData["Sub-Grupo"][index]}'] = horaries
 
         # print(f'{teachers[teachersNames.index(teacher)].name}, {teachers[teachersNames.index(teacher)].horaries}')
 
@@ -111,7 +111,7 @@ def mainFunction():  # A função principal do código, que retornará o resulta
             h_professor = teacher.h_individuais
 
             for horario in h_professor:
-                subjectPos = horario.teacher.subjects.index(f"{horario.subject}-{horario.turm[0].split('-')[1]}")
+                subjectPos = horario.teacher.subjects.index(f"{horario.subject}")#-{horario.turm[0].split('-')[1]}")
 
                 type = horario.teacher.types[subjectPos]
                 typeNum = 0
@@ -137,6 +137,7 @@ def mainFunction():  # A função principal do código, que retornará o resulta
         print(time, pontuacao)
 
     horarios = random.choice(bestSchedule)
+    print(horarios[0])
 
     for turm in classes:
         result.saveSheet(turm.name, horarios[0][turm.name], type='turm')
