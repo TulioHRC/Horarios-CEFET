@@ -38,8 +38,10 @@ def cost_individual(horario, position, board, subjectPos, typeNum, sala=''):
 
     pontuation = 0
     dayBoard = board[position[0]][typeNum]
+    teacherDayBoard = horario.teacher.schedule[position[0]][typeNum]
 
     horariosPreenchidos = 0 # Horarios já preenchidos no dia
+    horariosP = 0 # Horarios já preenchidos no dia para os professores
 
     for p in pointsKeys:
         if p == "nHorariosDia": # Para a quantidade de horários já preenchidos no dia
@@ -47,8 +49,13 @@ def cost_individual(horario, position, board, subjectPos, typeNum, sala=''):
                 if h != 0:
                     horariosPreenchidos += 1
                     pontuation += points[p]
+            for h in teacherDayBoard:
+                if h != 0:
+                    horariosP += 1
+                    pontuation += points[p]
         elif p == "tresHorariosDia":
-            if horariosPreenchidos >= 3: pontuation += points[p]
+            if horariosPreenchidos >= 3: pontuation += points[p] # Da turma
+            if horariosP >= 3: pontuation += points[p] # Do professor
         elif p == "horariosPoints":
             if position[1] in [0, 4]:
                 pontuation += points[p]
@@ -73,7 +80,8 @@ def cost_individual(horario, position, board, subjectPos, typeNum, sala=''):
                         limite_superior = 10
 
                     if (limite_inferior <= int(position[1])+1) and (limite_superior >= int(position[1])+1): # Se o horário estiver compreendido durante a limitação
-                        if str(prefer)[0] == 'S': pontuation += points['preferPositiva']
+                        if str(prefer)[0] == 'S':
+                            pontuation += points['preferPositiva']
                         else: pontuation += points['preferNegativa']
 
         #print(pontuation)
@@ -95,7 +103,7 @@ def cost_board(board):
 
                 # Pontuação para mais de 3 horários já preenchidos no mesmo dia
                 if num_of_0 < 3:
-                    result_value += points['tresHorariosDia'] # * 5 # ???????? Não precisaria multiplicar por 5
+                    result_value += points['tresHorariosDia']
 
                 # Primeiros e últimos horários do turno
                 if turno[0] != 0:
@@ -105,12 +113,8 @@ def cost_board(board):
 
                 # Horários de mesma matéria agrupados
                 for h in range(0, len(turno)):
-                    """ Acho que não seria assim
-                    if (h != 0) and (turno[h].subject == turno[h + 1].subject):
-                            result_value += points['lastResp']
-                    """
                     if (h != 4):
-                        if turno[h] != 0 and turno[h+1] != 0: # ?????? Evitar erros na lógica seguinte
+                        if turno[h] != 0 and turno[h+1] != 0:
                             if turno[h].subject == turno[h + 1].subject:
                                 result_value += points['lastResp']
 
