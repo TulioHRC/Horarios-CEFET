@@ -1,4 +1,4 @@
-# Horarios-CEFET
+﻿# Horarios-CEFET
 
 ### O que é o projeto?
 
@@ -13,7 +13,7 @@ Gerar horários aleatoriamente, porém seguindo o maior número de preferencias 
 - Adaptar selecionar pastas para o resto do projeto, ou seja, colocar forma de selecionar planilha de aulas ou de salas e forma de salvar esses dados para uso posterior
 - Terminar app (opção para adicionar salas)
 - ...
-
+a
 ## Release Notes
 
 <<<<<<< HEAD
