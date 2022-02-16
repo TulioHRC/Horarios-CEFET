@@ -6,14 +6,15 @@ import random
 
 NUMERO_DE_REPETIÇÕES = 10
 
+
 def restartTeachers(teachers):
     for t in teachers:
         t.schedule = {
-            '2': [[0,0,0,0,0], [0,0,0,0,0]], # manhã e tarde
-            '3': [[0,0,0,0,0], [0,0,0,0,0]],
-            '4': [[0,0,0,0,0], [0,0,0,0,0]],
-            '5': [[0,0,0,0,0], [0,0,0,0,0]],
-            '6': [[0,0,0,0,0], [0,0,0,0,0]]
+            '2': [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],  # manhã e tarde
+            '3': [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+            '4': [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+            '5': [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+            '6': [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
         }
 
     return teachers
@@ -65,7 +66,8 @@ def mainFunction():  # A função principal do código, que retornará o resulta
             teachers[teachersNames.index(teacher)].types.append(f'{teachersData["Tipo"][index]}')
             teachers[teachersNames.index(teacher)].prefers.append(str(teachersData["Preferencias"][index]).split('-'))
             teachers[teachersNames.index(teacher)].limits.append(str(teachersData["Limitacoes"][index]).split('-'))
-            teachers[teachersNames.index(teacher)].horaries[f'{teachersData["Materia"][index]}-{teachersData["Ano"][index]}{teachersData["Sub-Grupo"][index]}'] = horaries
+            teachers[teachersNames.index(teacher)].horaries[
+                f'{teachersData["Materia"][index]}-{teachersData["Ano"][index]}{teachersData["Sub-Grupo"][index]}'] = horaries
 
         # print(f'{teachers[teachersNames.index(teacher)].name}, {teachers[teachersNames.index(teacher)].horaries}')
 
@@ -76,8 +78,8 @@ def mainFunction():  # A função principal do código, que retornará o resulta
             for turma in h[1].items():
                 turma_do_horario = turma[0]
                 for time in range(0, turma[1]):
-                    ho = c.Horario(professor, materia,turma) # Objeto do horário
-                    professor.h_individuais.append(ho) # Uma lista com todos os objetos Horario do professor []
+                    ho = c.Horario(professor, materia, turma)  # Objeto do horário
+                    professor.h_individuais.append(ho)  # Uma lista com todos os objetos Horario do professor []
 
     # ==================== Processando os dados: Gerando a planilha final com base nos dados
 
@@ -94,11 +96,11 @@ def mainFunction():  # A função principal do código, que retornará o resulta
         quadro = {}
         for turm in classes:
             quadro[turm.name] = {
-                '2': [[0,0,0,0,0], [0,0,0,0,0]], # manhã e tarde
-                '3': [[0,0,0,0,0], [0,0,0,0,0]],
-                '4': [[0,0,0,0,0], [0,0,0,0,0]],
-                '5': [[0,0,0,0,0], [0,0,0,0,0]],
-                '6': [[0,0,0,0,0], [0,0,0,0,0]]
+                '2': [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],  # manhã e tarde
+                '3': [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+                '4': [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+                '5': [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+                '6': [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
             }
 
             # Preencher horários já preenchidos com algo diferente de 0
@@ -111,28 +113,35 @@ def mainFunction():  # A função principal do código, que retornará o resulta
             h_professor = teacher.h_individuais
 
             for horario in h_professor:
-                subjectPos = horario.teacher.subjects.index(f"{horario.subject}")#-{horario.turm[0].split('-')[1]}")
-
+                subjectPos = horario.teacher.subjects.index(f"{horario.subject}")  # -{horario.turm[0].split('-')[1]}")
                 type = horario.teacher.types[subjectPos]
                 typeNum = 0
+
                 if type == 'Tarde': typeNum = 1
                 # Seleciono qual o melhor estado para aquele horário
-                position = logic.getBetterHour(horario, quadro.copy()[horario.turm[0]], subjectPos, typeNum) # type é 0 - manha ou 1 - tarde. retorna 'day;hour;turm;room'
+                position = logic.getBetterHour(horario, quadro.copy()[horario.turm[0]], subjectPos,
+                                               typeNum)  # type é 0 - manha ou 1 - tarde. retorna 'day;hour;turm;room'
                 position_info = position.split(';')
 
                 # Coloco o horário naquela posição
                 quadro[position_info[2]][position_info[0]][typeNum][int(position_info[1])] = horario
+                """quadro[position_info[2]][position_info[0]][typeNum][int(position_info[1])] = [horario] if horario.time == 'bimestral' else horario"""
                 # Professores
-                horario.teacher.schedule[position_info[0]][typeNum][int(position_info[1])] = f"{horario.turm[0]}-{str(horario).split('-')[1]}"  # Alterando objeto do professor
-                teachers_copy[teachersNames.index(horario.teacher.name)].schedule[position_info[0]][typeNum][int(position_info[1])] = f"{horario.turm[0]}-{str(horario).split('-')[1]}"
-        #for turm in classes:
+                horario.teacher.schedule[position_info[0]][typeNum][int(position_info[
+                                                                            1])] = f"{horario.turm[0]}-{str(horario).split('-')[1]}"  # Alterando objeto do professor
+                teachers_copy[teachersNames.index(horario.teacher.name)].schedule[position_info[0]][typeNum][
+                    int(position_info[1])] = f"{horario.turm[0]}-{str(horario).split('-')[1]}"
+        # for turm in classes:
         #    print(turm.name, quadro[turm.name])
 
         pontuacao = logic.cost_board(quadro)
 
-        if time == 0: bestSchedule.append([quadro.copy(), pontuacao, teachers_copy])
-        elif bestSchedule[0][1] == pontuacao: bestSchedule.append([quadro.copy(), pontuacao, teachers_copy])
-        elif pontuacao > bestSchedule[0][1]: bestSchedule = [[quadro.copy(), pontuacao, teachers_copy]]
+        if time == 0:
+            bestSchedule.append([quadro.copy(), pontuacao, teachers_copy])
+        elif bestSchedule[0][1] == pontuacao:
+            bestSchedule.append([quadro.copy(), pontuacao, teachers_copy])
+        elif pontuacao > bestSchedule[0][1]:
+            bestSchedule = [[quadro.copy(), pontuacao, teachers_copy]]
 
         print(time, pontuacao)
 
@@ -143,7 +152,8 @@ def mainFunction():  # A função principal do código, que retornará o resulta
         result.saveSheet(turm.name, horarios[0][turm.name], type='turm')
     for teacher in teachers:
         result.saveSheet(teacher.name, horarios[2][teachersNames.index(teacher.name)].schedule, type='teacher')
-
+    
+    
     # Adicionar os dados acima aos objetos ou adaptar forma de colocar nas planilhas
 
 
