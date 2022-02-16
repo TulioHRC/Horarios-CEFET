@@ -63,11 +63,13 @@ class Room:
 
 
 class Horario:
-    def __init__(self, teacher, subject, turm, possible_h=0):
+    def __init__(self, teacher, subject, turm, possible_h=0, time='anual'):
         self.teacher = teacher
         self.subject = subject
         self.turm = turm
         self.possible_h = possible_h
+        self.time = time
+
         # self.position = None
 
     def __repr__(self):
