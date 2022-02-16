@@ -1,4 +1,4 @@
-# Horarios-CEFET
+﻿# Horarios-CEFET
 
 ### O que é o projeto?
 
