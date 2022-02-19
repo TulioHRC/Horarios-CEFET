@@ -1,8 +1,8 @@
 Nx - Não dia x (2/segunda até 6/sexta)
 Sx - Sim dia x
 
-Nx;1.2 - Não dia x, nos horários de 1/7:00 até 7:50
-Sx;4.6 - Sim dia x, nos horários de 1/9:30 até 11:30
+Nx;1,2 - Não dia x, nos horários de 1/7:00 até 7:50
+Sx;4,6 - Sim dia x, nos horários de 1/9:30 até 11:30
 
 Horários
 
@@ -23,3 +23,4 @@ Horários
 12 - 17:30
 
 Rn - Room/Sala n=nome da sala
+ESPECIFICA - Sala que só pode um tipo de matéria (tipo as salas/laboratórios de quimica, biologia, e outras matérias do técnico)

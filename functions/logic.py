@@ -148,7 +148,7 @@ def cost_board(board):
     return result_value
 
 
-def validation(horario, position, board, subjectPos, typeNum,  all_teachers, sala=''):  # board é o quadro de horários
+def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board é o quadro de horários
     # Position = [day, hour]
 
     INVALIDO = -99
@@ -188,19 +188,19 @@ def validation(horario, position, board, subjectPos, typeNum,  all_teachers, sal
     if horario.teacher.schedule[str(h_day)][typeNum][h_time] != 0:
         return INVALIDO
 
+    """
     # Não pode trabalhar mais de 8h no mesmo dia
     # O professor só vai dar mais de 8h de aula em um dia se ele der 10 horários
     for teacher in all_teachers:
-        for morning, evening in teacher.schedule.values():
+        for morning, afternoon in teacher.schedule.values():
             day_ok = False
-            day = morning + evening
+            day = morning + afternoon
             for h in day:
                 if h == 0:
                     day_ok = True
                     break
             if not day_ok:
                 return INVALIDO
-
 
     # Não pode ter um intervalo entre uma aula e outra maior que 3h
         # almoço= 90min, intervalo= 20min
@@ -228,6 +228,7 @@ def validation(horario, position, board, subjectPos, typeNum,  all_teachers, sal
                     tempo_ocioso = 0
                     ja_passou_pelo_primeiro_h = True
     # Deve ser implementado apenas quando todos os dados já estiverem cadastrados
+    """
 
     # Devem ser ao menos 11h entre o primeiro e o último horário de descanso
 

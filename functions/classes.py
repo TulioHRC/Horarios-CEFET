@@ -49,7 +49,6 @@ class Turm:
         self.schedule = {'2': [], '3': [], '4': [], '5': [], '6': []}  # Horários durante a semana da turma
 
 
-""" Ainda não foi adicionada
 class Room:
     def __init__(self, name, position, limits, preDefinedSchedule=''):
         self.name = name
@@ -59,7 +58,6 @@ class Room:
             self.schedule = preDefinedSchedule # Horários de cada sala
         else:
             self.schedule = {'2': [],'3': [],'4': [],'5': [],'6': []}
-"""
 
 
 class Horario:
