@@ -24,12 +24,18 @@ def saveTeacher(name, subject, type, classes, grade, subGroup, prefers, limits):
             if len(prefersResult) != 0:
                 prefersResult += '-'
             prefersResult += f"N{convert.convertDayToNum(day)}"
+        for room in prefers["R"]:
+            if len(prefersResult) != 0:
+                prefersResult += '-'
+            prefersResult += f"{room}"
 
         limitsResult = ''
-        for day in limits:
+        for l in limits:
             if len(limitsResult) != 0:
                 limitsResult += '-'
-            limitsResult += f"N{convert.convertDayToNum(day)}"
+            if l[0] == 'R': limitsResult += f"{l}"
+            else:
+                limitsResult += f"N{convert.convertDayToNum(l)}"
 
         df2 = pd.DataFrame({'Professor': [name], 'Materia': [subject], 'Tipo': [type], 'Ano': [grade], 'Sub-Grupo': subGroup, 'Preferencias': [prefersResult], 'Limitacoes': [limitsResult]})
 
@@ -50,12 +56,13 @@ def saveRoom(name, local, limits):
         df = pd.read_excel('Planilha sala.xlsx', 'Sheet1')
 
         limitsResult = ''
-        for day in limits:
+        for l in limits:
             if len(limitsResult) != 0:
                 limitsResult += '-'
-            limitsResult += f"N{convert.convertDayToNum(day)}"
+            if l == 'ESPECIFICA': limitsResult += "ESPECIFICA"
+            else: limitsResult += f"N{convert.convertDayToNum(l)}"
 
-        df2 = pd.DataFrame({'Sala': [name], 'Local': [local], 'Limitações': [limitsResult]})
+        df2 = pd.DataFrame({'Sala': [name], 'Local': [local], 'Limitacoes': [limitsResult]})
 
         newDf = pd.concat([df, df2], ignore_index=True,)
 
