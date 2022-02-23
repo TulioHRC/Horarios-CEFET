@@ -136,7 +136,7 @@ def cost_board(board):
                                     try:
                                         limite_inferior = int(p.split(':')[1].split(',')[0])
                                         limite_superior = int(p.split(':')[1].split(',')[1])
-                                        if typeNum == 1:
+                                        if h == 1:
                                             limite_inferior -= 5
                                             limite_superior -= 5
                                     except:  # Considerando o caso de não ter selecionado uma variação de horários
