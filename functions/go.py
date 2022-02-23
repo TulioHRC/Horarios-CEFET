@@ -23,9 +23,9 @@ def restartTeachers(teachers):
 def mainFunction():  # A função principal do código, que retornará o resultado que nós esperamos
     # =================== Pegando os dados que nós fornecemos
     try:
-        teachersData = loadData.getDatabase('Planilha.xlsx')  # Leitura inicial da planilha excel
+        teachersData = loadData.getDatabase('Planilha.xlsx')  # Leitura inicial da planilha
         teachersColumns = loadData.getDatabase('Planilha.xlsx', get="columns")
-        # roomsData = loadData.getDatabase('Planilha sala.xlsx')
+        roomsData = loadData.getDatabase('Planilha sala.xlsx') # Leitura inicial da planilha de salas
         pointsData = loadData.getPoints('./data/preferencias.txt')  # Leitura das pontuações para o cost
     except Exception as e:
         print(f"Houve um erro ao tentar pegar os dados das planilhas.\n{e}")
@@ -80,6 +80,12 @@ def mainFunction():  # A função principal do código, que retornará o resulta
                 for time in range(0, turma[1]):
                     ho = c.Horario(professor, materia, turma)  # Objeto do horário
                     professor.h_individuais.append(ho)  # Uma lista com todos os objetos Horario do professor []
+
+    roomsNames = roomsData['Sala'] # -- Salas
+    rooms = []
+
+    for index, room in enumerate(roomsNames):  # Transforma cada turma em um objeto de uma classe
+        rooms.append(c.Room(room, roomsData['Local'][index], roomsData['Limitacoes'][index]))
 
     # ==================== Processando os dados: Gerando a planilha final com base nos dados
 
@@ -152,15 +158,3 @@ def mainFunction():  # A função principal do código, que retornará o resulta
         result.saveSheet(turm.name, horarios[0][turm.name], type='turm')
     for teacher in teachers:
         result.saveSheet(teacher.name, horarios[2][teachersNames.index(teacher.name)].schedule, type='teacher')
-    
-    
-    # Adicionar os dados acima aos objetos ou adaptar forma de colocar nas planilhas
-
-
-"""
-    # ====================== Criando planilhas
-    for turm in classes:
-        result.saveSheet(turm.name, turm.schedule, type='turm')
-    for teacher in teachers:
-        result.saveSheet(teacher.name, teacher.schedule, type='teacher')
-"""

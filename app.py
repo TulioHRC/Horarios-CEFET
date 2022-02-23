@@ -6,7 +6,7 @@ from functions import go
 from functions import loadData
 from functions import utilitaries
 
-prefers = {'S': set(), 'N': set()}
+prefers = {'S': set(), 'N': set(), 'R': set()}
 limits = set()
 limitsRoom = set()
 
@@ -96,7 +96,7 @@ class AddingData(MainApp):
     def __init__(self):
         global prefers, limits, limitsRoom
 
-        prefers = {'S': set(), 'N': set()}
+        prefers = {'S': set(), 'N': set(), 'R': set()}
         limits = set()
         limitsRoom = set()
 
@@ -105,9 +105,6 @@ class AddingData(MainApp):
         self.sizes = [self.screen.winfo_screenwidth(), self.screen.winfo_screenheight()]
         self.screen.geometry(f"{int(self.sizes[0]*0.6)}x{int(self.sizes[1]*0.7)}+{int(self.sizes[0]*0.2)}+{int(self.sizes[1]*0.15)}")
         self.screen.resizable(0,0)
-
-        prefers = {'S': set(), 'N': set()}
-        limits = set()
 
         self.tabs = ttk.Notebook(self.screen)
         self.tabs.pack(fill=BOTH, expand=True)
@@ -277,22 +274,43 @@ class AddConditions(AddingData):
         Label(self.add, text="Tipo:", font=('Arial', 18)).grid(row=0, column=0, pady=20, padx=15)
         self.type = StringVar()
         if type == 'limit':
-            if room: options = ["Não pode dar aula na"]
-            else: options = ["Não posso dar aula na"]
-        else: options = ["Quero dar aula na", "Não quero dar aula na"]
+            if room: options = ["Não pode dar aula na", "Uso especial"]
+            else: options = ["Não posso dar aula na", "Tem que ser na sala"]
+        else: options = ["Quero dar aula na", "Não quero dar aula na", "Prefiro na sala"]
         self.type.set(options[0])
 
-        self.optionMenu = OptionMenu(self.add, self.type, *options).grid(row=0, column=1, pady=20, padx=15)
+        self.optionMenu = OptionMenu(self.add, self.type, *options, command=self.change).grid(row=0, column=1, pady=20, padx=15)
 
-        self.day = StringVar()
+        self.frameAdd = Frame(self.add)
+        self.frameAdd.grid(row=0, column=2, pady=20, padx=15)
+
+        self.option = StringVar()
         dayOptions = ["segunda", "terça", "quarta", "quinta", "sexta"]
-        self.day.set(dayOptions[0])
+        self.option.set(dayOptions[0])
 
-        self.dayMenu = OptionMenu(self.add, self.day, *dayOptions).grid(row=0, column=2, pady=20, padx=15)
+        self.menu = OptionMenu(self.frameAdd, self.option, *dayOptions).pack()
 
         ######## Botão para escolher tipo de preferencia (dia; dia e hora; sala;)
 
-        Button(self.add, text="Criar", font=('Arial', 15), command=lambda: self.addP(type, room)).grid(row=1, column=1, pady=10, padx=15)
+        Button(self.add, text="Criar", font=('Arial', 15), command=lambda: self.addP(self.type.get(), type, room)).grid(row=1, column=1, pady=10, padx=15)
+
+    def change(self, value): # Changing the type of prefer/limit on the screen
+        self.frameAdd.destroy()
+        self.frameAdd = Frame(self.add)
+        self.frameAdd.grid(row=0, column=2, pady=20, padx=15)
+        if value[0] == 'N' or value[0] == 'Q': # S ou N prefers/limits
+            self.option = StringVar()
+            dayOptions = ["segunda", "terça", "quarta", "quinta", "sexta"]
+            self.option.set(dayOptions[0])
+
+            self.menu = OptionMenu(self.frameAdd, self.option, *dayOptions).pack()
+            # Horário de preferencia .....
+        if value[0] == 'P' or value[0] == 'T': # Preferencias de salas
+            self.option = StringVar()
+            roomOptions = loadData.getDatabase('Planilha sala.xlsx')['Sala']
+            self.option.set(roomOptions[0])
+
+            self.menu = OptionMenu(self.frameAdd, self.option, *roomOptions).pack()
 
     def seeFrame(self, type, room):
         global prefers, limits, limitsRoom
@@ -304,46 +322,67 @@ class AddConditions(AddingData):
 
         if type == 'limit' and not room:
             for l in limits:
-                Label(self.see, text=f"Não pode dar aula na {l}", font=fontS, fg="#855862").grid(row=line, column=0, columnspan=2, padx=x, pady=y)
-                Button(self.see, text="Excluir", font=fontS, command=lambda: self.delete(type, limits, l)).grid(row=line, column=2, padx=x, pady=y)
+                if l[0] == 'R': t = f'Aula apenas na sala {l}'
+                else: t = f"Não pode ter aula na {l}"
+                Label(self.see, text=t, font=fontS, fg="#855862").grid(row=line, column=0, columnspan=2, padx=x, pady=y)
+                Button(self.see, text="Excluir", font=fontS, command=lambda: self.delete(type, limits, l, room)).grid(row=line, column=2, padx=x, pady=y)
                 line += 1
         elif type == 'limit' and room:
             for l in limitsRoom:
-                Label(self.see, text=f"Não pode dar aula na {l}", font=fontS, fg="#855862").grid(row=line, column=0, columnspan=2, padx=x, pady=y)
-                Button(self.see, text="Excluir", font=fontS, command=lambda: self.delete(type, limitsRoom, l)).grid(row=line, column=2, padx=x, pady=y)
+                if l == 'ESPECIFICA': t = 'Uso especial'
+                else: t = f"Não pode ter aula na {l}"
+                Label(self.see, text=t, font=fontS, fg="#855862").grid(row=line, column=0, columnspan=2, padx=x, pady=y)
+                Button(self.see, text="Excluir", font=fontS, command=lambda: self.delete(type, limitsRoom, l, room)).grid(row=line, column=2, padx=x, pady=y)
                 line += 1
         else:
             for p in prefers['S']:
                 Label(self.see, text=f"Quero dar aula na {p}", font=fontS, fg="#59915c").grid(row=line, column=0, columnspan=2, padx=x, pady=y)
-                Button(self.see, text="Excluir", font=fontS, command=lambda: self.delete(type, prefers["S"], p)).grid(row=line, column=2, padx=x, pady=y)
+                Button(self.see, text="Excluir", font=fontS, command=lambda: self.delete(type, prefers["S"], p, room)).grid(row=line, column=2, padx=x, pady=y)
                 line += 1
             for p in prefers['N']:
                 Label(self.see, text=f"Não quero dar aula na {p}", font=fontS, fg="#855862").grid(row=line, column=0, columnspan=2, padx=x, pady=y)
-                Button(self.see, text="Excluir", font=fontS, command=lambda: self.delete(type, prefers["N"], p)).grid(row=line, column=2, padx=x, pady=y)
+                Button(self.see, text="Excluir", font=fontS, command=lambda: self.delete(type, prefers["N"], p, room)).grid(row=line, column=2, padx=x, pady=y)
+                line += 1
+            for p in prefers['R']:
+                Label(self.see, text=f"Prefiro dar aula na sala {p}", font=fontS).grid(row=line, column=0, columnspan=2, padx=x, pady=y)
+                Button(self.see, text="Excluir", font=fontS, command=lambda: self.delete(type, prefers["R"], p, room)).grid(row=line, column=2, padx=x, pady=y)
                 line += 1
 
-    def delete(self, type, setList, day):
+    def delete(self, type, setList, day, room=0):
         setList.remove(day)
         self.screen.destroy()
-        AddConditions(type)
+        AddConditions(type, room)
 
-    def addP(self, type, room=0):
+    def addP(self, typeOption, type, room=0):
         global prefers, limits, limitsRoom
 
         if type == "limit" and not room:
-            if not self.day.get() in prefers['S']:
-                limits.add(self.day.get())
-            else:
-                messagebox.showerror('Este dia já é uma preferencia', 'Se você quiser adicionar esta limitação, exclua a preferencia primeiramente.')
-        elif type == "limit" and room: limitsRoom.add(self.day.get())
-        else:
+            if typeOption[0] == 'N' or typeOption[0] == 'Q': # S/N prefers
+                if not self.option.get() in prefers['S']:
+                    limits.add(self.option.get())
+                else:
+                    messagebox.showerror('Este dia já é uma preferencia', 'Se você quiser adicionar esta limitação, exclua a preferencia primeiramente.')
+            elif typeOption[0] == 'P' or typeOption[0] == 'T': # Room preferences
+                if not 'R' in str(limits):
+                    limits.add('R' + self.option.get())
+                else:
+                    messagebox.showerror('Já há uma limitação de sala', 'Se você quiser adicionar esta limitação, exclua a outra limitação de sala primeiramente.')
+
+        elif type == "limit" and room:
+            if typeOption[0] == 'U':
+                limitsRoom.add('ESPECIFICA')
+            else: limitsRoom.add(self.option.get())
+
+        else: # Prefers
             if self.type.get() == "Quero dar aula na":
-                if not self.day.get() in limits:
-                    prefers['S'].add(self.day.get())
+                if not self.option.get() in limits:
+                    prefers['S'].add(self.option.get())
                 else:
                     messagebox.showerror('Este dia já é uma limitação', 'Se você quiser adicionar esta limitação, exclua a limitação primeiramente.')
+            elif typeOption[0] == "N":
+                prefers['N'].add(self.option.get())
             else:
-                prefers['N'].add(self.day.get())
+                prefers['R'].add(self.option.get())
         self.screen.destroy()
         AddConditions(type, room)
 
