@@ -41,9 +41,8 @@ def cost_individual(horario, position, board, subjectPos, typeNum, sala=''):
     dayBoard = board[position[0]][typeNum]
     teacherDayBoard = horario.teacher.schedule[position[0]][typeNum]
 
-
-    horariosPreenchidos = 0 # Horarios já preenchidos no dia
-    horariosP = 0 # Horarios já preenchidos no dia para os professores
+    horariosPreenchidos = 0  # Horarios já preenchidos no dia
+    horariosP = 0  # Horarios já preenchidos no dia para os professores
 
     for p in pointsKeys:
         if p == "nHorariosDia":  # Para a quantidade de horários já preenchidos no dia
@@ -56,8 +55,8 @@ def cost_individual(horario, position, board, subjectPos, typeNum, sala=''):
                     horariosP += 1
                     pontuation += points[p]
         elif p == "tresHorariosDia":
-            if horariosPreenchidos >= 3: pontuation += points[p] # Da turma
-            if horariosP >= 3: pontuation += points[p] # Do professor
+            if horariosPreenchidos >= 3: pontuation += points[p]  # Da turma
+            if horariosP >= 3: pontuation += points[p]  # Do professor
         elif p == "horariosPoints":
             if position[1] in [0, 4]:
                 pontuation += points[p]
@@ -82,10 +81,12 @@ def cost_individual(horario, position, board, subjectPos, typeNum, sala=''):
                         limite_inferior = 1
                         limite_superior = 10
 
-                    if (limite_inferior <= int(position[1])+1) and (limite_superior >= int(position[1])+1): # Se o horário estiver compreendido durante a limitação
+                    if (limite_inferior <= int(position[1]) + 1) and (limite_superior >= int(
+                            position[1]) + 1):  # Se o horário estiver compreendido durante a limitação
                         if str(prefer)[0] == 'S':
                             pontuation += points['preferPositiva']
-                        else: pontuation += points['preferNegativa']
+                        else:
+                            pontuation += points['preferNegativa']
         # print(pontuation)
 
     return pontuation
@@ -101,7 +102,7 @@ def cost_board(board):
             for turno in day:  # Para manhã e depois tarde
                 num_of_0 = turno.count(0)
                 # Pontuação para cada dia já preenchido
-                result_value += (5 - num_of_0) * points['nHorariosDia']
+                result_value += (6 - num_of_0) * points['nHorariosDia']
 
                 # Pontuação para mais de 3 horários já preenchidos no mesmo dia
                 if num_of_0 < 3:
@@ -110,14 +111,19 @@ def cost_board(board):
                 # Primeiros e últimos horários do turno
                 if turno[0] != 0:
                     result_value += points['horariosPoints']
-                if turno[4] != 0:
+                if turno[5] != 0:
                     result_value += points['horariosPoints']
 
                 # Horários de mesma matéria agrupados
                 for h in range(0, len(turno)):
-                    if (h != 4):
-                        if turno[h] != 0 and turno[h+1] != 0:
-                            if turno[h].subject == turno[h + 1].subject:
+                    if h != 5:
+                        if turno[h] != 0 and turno[h + 1] != 0:
+                            if str(type(turno[h])) == "<class 'list'>":
+                                for h_bimestral in range(0, 4):
+                                    if str(type(turno[h + 1])) == "<class 'list'>":
+                                        if turno[h][h_bimestral].subject == turno[h + 1][h_bimestral].subject:
+                                            result_value += points['lastResp']
+                            elif turno[h].subject == turno[h + 1].subject:
                                 result_value += points['lastResp']
 
                 # Professor dando aula no dia que ele quer
@@ -146,7 +152,6 @@ def cost_board(board):
                 t += 1
 
     return result_value
-
 
 def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board é o quadro de horários
     # Position = [day, hour]
@@ -192,28 +197,45 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board
     # Não pode trabalhar mais de 8h no mesmo dia
     # O professor só vai dar mais de 8h de aula em um dia se ele der 10 horários
     for teacher in all_teachers:
+
         for morning, afternoon in teacher.schedule.values():
             day_ok = False
             day = morning + afternoon
             for h in day:
-                if h == 0:
-                    day_ok = True
+                if h != 0 and (str(type(h)) != "<class 'list'>"):
+                    day_ok += 1  # day_ok é a quantidade de aulas que o professor da no dia
                     break
-            if not day_ok:
+                if str(type(h)) == "<class 'list'>":
+                    bimestral_horaries.append(h)
+            # ========== Agora analisamos os horários bimestrais
+            max_value = 0  # É o numero máximo de horários bimestrais que ele dá de uma vez
+
+            for c in range(0, 4):  # Para cada bimestre
+                current_value = 0  # quantidade de aulas bimestrais que ele vai dar em uma semana desse bimestre
+                for h in bimestral_horaries:
+                    if h[c] != 0:
+                        current_value += 1
+                # Se a quantidade de horários dados nesse bimestre for maior que a quantidade de horários dados nos bimestres anteriores
+                max_value = current_value if (current_value >= max_value) else max_value
+            # Ao final somamos o maior valor à quantidade de horários normais que temos
+            day_ok += max_value
+            # Se a quantidade de horários da situação que tiver a maior quantidade de horários for aceitável,
+            # então está tudo bem
+            if day_ok >= 9:
                 return INVALIDO
 
     # Não pode ter um intervalo entre uma aula e outra maior que 3h
-        # almoço= 90min, intervalo= 20min
+    # almoço= 90min, intervalo= 20min
     for teacher in all_teachers:
         for morning, evening in teacher.schedule.values():
             tempo_ocioso = 0
             ja_passou_pelo_primeiro_h = False
             day = morning + evening
-            for h in range(0, 10):
+            for h in range(0, 12):
                 # Adicionamos o tempo dos intervalos ao tempo ocioso
-                if h == 5:                #passou o almoço
+                if h == 6:  # passou o almoço
                     tempo_ocioso += 90
-                if (h == 3) or (h == 8):  #passou o recreio
+                if (h == 3) or (h == 9):  # passou o recreio
                     tempo_ocioso += 20
 
                 # Adicionamos o tempo dos horários vagos ao tempo ocioso
