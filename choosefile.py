@@ -4,7 +4,7 @@ import pandas as pd
 import shutil
 import os
 
-planilha = ' '      # declara a variavel com algo vazio só pra ela se tornar global em btmin_click
+planilha = ''      # declara a variavel com algo vazio só pra ela se tornar global em btmin_click
 
 # ==================================== função para quando o botão for apertado ===================================================
 def bt_click():
@@ -14,15 +14,18 @@ def bt_click():
     # mostrar só o caminho do arquivo
     # print(file.name)   #.name pega só o caminho do arquivo // outro teste
     filename = file.name.split("/")
-    filename1 = (filename[-1]) # pega o nome do arquivo 
+    filename1 = filename[-1] # pega o nome do arquivo
 
     pasta = os.path.dirname(os.path.realpath(__file__)) # pega o caminho absoluto do arquivo python que está sendo executado
 
-    shutil.copyfile(file.name, pasta + "/testepython.xlsx") # copia o arquivo
+    shutil.copy(file.name, './') # copia o arquivo
     #print(f"o arquivo {filename1} está em {pasta}" )  # teste
 
-    planilha = pd.read_excel(filename1)
-    print(planilha)
+    try:
+        planilha = pd.read_excel('./' + filename1)
+        print(planilha)
+    except Exception as e:
+        print(e)
 
 
 pasta = os.getcwd()
