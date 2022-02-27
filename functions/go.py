@@ -7,8 +7,8 @@ import random
 NUMERO_DE_REPETIÇÕES = 10
 
 
-def restartTeachers(teachers):
-    for t in teachers:
+def restartObjects(listO):
+    for t in listO:
         t.schedule = {
             '2': [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]],  # manhã e tarde
             '3': [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]],
@@ -17,7 +17,7 @@ def restartTeachers(teachers):
             '6': [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
         }
 
-    return teachers
+    return listO
 
 
 def mainFunction():  # A função principal do código, que retornará o resultado que nós esperamos

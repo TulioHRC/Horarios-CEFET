@@ -54,10 +54,13 @@ class Room:
         self.name = name
         self.position = position
         self.limits = limits
-        if preDefinedSchedule:
-            self.schedule = preDefinedSchedule # Horários de cada sala
-        else:
-            self.schedule = {'2': [],'3': [],'4': [],'5': [],'6': []}
+        self.schedule = {
+            '2': [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]],  # manhã e tarde
+            '3': [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]],
+            '4': [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]],
+            '5': [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]],
+            '6': [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
+        }
 
 
 class Horario:
