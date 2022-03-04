@@ -155,14 +155,16 @@ def cost_board(board):
 
     return result_value
 
+
 def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board é o quadro de horários
-    # Position = [day, hour]
+    # Position = [day, turno, hour]
 
     INVALIDO = -99
 
     # h_room = sala    # Sala
-    h_day = position[0]  # Dia
-    h_time = position[1]  # Horário
+    h_day = position[0]   # Dia
+    h_turn = position[1]  # Turno
+    h_time = position[2]  # Horário
 
     # Limitações do professor
     limitation = horario.teacher.limits[subjectPos]
@@ -194,64 +196,74 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board
     if horario.teacher.schedule[str(h_day)][typeNum][h_time] != 0:
         return INVALIDO
 
-    """
     # Não pode trabalhar mais de 8h no mesmo dia
-    # O professor só vai dar mais de 8h de aula em um dia se ele der 10 horários
-    for teacher in all_teachers:
-
-        for morning, afternoon in teacher.schedule.values():
-            day_ok = False
-            day = morning + afternoon
-            for h in day:
-                if h != 0 and (str(type(h)) != "<class 'list'>"):
-                    day_ok += 1  # day_ok é a quantidade de aulas que o professor da no dia
-                    break
-                if str(type(h)) == "<class 'list'>":
-                    bimestral_horaries.append(h)
-            # ========== Agora analisamos os horários bimestrais
-            max_value = 0  # É o numero máximo de horários bimestrais que ele dá de uma vez
-
-            for c in range(0, 4):  # Para cada bimestre
-                current_value = 0  # quantidade de aulas bimestrais que ele vai dar em uma semana desse bimestre
-                for h in bimestral_horaries:
-                    if h[c] != 0:
-                        current_value += 1
-                # Se a quantidade de horários dados nesse bimestre for maior que a quantidade de horários dados nos bimestres anteriores
-                max_value = current_value if (current_value >= max_value) else max_value
-            # Ao final somamos o maior valor à quantidade de horários normais que temos
-            day_ok += max_value
-            # Se a quantidade de horários da situação que tiver a maior quantidade de horários for aceitável,
-            # então está tudo bem
-            if day_ok >= 9:
-                return INVALIDO
+    horaries_in_day = horario.teacher.schedule[position[0]]
+    bimestral_h = []
+    num_h = 0
+    for h in horaries_in_day:
+        if str(type(h)) == "<class 'list'>":
+            bimestral_h.append(h)
+        elif h != 0:
+            num_h += 1
+    max_value = 0
+    for c in range(0, 4):
+        num_h_bimestral = 0
+        for h in bimestral_h:
+            if h[c] != 0:
+                num_h_bimestral += 1
+        max_value = num_h_bimestral if num_h_bimestral >= max_value else max_value
+    num_h = num_h + max_value
+    if num_h >= 10:
+        return INVALIDO
 
     # Não pode ter um intervalo entre uma aula e outra maior que 3h
-    # almoço= 90min, intervalo= 20min
-    for teacher in all_teachers:
-        for morning, evening in teacher.schedule.values():
-            tempo_ocioso = 0
-            ja_passou_pelo_primeiro_h = False
-            day = morning + evening
-            for h in range(0, 12):
-                # Adicionamos o tempo dos intervalos ao tempo ocioso
-                if h == 6:  # passou o almoço
-                    tempo_ocioso += 90
-                if (h == 3) or (h == 9):  # passou o recreio
-                    tempo_ocioso += 20
-
-                # Adicionamos o tempo dos horários vagos ao tempo ocioso
-                if day[h] == 0:
-                    tempo_ocioso += 50
-
-                # Se o professor tiver aula no horário, analisa se o tempo ocioso é maior que o permitido.
-                # Se não for maior, zera o tempo ocioso.
-                else:
-                    if (tempo_ocioso >= 180) and ja_passou_pelo_primeiro_h:
-                        return INVALIDO
-                    tempo_ocioso = 0
-                    ja_passou_pelo_primeiro_h = True
-    # Deve ser implementado apenas quando todos os dados já estiverem cadastrados
     """
+    h_teacher = horario.teacher
+    h_in_day = h_teacher[0] + h_teacher[1]
+    zero_in_sequence = 0
+    for c in range(0, 12):
+        if h_in_day[c] == 0:
+            zero_in_sequence += 1
+            if zero_in_sequence >= 3:
+                return INVALIDO
+
+        elif str(type(h_in_day[c])) == "<class 'lista'>":
+            bimestral_zeros = 0
+            for i in range(0, 4):
+                current = h_in_day[c]
+                a = c
+                while str(type(current)) == "<class 'list'>":
+                    bimestral_zeros = bimestral_zeros + 1 if current[i] == 0 else 0
+                    a += 1
+                    current = h_in_day[a]
+                    if bimestral_zeros + zero_in_sequence >= 3:
+                        return INVALIDO
+
+            """
+            """
+            for i in range(0, 4):
+                if h_in_day[c][i] == 0:
+                    zero_in_sequence += 1
+                    if h_in_day[c + 1][i] == 0:
+                        zero_in_sequence += 1
+                        if h_in_day[c + 2][i] == 0:
+                            zero_in_sequence += 1
+                        else
+                    else:
+                        zero_in_sequence = 0
+            """
+            """
+            for thing in range(0, 4):
+                if h_in_day[c][thing] == 0:
+                    zero_in_sequence += 1
+                    if zero_in_sequence >= 3:
+                        return INVALIDO
+                    if h_in_day[c][thing + 1] == 0 or (h_in_day[c + 1] == 0):
+                        zero_in_sequence += 1
+                        c += 1
+                        if zero_in_sequence >= 3:
+                            return INVALIDO
+            """
 
     # Devem ser ao menos 11h entre o primeiro e o último horário de descanso
 
