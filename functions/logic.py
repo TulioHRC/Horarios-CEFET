@@ -20,6 +20,7 @@ def getBetterHour(horario, board, subjectPos, typeNum):
     for d in range(2, 7):  # para cada dia
         d = str(d)
         for h in range(0, 6):  # para cada horário no dia
+            print('Start validation')
             pontuation = validation(horario, [d, h], quadro, subjectPos, typeNum)  # -------------- Verificado
             if pontuation == 0:
                 pontuation = cost_individual(horario, [d, h], quadro, subjectPos, typeNum)
@@ -157,14 +158,14 @@ def cost_board(board):
 
 
 def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board é o quadro de horários
-    # Position = [day, turno, hour]
+    # Position = [day, hour]
 
     INVALIDO = -99
 
     # h_room = sala    # Sala
     h_day = position[0]   # Dia
-    h_turn = position[1]  # Turno
-    h_time = position[2]  # Horário
+    #h_turn = position[1]  # Turno
+    h_time = position[1]  # Horário
 
     # Limitações do professor
     limitation = horario.teacher.limits[subjectPos]
@@ -239,8 +240,7 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board
                     if bimestral_zeros + zero_in_sequence >= 3:
                         return INVALIDO
 
-            """
-            """
+
             for i in range(0, 4):
                 if h_in_day[c][i] == 0:
                     zero_in_sequence += 1
@@ -251,8 +251,7 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board
                         else
                     else:
                         zero_in_sequence = 0
-            """
-            """
+
             for thing in range(0, 4):
                 if h_in_day[c][thing] == 0:
                     zero_in_sequence += 1

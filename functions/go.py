@@ -92,7 +92,7 @@ def mainFunction():  # A função principal do código, que retornará o resulta
     bestSchedule = []
 
     for time in range(0, NUMERO_DE_REPETIÇÕES):
-        teachers_copy = restartTeachers(teachers)
+        teachers_copy = restartObjects(teachers)
 
         # Embaralha a lista de professores
         lista_embaralhada = teachers.copy()
@@ -152,7 +152,6 @@ def mainFunction():  # A função principal do código, que retornará o resulta
         print(time, pontuacao)
 
     horarios = random.choice(bestSchedule)
-    print(horarios[0])
 
     for turm in classes:
         result.saveSheet(turm.name, horarios[0][turm.name], type='turm')

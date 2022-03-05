@@ -17,27 +17,36 @@ def saveTeacher(name, subject, type, classes, grade, subGroup, prefers, limits):
         prefersResult = ''
 
         for day in prefers["S"]:
+            d = day.split(';')[0]
+            hours = day.split(';')[1].split(',')
             if len(prefersResult) != 0:
                 prefersResult += '-'
-            prefersResult += f"S{convert.convertDayToNum(day)}"
+            prefersResult += f"S{convert.convertDayToNum(d)}:{min(hours)},{max(hours)}"
         for day in prefers["N"]:
+            d = day.split(';')[0]
+            hours = day.split(';')[1].split(',')
             if len(prefersResult) != 0:
                 prefersResult += '-'
-            prefersResult += f"N{convert.convertDayToNum(day)}"
+            prefersResult += f"S{convert.convertDayToNum(d)}:{min(hours)},{max(hours)}"
         for room in prefers["R"]:
+            d = day.split(';')[0]
+            hours = day.split(';')[1].split(',')
             if len(prefersResult) != 0:
                 prefersResult += '-'
-            prefersResult += f"{room}"
+            prefersResult += f"S{convert.convertDayToNum(d)}:{min(hours)},{max(hours)}"
 
         limitsResult = ''
         for l in limits:
+            o = l.split(';')[0]
+            hours = l.split(';')[1].split(',')
             if len(limitsResult) != 0:
                 limitsResult += '-'
-            if l[0] == 'R': limitsResult += f"{l}"
+            if l[0] == 'R': limitsResult += f"{o}:{min(hours)},{max(hours)}"
             else:
-                limitsResult += f"N{convert.convertDayToNum(l)}"
+                limitsResult += f"N{convert.convertDayToNum(o)}:{min(hours)},{max(hours)}"
 
         df2 = pd.DataFrame({'Professor': [name], 'Materia': [subject], 'Tipo': [type], 'Ano': [grade], 'Sub-Grupo': subGroup, 'Preferencias': [prefersResult], 'Limitacoes': [limitsResult]})
+        print(df2)
 
         for i in classes:
             df2[f"{i}"] = classes[i]

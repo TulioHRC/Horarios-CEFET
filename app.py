@@ -282,15 +282,25 @@ class AddConditions(AddingData):
         self.optionMenu = OptionMenu(self.add, self.type, *options, command=self.change).grid(row=0, column=1, pady=20, padx=15)
 
         self.frameAdd = Frame(self.add)
-        self.frameAdd.grid(row=0, column=2, pady=20, padx=15)
+        self.frameAdd.grid(row=0, column=2, columnspan=3, rowspan=2, pady=20, padx=15)
 
         self.option = StringVar()
         dayOptions = ["segunda", "terça", "quarta", "quinta", "sexta"]
         self.option.set(dayOptions[0])
 
-        self.menu = OptionMenu(self.frameAdd, self.option, *dayOptions).pack()
+        self.menu = OptionMenu(self.frameAdd, self.option, *dayOptions).grid(row=0, column=0, pady=5, padx=5)
 
-        ######## Botão para escolher tipo de preferencia (dia; dia e hora; sala;)
+        Label(self.frameAdd, text="Entre os horários:").grid(row=0, column=1, pady=5, padx=2) # Horários mais especificos
+        hourOptions = ["1", "2", "3", "4", "5", "6"]
+        self.initialH = StringVar()
+        self.initialH.set(hourOptions[0])
+
+        self.iH = OptionMenu(self.frameAdd, self.initialH, *hourOptions).grid(row=0, column=2, pady=5, padx=2)
+
+        self.finalH = StringVar()
+        self.finalH.set(hourOptions[-1])
+
+        self.fH = OptionMenu(self.frameAdd, self.finalH, *hourOptions).grid(row=1, column=2, pady=5, padx=2)
 
         Button(self.add, text="Criar", font=('Arial', 15), command=lambda: self.addP(self.type.get(), type, room)).grid(row=1, column=1, pady=10, padx=15)
 
@@ -303,14 +313,37 @@ class AddConditions(AddingData):
             dayOptions = ["segunda", "terça", "quarta", "quinta", "sexta"]
             self.option.set(dayOptions[0])
 
-            self.menu = OptionMenu(self.frameAdd, self.option, *dayOptions).pack()
-            # Horário de preferencia .....
+            self.menu = OptionMenu(self.frameAdd, self.option, *dayOptions).grid(row=0, column=0, pady=5, padx=5)
+
+            Label(self.frameAdd, text="Entre os horários:").grid(row=0, column=1, pady=5, padx=2)
+            hourOptions = ["1", "2", "3", "4", "5", "6"]
+            self.initialH = StringVar()
+            self.initialH.set(hourOptions[0])
+
+            self.iH = OptionMenu(self.frameAdd, self.initialH, *hourOptions).grid(row=0, column=2, pady=5, padx=2)
+
+            self.finalH = StringVar()
+            self.finalH.set(hourOptions[-1])
+
+            self.fH = OptionMenu(self.frameAdd, self.finalH, *hourOptions).grid(row=1, column=2, pady=5, padx=2)
         if value[0] == 'P' or value[0] == 'T': # Preferencias de salas
             self.option = StringVar()
             roomOptions = loadData.getDatabase('Planilha sala.xlsx')['Sala']
             self.option.set(roomOptions[0])
 
-            self.menu = OptionMenu(self.frameAdd, self.option, *roomOptions).pack()
+            self.menu = OptionMenu(self.frameAdd, self.option, *roomOptions).grid(row=0, column=0, pady=5, padx=5)
+
+            Label(self.frameAdd, text="Entre os horários:").grid(row=0, column=1, pady=5, padx=2)
+            hourOptions = ["1", "2", "3", "4", "5", "6"]
+            self.initialH = StringVar()
+            self.initialH.set(hourOptions[0])
+
+            self.iH = OptionMenu(self.frameAdd, self.initialH, *hourOptions).grid(row=0, column=2, pady=5, padx=2)
+
+            self.finalH = StringVar()
+            self.finalH.set(hourOptions[-1])
+
+            self.fH = OptionMenu(self.frameAdd, self.finalH, *hourOptions).grid(row=1, column=2, pady=5, padx=2)
 
     def seeFrame(self, type, room):
         global prefers, limits, limitsRoom
@@ -359,30 +392,30 @@ class AddConditions(AddingData):
         if type == "limit" and not room:
             if typeOption[0] == 'N' or typeOption[0] == 'Q': # S/N prefers
                 if not self.option.get() in prefers['S']:
-                    limits.add(self.option.get())
+                    limits.add(self.option.get() + ';' + self.initialH.get() + ',' + self.finalH.get())
                 else:
                     messagebox.showerror('Este dia já é uma preferencia', 'Se você quiser adicionar esta limitação, exclua a preferencia primeiramente.')
             elif typeOption[0] == 'P' or typeOption[0] == 'T': # Room preferences
                 if not 'R' in str(limits):
-                    limits.add('R' + self.option.get())
+                    limits.add('R' + self.option.get() + ';' + self.initialH.get() + ',' + self.finalH.get())
                 else:
                     messagebox.showerror('Já há uma limitação de sala', 'Se você quiser adicionar esta limitação, exclua a outra limitação de sala primeiramente.')
 
         elif type == "limit" and room:
             if typeOption[0] == 'U':
                 limitsRoom.add('ESPECIFICA')
-            else: limitsRoom.add(self.option.get())
+            else: limitsRoom.add(self.option.get() + ';' + self.initialH.get() + ',' + self.finalH.get())
 
         else: # Prefers
             if self.type.get() == "Quero dar aula na":
                 if not self.option.get() in limits:
-                    prefers['S'].add(self.option.get())
+                    prefers['S'].add(self.option.get() + ';' + self.initialH.get() + ',' + self.finalH.get())
                 else:
                     messagebox.showerror('Este dia já é uma limitação', 'Se você quiser adicionar esta limitação, exclua a limitação primeiramente.')
             elif typeOption[0] == "N":
-                prefers['N'].add(self.option.get())
+                prefers['N'].add(self.option.get() + ';' + self.initialH.get() + ',' + self.finalH.get())
             else:
-                prefers['R'].add(self.option.get())
+                prefers['R'].add(self.option.get() + ';' + self.initialH.get() + ',' + self.finalH.get())
         self.screen.destroy()
         AddConditions(type, room)
 
