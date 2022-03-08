@@ -22,5 +22,8 @@ Horários
 11 - 16:40
 12 - 17:30
 
-Rn - Room/Sala n=nome da sala
-ESPECIFICA - Sala que só pode um tipo de matéria (tipo as salas/laboratórios de quimica, biologia, e outras matérias do técnico)
+Rn;i,f - Room/Sala n=nome da sala; horário inicial, final
+
+
+Para salas:
+ESPECIFICA - Sala que só pode um tipo de matéria (tipo as salas/laboratórios de quimica, biologia, e matérias do técnico), para evitar selecionar randomicamente

@@ -8,6 +8,10 @@ Nosso objetivo é criar um gerador de horários para as matérias das turmas no 
 
 Gerar horários aleatoriamente, porém seguindo o maior número de preferencias possíveis.
 
+### Notas
+- Na adição de preferencias é possível adicionar um intervalo de horários que serão preferidos pelo professor, este "entre" considera os
+dois valores já selecionados
+
 ### Próximas atualizações
 - Selecionar sala (se especifica) para cada matéria
 - Adaptar selecionar pastas para o resto do projeto, ou seja, colocar forma de selecionar planilha de aulas ou de salas e forma de salvar esses dados para uso posterior
