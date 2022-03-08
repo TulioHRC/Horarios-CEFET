@@ -161,8 +161,7 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board
 
     # h_room = sala    # Sala
     h_day = position[0]   # Dia
-    h_turn = position[1]  # Turno
-    h_time = position[2]  # Horário
+    h_time = position[1]  # Horário
 
     # Limitações do professor
     limitation = horario.teacher.limits[subjectPos]
@@ -216,29 +215,33 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board
         return INVALIDO
 
     # Não pode ter um intervalo entre uma aula e outra maior que 3h
-    """
     h_teacher = horario.teacher
     h_in_day = h_teacher[0] + h_teacher[1]
-    zero_in_sequence = 0
+    free_time = 0
     for c in range(0, 12):
+        if c == 3 or c == 9:
+            free_time += 20
+        elif c == 6:
+            free_time += 40
+        # Tempo livre que provem de horários vagos
         if h_in_day[c] == 0:
-            zero_in_sequence += 1
-            if zero_in_sequence >= 3:
+            free_time += 50
+            if free_time >= 180:
                 return INVALIDO
 
         elif str(type(h_in_day[c])) == "<class 'lista'>":
-            bimestral_zeros = 0
+            bimestral_free_time = 0
             for i in range(0, 4):
                 current = h_in_day[c]
                 a = c
                 while str(type(current)) == "<class 'list'>":
-                    bimestral_zeros = bimestral_zeros + 1 if current[i] == 0 else 0
+                    bimestral_free_time = bimestral_free_time + 50 if current[i] == 0 else 0
                     a += 1
                     current = h_in_day[a]
-                    if bimestral_zeros + zero_in_sequence >= 3:
+                    if bimestral_free_time + free_time >= 180:
                         return INVALIDO
 
-            """
+
             """
             for i in range(0, 4):
                 if h_in_day[c][i] == 0:
@@ -265,5 +268,5 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board
             """
 
     # Devem ser ao menos 11h entre o primeiro e o último horário de descanso
-
+    # Status: aguardando reunião, atualmente seria impossível o estado acima citado não ser válido
     return 0
