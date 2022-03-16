@@ -217,9 +217,10 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board
         return INVALIDO
 
     # Não pode ter um intervalo entre uma aula e outra maior que 3h
-    h_teacher = horario.teacher
+    """
+    h_teacher = horario.teacher.schedule
     h_in_day = h_teacher[0] + h_teacher[1]
-    free_time = 0
+    free_time = 0 # In minutes
     for c in range(0, 12):
         if c == 3 or c == 9:
             free_time += 20
@@ -231,7 +232,7 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board
             if free_time >= 180:
                 return INVALIDO
 
-        elif str(type(h_in_day[c])) == "<class 'lista'>":
+        elif str(type(h_in_day[c])) == "<class 'list'>":
             bimestral_free_time = 0
             for i in range(0, 4):
                 current = h_in_day[c]
@@ -243,7 +244,6 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board
                     if bimestral_free_time + free_time >= 180:
                         return INVALIDO
 
-            """
             for i in range(0, 4):
                 if h_in_day[c][i] == 0:
                     zero_in_sequence += 1
@@ -251,7 +251,6 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board
                         zero_in_sequence += 1
                         if h_in_day[c + 2][i] == 0:
                             zero_in_sequence += 1
-                        else
                     else:
                         zero_in_sequence = 0
 
@@ -264,8 +263,8 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board
                         zero_in_sequence += 1
                         c += 1
                         if zero_in_sequence >= 3:
-                            return INVALIDO
-            """
+                            return INVALIDO"""
+
 
     # Devem ser ao menos 11h entre o primeiro e o último horário de descanso
     # Status: aguardando reunião, atualmente seria impossível o estado acima citado não ser válido
