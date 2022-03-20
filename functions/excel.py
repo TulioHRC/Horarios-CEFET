@@ -2,7 +2,7 @@ import pandas as pd
 from tkinter import messagebox
 from functions import convert
 
-def saveTeacher(name, subject, type, classes, grade, subGroup, prefers, limits):
+def saveTeacher(name, subject, type, classes, grade, subGroup, bimestral, prefers, limits):
     err = 0
     if len(name) <= 2 or len(subject) <= 2:
         messagebox.showerror('Erro', 'O nome do professor ou da matéria está muito pequeno!\nMude e tente novamente.')
@@ -14,6 +14,12 @@ def saveTeacher(name, subject, type, classes, grade, subGroup, prefers, limits):
     if not err:
         df = pd.read_excel('Planilha.xlsx', 'Sheet1')
 
+        # Bimestral adaptation
+        if bimestral[0] == 'S': bimestral = 1
+        else: bimestral = ""
+
+
+        # Prefers and limits adaptation
         prefersResult = ''
 
         for day in prefers["S"]:
@@ -45,7 +51,7 @@ def saveTeacher(name, subject, type, classes, grade, subGroup, prefers, limits):
             else:
                 limitsResult += f"N{convert.convertDayToNum(o)}:{min(hours)},{max(hours)}"
 
-        df2 = pd.DataFrame({'Professor': [name], 'Materia': [subject], 'Tipo': [type], 'Ano': [grade], 'Sub-Grupo': subGroup, 'Preferencias': [prefersResult], 'Limitacoes': [limitsResult]})
+        df2 = pd.DataFrame({'Professor': [name], 'Materia': [subject], 'Tipo': [type], 'Ano': [grade], 'Bimestral': bimestral, 'Sub-Grupo': subGroup, 'Preferencias': [prefersResult], 'Limitacoes': [limitsResult]})
         print(df2)
 
         for i in classes:

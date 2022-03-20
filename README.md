@@ -20,7 +20,6 @@ dois valores já selecionados
 
 ## Release Notes
 
-<<<<<<< HEAD
 ### 0.0.7.1v (Prefereces .txt)
 - Created file to store the preferences values on the pontuation
 - Edit option on configs
@@ -39,7 +38,7 @@ dois valores já selecionados
 =======
 ### 0.0.61v (App adapt)
 - Adaptation to the new teachers sheet, with type (morning or afternoon)
->>>>>>> master
+
 
 ### 0.0.5v (New Room)
 - New room tab

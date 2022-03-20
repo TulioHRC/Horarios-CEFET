@@ -149,6 +149,17 @@ class AddingData(MainApp):
         self.year = OptionMenu(self.addTeacherFrame, self.teacherYear, *options)
         self.year.grid(row=3, column=1, padx=20, pady=5)
 
+        # Bimestral?
+        Label(self.addTeacherFrame, text="Bimestral?", font=('Arial', 14), bg="White").grid(row=4, column=2, padx=20, pady=10)
+        self.bimestral = StringVar()
+        bimestralOptions = [
+            'Não',
+            'Sim'
+        ]
+
+        self.bimestral.set(bimestralOptions[0])
+        OptionMenu(self.addTeacherFrame, self.bimestral, *bimestralOptions).grid(row=4, column=3, padx=20, pady=10)
+
         # SubGrupo
         Label(self.addTeacherFrame, text="Sub-Grupo:", font=('Arial', 14), bg="White").grid(row=4, column=0, padx=20, pady=20)
         self.group = StringVar()
@@ -231,7 +242,8 @@ class AddingData(MainApp):
             for turma in self.turmasList:
                 turmas[f"{turma}"] = self.classesList[f'{turma}'].get()
             try:
-                excel.saveTeacher(self.teacherName.get(), self.teacherSubject.get(), self.typeOp.get(), turmas, self.teacherYear.get(), self.group.get(), prefers, limits)
+                excel.saveTeacher(self.teacherName.get(), self.teacherSubject.get(), self.typeOp.get(), turmas, self.teacherYear.get(), self.group.get(), 
+                                    self.bimestral.get(), prefers, limits)
                 messagebox.showinfo('Salvo', 'O professor foi salvo com sucesso!')
                 self.screen.destroy()
             except Exception as e:
