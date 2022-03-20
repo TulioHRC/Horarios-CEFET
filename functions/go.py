@@ -35,7 +35,7 @@ def mainFunction():  # A função principal do código, que retornará o resulta
     classesNames = []  # -- Turmas
     classes = []  # Lista de objetos de cada turma
 
-    for i in range(7, len(teachersColumns)):  # Pega apenas as matérias
+    for i in range(8, len(teachersColumns)):  # Pega apenas as matérias
         classesNames.append(teachersColumns[i])
 
     for index, turm in enumerate(classesNames):  # Transforma cada turma em um objeto de uma classe
