@@ -20,7 +20,6 @@ def getBetterHour(horario, board, subjectPos, typeNum):
     for d in range(2, 7):  # para cada dia
         d = str(d)
         for h in range(0, 6):  # para cada horário no dia
-            print('Start validation')
             pontuation = validation(horario, [d, h], quadro, subjectPos, typeNum)  # -------------- Verificado
             if pontuation == 0:
                 pontuation = cost_individual(horario, [d, h], quadro, subjectPos, typeNum)

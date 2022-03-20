@@ -1,8 +1,6 @@
 import pandas as pd
 from functions import convert as conv
 
-# ?????????????????????? Editar para 10 horários
-
 def saveSheet(name, xData, yData={"Horarios": ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16']}, path="./data/", type="turm", intervals=1):
     # 1 = 7h-7h50, 2 = -8h40, 3 = -9h30, 4(5) = 9h50-10h40, 5(6) = -11h30, 6(7) = -12h20
     # 7(9) = 13h-13h50, 8(10) = -14h40, 9(11) = -15h30, 10(13) = 15h50-16h40, 11(14) = -17h30, 12(15) = -18h20
@@ -52,5 +50,4 @@ def saveSheet(name, xData, yData={"Horarios": ['1', '2', '3', '4', '5', '6', '7'
 
 
     df = pd.DataFrame(data=df)
-    print(df)
     df.to_excel(f"{path}{type}/{name}.xlsx", index=False)

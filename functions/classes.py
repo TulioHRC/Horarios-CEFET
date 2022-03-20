@@ -3,7 +3,7 @@ import re
 
 
 class Teacher:
-    def __init__(self, name, subject, type, prefers, limits, horaries=""):
+    def __init__(self, name, subject, type, prefers, limits, bimestral, horaries=""):
         self.name = name
 
         # Formato = cada matéria será adicionada nesta lista, com a seguinte formatação nome:turma,ex.:Matematica-2A
@@ -36,6 +36,9 @@ class Teacher:
         # Quantidade de objetos "Horários" que o professor tem -> total de aulas que ele dá na semana
         self.classes = 0
 
+        # Se o horário for de uma matéria bimestral na posição tal da lista estará 1, senão estará 0 ou ""
+        self.bimestral = [int(bimestral[0])]
+
         # Todos os objetos "Horários" relacionados a esse professor
         self.h_individuais = []
 
@@ -64,12 +67,11 @@ class Room:
 
 
 class Horario:
-    def __init__(self, teacher, subject, turm, possible_h=0, time='anual'):
+    def __init__(self, teacher, subject, turm, possible_h=0):
         self.teacher = teacher
         self.subject = subject
         self.turm = turm
         self.possible_h = possible_h
-        self.time = time
 
         # self.position = None
 

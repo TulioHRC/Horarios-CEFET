@@ -48,7 +48,7 @@ def mainFunction():  # A função principal do código, que retornará o resulta
 
     for index, teacher in enumerate(teachersData["Professor"]):  # Transforma cada professor em um objeto de uma classe
         horaries = {}  # Horários para cada turma e matéria
-        for i in range(7, len(teachersColumns)):
+        for i in range(8, len(teachersColumns)):
             horaries[
                 f"{teachersColumns[i]}-" + f'{teachersData["Ano"][index]}' + f'{teachersData["Sub-Grupo"][index]}'] = int(
                 teachersData[f"{teachersColumns[i]}"][index])
@@ -58,7 +58,8 @@ def mainFunction():  # A função principal do código, que retornará o resulta
                                       f'{teachersData["Materia"][index]}-{teachersData["Ano"][index]}{teachersData["Sub-Grupo"][index]}',
                                       f'{teachersData["Tipo"][index]}',
                                       str(teachersData["Preferencias"][index]).split('-'),
-                                      str(teachersData["Limitacoes"][index]).split('-'), horaries))
+                                      str(teachersData["Limitacoes"][index]).split('-'), 
+                                      str(teachersData["Bimestral"][index]), horaries))
             teachersNames.append(teacher)
         else:
             teachers[teachersNames.index(teacher)].subjects.append(
@@ -66,6 +67,7 @@ def mainFunction():  # A função principal do código, que retornará o resulta
             teachers[teachersNames.index(teacher)].types.append(f'{teachersData["Tipo"][index]}')
             teachers[teachersNames.index(teacher)].prefers.append(str(teachersData["Preferencias"][index]).split('-'))
             teachers[teachersNames.index(teacher)].limits.append(str(teachersData["Limitacoes"][index]).split('-'))
+            teachers[teachersNames.index(teacher)].bimestral.append(int(str(teachersData["Bimestral"][index])[0]))
             teachers[teachersNames.index(teacher)].horaries[
                 f'{teachersData["Materia"][index]}-{teachersData["Ano"][index]}{teachersData["Sub-Grupo"][index]}'] = horaries
 
