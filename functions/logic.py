@@ -21,20 +21,30 @@ def getBetterHour(horario, board, subjectPos, typeNum):
     for d in range(2, 7):  # para cada dia
         d = str(d)
         for h in range(0, 6):  # para cada horário no dia
-            pontuation = validation(horario, [d, h], quadro, subjectPos, typeNum)  # -------------- Verificado
+            pontuation = validation(horario, [d, h], quadro, subjectPos, typeNum) 
             if pontuation == 0:
-                pontuation = cost_individual(horario, [d, h], quadro, subjectPos, typeNum)
-                if pontuation > betterH[0][1]:
-                    betterH = [[f'{d};{h}', pontuation]]
-                elif pontuation == betterH[0][1]:
-                    betterH.append([f'{d};{h}', pontuation])
-            # else:
-            # print(d, h, pontuation, teacher.name, turm)
+                if teacher.bimestral[subjectPos] == 0: # Se não for matéria bimestral
+                    pontuation = cost_individual(horario, [d, h], quadro, subjectPos, typeNum)
+                    if pontuation > betterH[0][1]:
+                        betterH = [[f'{d};{h}', pontuation]]
+                    elif pontuation == betterH[0][1]:
+                        betterH.append([f'{d};{h}', pontuation])
+
+                else: # Se for
+                    for bimester in range(0,4):
+                        pontuation = cost_individual(horario, [d, h, bimester], quadro, subjectPos, typeNum, bimestral=1)
+                        if pontuation > betterH[0][1]:
+                            betterH = [[f'{d};{h};{bimester}', pontuation]]
+                        elif pontuation == betterH[0][1]:
+                            betterH.append([f'{d};{h};{bimester}', pontuation])
+                        
+                        #print(pontuation, d, h, bimester)
 
     return f"{random.choice(betterH)[0]};{turm[0]}"  # Retorna f'{day};{hour};{turm}' depois nós colocaremos a room variable
+    # Se bimestral será: f'{day};{hour};{bimester};{turm}'
 
 
-def cost_individual(horario, position, board, subjectPos, typeNum, sala=''):
+def cost_individual(horario, position, board, subjectPos, typeNum, sala='', bimestral=0):
     points = loadData.getPoints('./data/preferencias.txt')
     pointsKeys = points.keys()
 
@@ -49,25 +59,53 @@ def cost_individual(horario, position, board, subjectPos, typeNum, sala=''):
         if p == "nHorariosDia":  # Para a quantidade de horários já preenchidos no dia
             for h in dayBoard:
                 if h != 0:
-                    horariosPreenchidos += 1
-                    pontuation += points[p]
+                    if type(h) is list and bimestral == 1: # Condicionamento de bimestral
+                        if h[position[2]] != 0:
+                            horariosPreenchidos += 1
+                            pontuation += points[p]
+                    else:
+                        horariosPreenchidos += 1
+                        pontuation += points[p]
             for h in teacherDayBoard:
                 if h != 0:
-                    horariosP += 1
-                    pontuation += points[p]
+                    if type(h) is list and bimestral == 1: # Condicionamento de bimestral
+                        if h[position[2]] != 0:
+                            horariosPreenchidos += 1
+                            pontuation += points[p]
+                    else:
+                        horariosP += 1
+                        pontuation += points[p]
+
         elif p == "tresHorariosDia":
             if horariosPreenchidos >= 3: pontuation += points[p]  # Da turma
             if horariosP >= 3: pontuation += points[p]  # Do professor
-        elif p == "horariosPoints":
+
+        elif p == "horariosPoints": # Horários finais e iniciais do dia (piores horários para alunos e professores)
             if position[1] in [0, 5]:
                 pontuation += points[p]
+
         elif p == "lastResp": # Se o horário for ao lado de outro da mesma matéria
             if position[1] != 0:
                 if dayBoard[position[1] - 1] != 0:
-                    if dayBoard[position[1] - 1].subject == horario.subject: pontuation += points[p]
+                    if bimestral == 1 and type(dayBoard[position[1] - 1]) is list:
+                        if dayBoard[position[1] - 1][position[2]] != 0: # se não está vázio
+                            if dayBoard[position[1] - 1][position[2]].subject == horario.subject: 
+                                pontuation += points[p] *2
+                    else:
+                        try:
+                            if dayBoard[position[1] - 1].subject == horario.subject: pontuation += points[p]
+                        except: pass # Pode ocorrer caso o outro horário seja de lista (bimestral)
             if position[1] != 5:
                 if dayBoard[position[1] + 1] != 0:
-                    if dayBoard[position[1] + 1].subject == horario.subject: pontuation += points[p]
+                    if bimestral == 1 and type(dayBoard[position[1] + 1]) is list:
+                        if dayBoard[position[1] + 1][position[2]] != 0: # se não está vázio
+                            if dayBoard[position[1] + 1][position[2]].subject == horario.subject: 
+                                pontuation += points[p] *2
+                    else:
+                        try:
+                            if dayBoard[position[1] + 1].subject == horario.subject: pontuation += points[p]
+                        except: pass # Pode ocorrer caso o outro horário seja de lista (bimestral)
+
         elif p == "preferPositiva":  # negativa e positiva para diminuir código
             for prefer in horario.teacher.prefers[subjectPos]:  # para cada limitação do professor
                 if f'N{position[0]}' in str(prefer) or f'S{position[0]}' in str(prefer):  # Se a limitação estiver no dia do horário
@@ -136,7 +174,7 @@ def cost_board(board):
                         if (h != 5):
                             if turno[h] != 0 and turno[h+1] != 0:
                                 actual = turno[h] if not(type(turno[h]) is list) else turno[h][b]
-                                prox = turno[h+1] if not(type(turno[h]) is list) else turno[h][b]
+                                prox = turno[h+1] if not(type(turno[h+1]) is list) else turno[h+1][b]
                                 if actual != 0 and prox != 0:
                                     if actual.subject == prox.subject:
                                         result_value += points['lastResp']

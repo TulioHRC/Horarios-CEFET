@@ -122,25 +122,38 @@ def mainFunction():  # A função principal do código, que retornará o resulta
 
             for horario in h_professor:
                 subjectPos = horario.teacher.subjects.index(f"{horario.subject}")  # -{horario.turm[0].split('-')[1]}")
-                type = horario.teacher.types[subjectPos]
+                typeV = horario.teacher.types[subjectPos]
                 typeNum = 0
 
-                if type == 'Tarde': typeNum = 1
+                if typeV == 'Tarde': typeNum = 1
                 # Seleciono qual o melhor estado para aquele horário
                 position = logic.getBetterHour(horario, quadro.copy()[horario.turm[0]], subjectPos,
                                                typeNum)  # type é 0 - manha ou 1 - tarde. retorna 'day;hour;turm;room'
                 position_info = position.split(';')
 
                 # Coloco o horário naquela posição
-                quadro[position_info[2]][position_info[0]][typeNum][int(position_info[1])] = horario
-                """quadro[position_info[2]][position_info[0]][typeNum][int(position_info[1])] = [horario] if horario.time == 'bimestral' else horario"""
+                if teacher.bimestral[subjectPos] == 1: # Se horário for bimestral
+                    if not(type(quadro[position_info[3]][position_info[0]][typeNum][int(position_info[1])]) is list): # Se no horário não for lista
+                        quadro[position_info[3]][position_info[0]][typeNum][int(position_info[1])] = [0, 0, 0, 0]
+
+                    quadro[position_info[3]][position_info[0]][typeNum][int(position_info[1])][int(position_info[2])] = horario
+                else: 
+                    quadro[position_info[2]][position_info[0]][typeNum][int(position_info[1])] = horario
+                
                 # Professores
-                horario.teacher.schedule[position_info[0]][typeNum][int(position_info[
-                                                                            1])] = f"{horario.turm[0]}-{str(horario).split('-')[1]}"  # Alterando objeto do professor
+                if teacher.bimestral[subjectPos] == 1: # Se horário for bimestral
+                    if not(type(horario.teacher.schedule[position_info[0]][typeNum][int(position_info[1])]) is list): # Se no horário não for lista
+                        horario.teacher.schedule[position_info[0]][typeNum][int(position_info[1])] = [0, 0, 0, 0]
+
+                    horario.teacher.schedule[position_info[0]][typeNum][int(position_info[1])][int(position_info[2])] = f"{horario.turm[0]}-{str(horario).split('-')[1]}"
+                else: 
+                    horario.teacher.schedule[position_info[0]][typeNum][int(position_info[1])] = f"{horario.turm[0]}-{str(horario).split('-')[1]}"
+                # Alterando objeto do professor
                 teachers_copy[teachersNames.index(horario.teacher.name)].schedule[position_info[0]][typeNum][
-                    int(position_info[1])] = f"{horario.turm[0]}-{str(horario).split('-')[1]}"
-        # for turm in classes:
-        #    print(turm.name, quadro[turm.name])
+                    int(position_info[1])] = horario.teacher.schedule[position_info[0]][typeNum][int(position_info[1])]
+
+        #for turm in classes:
+           #print(turm.name, quadro[turm.name])
 
         pontuacao = logic.cost_board(quadro)
 
