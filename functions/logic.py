@@ -93,20 +93,19 @@ def cost_individual(horario, position, board, subjectPos, typeNum, sala=''):
 
 def cost_board(board):
     # Vamos calcular uma vez para cada bimestre como se fosse um quadr a parte
+    points = loadData.getPoints('./data/preferencias.txt')
+
     media = 0
     for b in range(0, 4):
-
-        points = loadData.getPoints('./data/preferencias.txt')
-
         result_value = 0
         for quadro in board.values():  # Para cada turma
             for day in quadro.values():  # Para cada dia nesta turma
                 typeNum = 0 # qual turno (0 manhã, 1 tarde)
                 for turno in day:  # Para manhã e depois tarde
-
                     num_of_0 = 0
+
                     for h in turno:
-                        if type(h) == "<class 'list'>":
+                        if type(h) is list:
                             if h[b] == 0:
                                 num_of_0 += 1
                         elif h == 0:
@@ -119,26 +118,26 @@ def cost_board(board):
                         result_value += points['tresHorariosDia']
 
                     # Primeiros e últimos horários do turno
-                    if type(turno[0]) == "<class 'list'>":
-                        if 'Horario' in type(turno[0][b]):
+                    if type(turno[0]) is list:
+                        if turno[0][b] != 0:
                             result_value += points['horariosPoints']
-                    elif 'Horario' in type(turno[0]):
+                    elif turno[0] != 0:
                         result_value += points['horariosPoints']
 
-                    if type(turno[5]) == "<class 'list'>":
-                        if 'Horario' in type(turno[5][b]):
+                    if type(turno[5]) is list:
+                        if turno[5][b] != 0:
                             result_value += points['horariosPoints']
-                    elif 'Horario' in type(turno[5]):
+                    elif turno[5] != 0:
                         result_value += points['horariosPoints']
 
                     # Horários de mesma matéria agrupados
                     for h in range(0, len(turno)):
                         if (h != 5):
-                            if not(turno[h] == 0) or not(turno[h+1] == 0):
-                                actual = turno[h] if 'Horario' in type(turno[h]) else turno[h][b]
-                                next = turno[h+1] if 'Horario' in type(turno[h]) else turno[h][b]
-                                if actual != 0 and next != 0:
-                                    if actual.subject == next.subject:
+                            if turno[h] != 0 and turno[h+1] != 0:
+                                actual = turno[h] if not(type(turno[h]) is list) else turno[h][b]
+                                prox = turno[h+1] if not(type(turno[h]) is list) else turno[h][b]
+                                if actual != 0 and prox != 0:
+                                    if actual.subject == prox.subject:
                                         result_value += points['lastResp']
                     """for h in range(0, len(turno)):
                         if h != 5:
@@ -153,8 +152,9 @@ def cost_board(board):
                     """
                     # Professor dando aula no dia que ele quer
                     for h in range(0, len(turno)):
-                        if turno[h] != 0:  # Horários do turno (manhã ou tarde)
-                            for prefers in turno[h].teacher.prefers:
+                        hor = turno[h] if not(type(turno[h]) is list) else turno[h][b]
+                        if hor != 0:  # Horários do turno (manhã ou tarde)
+                            for prefers in hor.teacher.prefers:
                                 for p in prefers:  # para cada limitação do professor
                                     if f'N{day}' in str(p) or f'S{day}' in str(p):  # Se a limitação estiver no dia do horário
                                         try:
@@ -174,7 +174,8 @@ def cost_board(board):
                                                 result_value += points['preferNegativa']
                     typeNum += 1
         media += result_value
-    return media/4
+    return (media/4)
+
 
 
 def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board é o quadro de horários
