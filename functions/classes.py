@@ -36,7 +36,7 @@ class Teacher:
         # Quantidade de objetos "Horários" que o professor tem -> total de aulas que ele dá na semana
         self.classes = 0
 
-        # Se o horário for de uma matéria bimestral na posição tal da lista estará 1, senão estará 0 ou ""
+        # Se o horário for de uma matéria bimestral na posição tal da lista estará 1, senão estará 0
         self.bimestral = [int(bimestral[0])]
 
         # Todos os objetos "Horários" relacionados a esse professor

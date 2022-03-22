@@ -12,6 +12,7 @@ Regras Básicas:
 def getBetterHour(horario, board, subjectPos, typeNum):
     quadro = board.copy()
     betterH = [['', -99]]  # (day;hour, pontuação), melhores horários
+    # Se for horário bimestral será (day;hour;bimestre, pontuação)
 
     teacher = horario.teacher
     turm = horario.turm
@@ -210,19 +211,31 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board
     # room_invalids_h =
 
     # Horário já está ocupado por outro no Quadro de horários?
-    if board[str(h_day)][typeNum][h_time] != 0:
-        return INVALIDO
+    if board[str(h_day)][typeNum][h_time] != 0: # Se horário preenchido 
+        if board[str(h_day)][typeNum][h_time] is list and horario.teacher.bimestral[subjectPos] == 1: # Se horário preenchido for lista e o 
+            # horário for bimestral
+
+            if len(board[str(h_day)][typeNum][h_time]) != 4: # Se horário lista estiver completamente preenchido
+                return INVALIDO
+
+        else: return INVALIDO
 
     # Verificar também a parte dos professores
-    if horario.teacher.schedule[str(h_day)][typeNum][h_time] != 0:
-        return INVALIDO
+    if horario.teacher.schedule[str(h_day)][typeNum][h_time] != 0: # Se horário preenchido 
+        if horario.teacher.schedule[str(h_day)][typeNum][h_time] is list and horario.teacher.bimestral[subjectPos] == 1: # Se horário preenchido for lista e o 
+            # horário for bimestral
+
+            if len(horario.teacher.schedule[str(h_day)][typeNum][h_time]) != 4: # Se horário lista estiver completamente preenchido
+                return INVALIDO
+
+        else: return INVALIDO
 
     # Não pode trabalhar mais de 8h no mesmo dia
     horaries_in_day = horario.teacher.schedule[position[0]]
-    bimestral_h = []
-    num_h = 0
+    bimestral_h = [] # horários bimestrais
+    num_h = 0 # numero de horários
     for h in horaries_in_day:
-        if str(type(h)) == "<class 'list'>":
+        if type(h) is list:
             bimestral_h.append(h)
         elif h != 0:
             num_h += 1
