@@ -37,17 +37,20 @@ def saveSheet(name, xData, yData={"Horarios": ['1', '2', '3', '4', '5', '6', '7'
                 df[dayConv].append('-')
                 horario = xData[day][int(hour)-1-factor]
 
+                if horario != 0:
+                    horario = str(horario).replace("0", "-")
+
                 if intervals and (int(hour) in hoursPreSelected): # Mudar o factor se necessário
                     factor += 1
                     if hour in ['4', '12']: df[dayConv][int(hour)-1] = vals[0]  # Intervalo
                     elif hour in ['8']: df[dayConv][int(hour)-1] = vals[1] # Almoço
                 elif horario: # Se não for 0
-                    if type == "turm":
+                    if type == "turm" and str(horario)[-1] != "]":
                         horario = str(horario)[0:-3]
                     df[dayConv][int(hour)-1] = str(horario)
             else:
                 df[dayConv].append('')
 
-
     df = pd.DataFrame(data=df)
-    df.to_excel(f"{path}{type}/{name}.xlsx", index=False)
+
+    df.to_excel(f"{path}{type}/{name}.xlsx", engine='openpyxl', index=False)
