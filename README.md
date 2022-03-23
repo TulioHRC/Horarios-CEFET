@@ -40,6 +40,18 @@ Repetimos esse processo até que todos os horários tenham sido colocados em alg
 Avaliamos com base nos padrões já citados o horário e atribuimos um valor a ele. Se for o maior até o momento nós o salvamos, se não o discartamos. Isso é a função cost_board() também encontrada no logic.py.
 Embaralhamos a lista novamente e repetimos esse processo 100 vêzes, esse elevado número é para dar uma maior segurança quanto ao resultado, mas se acabar causando muita lentidão esse valor pode ser reduzido.
 
+### Exemplos
+Resultado turma:
+![MCT2A](https://user-images.githubusercontent.com/62257920/159805500-bcfe00fe-0b4f-472e-9e94-c27e6e6dd3e9.png)
+Resultado professor:
+![Andre barros](https://user-images.githubusercontent.com/62257920/159805503-c16343c5-f4c9-4fad-a537-6b8f3d24b604.png)
+App:
+![Home](https://user-images.githubusercontent.com/62257920/159805525-bfc42f35-4341-4cc2-beb9-0637600b143c.png)
+Novos dados:
+![novo](https://user-images.githubusercontent.com/62257920/159805521-2f1c82d8-3f8e-4cfc-b521-d419a9b207c0.png)
+Edição de pontuações:
+![pontuacoes](https://user-images.githubusercontent.com/62257920/159805523-cfca498b-31fc-4779-9f8c-e1d837a116c7.png)
+
 ## Release Notes
 
 ### 1.0v (Final Version)
