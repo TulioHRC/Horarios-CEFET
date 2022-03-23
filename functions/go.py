@@ -5,7 +5,7 @@ from functions import logic
 import random
 import copy
 
-NUMERO_DE_REPETIÇÕES = 1
+NUMERO_DE_REPETIÇÕES = 100
 
 
 def restartObjects(listO):
