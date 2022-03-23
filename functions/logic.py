@@ -21,17 +21,21 @@ def getBetterHour(horario, board, subjectPos, typeNum):
     for d in range(2, 7):  # para cada dia
         d = str(d)
         for h in range(0, 6):  # para cada horário no dia
-            pontuation = validation(horario, [d, h], quadro, subjectPos, typeNum) 
-            if pontuation == 0:
-                if teacher.bimestral[subjectPos] == 0: # Se não for matéria bimestral
+            if teacher.bimestral[subjectPos] == 0: # Se horário não for bimestral
+                pontuation = validation(horario, [d, h], quadro, subjectPos, typeNum) 
+                if pontuation == 0:
                     pontuation = cost_individual(horario, [d, h], quadro, subjectPos, typeNum)
                     if pontuation > betterH[0][1]:
                         betterH = [[f'{d};{h}', pontuation]]
                     elif pontuation == betterH[0][1]:
                         betterH.append([f'{d};{h}', pontuation])
 
-                else: # Se for
-                    for bimester in range(0,4):
+            else: # Se for
+                for bimester in range(0, 4):
+                    pontuation = validation(horario, [d, h, bimester], quadro, subjectPos, typeNum, bimestral=1)
+                    if pontuation == -100:
+                        break
+                    if pontuation == 0:
                         pontuation = cost_individual(horario, [d, h, bimester], quadro, subjectPos, typeNum, bimestral=1)
                         if pontuation > betterH[0][1]:
                             betterH = [[f'{d};{h};{bimester}', pontuation]]
@@ -217,10 +221,11 @@ def cost_board(board):
 
 
 
-def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board é o quadro de horários
+def validation(horario, position, board, subjectPos, typeNum, sala='', bimestral=0):  # board é o quadro de horários
     # Position = [day, hour]
 
     INVALIDO = -99
+    BREAK_INVALIDO = -100 # para parar loops em analises bimestrais
 
     # h_room = sala    # Sala
     h_day = position[0]   # Dia
@@ -253,20 +258,28 @@ def validation(horario, position, board, subjectPos, typeNum, sala=''):  # board
         if board[str(h_day)][typeNum][h_time] is list and horario.teacher.bimestral[subjectPos] == 1: # Se horário preenchido for lista e o 
             # horário for bimestral
 
-            if len(board[str(h_day)][typeNum][h_time]) != 4: # Se horário lista estiver completamente preenchido
+            if len(board[str(h_day)][typeNum][h_time]) == 4:
+                return BREAK_INVALIDO
+
+            # Se horário estiver preenchido
+            if board[str(h_day)][typeNum][h_time][position[2]] != 0:
                 return INVALIDO
 
-        else: return INVALIDO
+        else: return BREAK_INVALIDO
 
     # Verificar também a parte dos professores
     if horario.teacher.schedule[str(h_day)][typeNum][h_time] != 0: # Se horário preenchido 
         if horario.teacher.schedule[str(h_day)][typeNum][h_time] is list and horario.teacher.bimestral[subjectPos] == 1: # Se horário preenchido for lista e o 
             # horário for bimestral
 
-            if len(horario.teacher.schedule[str(h_day)][typeNum][h_time]) != 4: # Se horário lista estiver completamente preenchido
+            if len(horario.teacher.schedule[str(h_day)][typeNum][h_time]) == 4:
+                return BREAK_INVALIDO
+            
+            # Se horário estiver preenchido
+            if horario.teacher.schedule[str(h_day)][typeNum][h_time][position[2]] != 0:
                 return INVALIDO
 
-        else: return INVALIDO
+        else: return BREAK_INVALIDO
 
     # Não pode trabalhar mais de 8h no mesmo dia
     horaries_in_day = horario.teacher.schedule[position[0]]
