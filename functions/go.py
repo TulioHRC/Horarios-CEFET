@@ -3,6 +3,7 @@ from functions import classes as c
 from functions import result
 from functions import logic
 import random
+import copy
 
 NUMERO_DE_REPETIÇÕES = 10
 
@@ -58,7 +59,7 @@ def mainFunction():  # A função principal do código, que retornará o resulta
                                       f'{teachersData["Materia"][index]}-{teachersData["Ano"][index]}{teachersData["Sub-Grupo"][index]}',
                                       f'{teachersData["Tipo"][index]}',
                                       str(teachersData["Preferencias"][index]).split('-'),
-                                      str(teachersData["Limitacoes"][index]).split('-'), 
+                                      str(teachersData["Limitacoes"][index]).split('-'),
                                       str(teachersData["Bimestral"][index]), horaries))
             teachersNames.append(teacher)
         else:
@@ -92,7 +93,7 @@ def mainFunction():  # A função principal do código, que retornará o resulta
     # ==================== Processando os dados: Gerando a planilha final com base nos dados
 
     bestSchedule = []
-
+    # Duplicar os objetos professores e manipular apenas umgrupo nessa parte a baixo
     for time in range(0, NUMERO_DE_REPETIÇÕES):
         teachers_copy = restartObjects(teachers)
 
@@ -137,20 +138,25 @@ def mainFunction():  # A função principal do código, que retornará o resulta
                         quadro[position_info[3]][position_info[0]][typeNum][int(position_info[1])] = [0, 0, 0, 0]
 
                     quadro[position_info[3]][position_info[0]][typeNum][int(position_info[1])][int(position_info[2])] = horario
-                else: 
+                else:
                     quadro[position_info[2]][position_info[0]][typeNum][int(position_info[1])] = horario
-                
+
                 # Professores
                 if teacher.bimestral[subjectPos] == 1: # Se horário for bimestral
                     if not(type(horario.teacher.schedule[position_info[0]][typeNum][int(position_info[1])]) is list): # Se no horário não for lista
                         horario.teacher.schedule[position_info[0]][typeNum][int(position_info[1])] = [0, 0, 0, 0]
 
                     horario.teacher.schedule[position_info[0]][typeNum][int(position_info[1])][int(position_info[2])] = f"{horario.turm[0]}-{str(horario).split('-')[1]}"
-                else: 
+
+                    teachers_copy[teachersNames.index(horario.teacher.name)].schedule[position_info[0]][typeNum][
+                        int(position_info[1])] = list(horario.teacher.schedule[position_info[0]][typeNum][int(position_info[1])])
+                else:
                     horario.teacher.schedule[position_info[0]][typeNum][int(position_info[1])] = f"{horario.turm[0]}-{str(horario).split('-')[1]}"
+
+                    teachers_copy[teachersNames.index(horario.teacher.name)].schedule[position_info[0]][typeNum][
+                        int(position_info[1])] = f"{horario.turm[0]}-{str(horario).split('-')[1]}"
+
                 # Alterando objeto do professor
-                teachers_copy[teachersNames.index(horario.teacher.name)].schedule[position_info[0]][typeNum][
-                    int(position_info[1])] = horario.teacher.schedule[position_info[0]][typeNum][int(position_info[1])]
 
         #for turm in classes:
            #print(turm.name, quadro[turm.name])
@@ -158,11 +164,11 @@ def mainFunction():  # A função principal do código, que retornará o resulta
         pontuacao = logic.cost_board(quadro)
 
         if time == 0:
-            bestSchedule.append([quadro.copy(), pontuacao, teachers_copy])
+            bestSchedule.append([quadro.copy(), pontuacao, copy.deepcopy(teachers_copy)]) # Deep copy to not overwrite
         elif bestSchedule[0][1] == pontuacao:
-            bestSchedule.append([quadro.copy(), pontuacao, teachers_copy])
+            bestSchedule.append([quadro.copy(), pontuacao, copy.deepcopy(teachers_copy)])
         elif pontuacao > bestSchedule[0][1]:
-            bestSchedule = [[quadro.copy(), pontuacao, teachers_copy]]
+            bestSchedule = [[quadro.copy(), pontuacao, copy.deepcopy(teachers_copy)]]
 
         print(time, pontuacao)
 
