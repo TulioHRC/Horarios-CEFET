@@ -48,6 +48,8 @@ class MainApp:
         self.new.place(bordermode=OUTSIDE, width=str(int(self.sizes[0]*0.8*0.2)), height=str(int(self.sizes[1]*0.8*0.1)),
                             relx=0.05, rely=0.85)
 
+""" Não necessário no programa atualmente, mas em futuras atualizações talvez
+
         self.filebt = Button(self.master, text='Escolher Arquivos', command=self.choose, font=('Arial', 20))# botão para escolher o arquivo
         self.filebt.config(bg='Gray', fg='White')
         self.filebt.pack()
@@ -56,7 +58,7 @@ class MainApp:
 
     def choose (self):
         file = filedialog.askopenfile(parent=self.master, mode='rb', title='abrir')
-
+"""
 
 class Points(MainApp):
     def __init__(self):

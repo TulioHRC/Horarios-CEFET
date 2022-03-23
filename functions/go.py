@@ -173,6 +173,7 @@ def mainFunction():  # A função principal do código, que retornará o resulta
         print(time, pontuacao)
 
     horarios = random.choice(bestSchedule)
+    print(f"Melhor resultado: {horarios[1]}")
 
     for turm in classes:
         result.saveSheet(turm.name, horarios[0][turm.name], type='turm')

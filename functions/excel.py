@@ -52,7 +52,6 @@ def saveTeacher(name, subject, type, classes, grade, subGroup, bimestral, prefer
                 limitsResult += f"N{convert.convertDayToNum(o)}:{min(hours)},{max(hours)}"
 
         df2 = pd.DataFrame({'Professor': [name], 'Materia': [subject], 'Tipo': [type], 'Ano': [grade], 'Bimestral': bimestral, 'Sub-Grupo': subGroup, 'Preferencias': [prefersResult], 'Limitacoes': [limitsResult]})
-        print(df2)
 
         for i in classes:
             df2[f"{i}"] = classes[i]

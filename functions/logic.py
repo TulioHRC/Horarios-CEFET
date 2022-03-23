@@ -3,11 +3,6 @@
 import random
 from functions import loadData
 
-"""
-Regras Básicas:
-- não mudar o board dentro das funções
-"""
-
 
 def getBetterHour(horario, board, subjectPos, typeNum):
     quadro = board.copy()
@@ -182,17 +177,7 @@ def cost_board(board):
                                 if actual != 0 and prox != 0:
                                     if actual.subject == prox.subject:
                                         result_value += points['lastResp']
-                    """for h in range(0, len(turno)):
-                        if h != 5:
-                            if turno[h] != 0 and turno[h + 1] != 0:
-                                if str(type(turno[h])) == "<class 'list'>":
-                                    for h_bimestral in range(0, 4):
-                                        if str(type(turno[h + 1])) == "<class 'list'>":
-                                            if turno[h][h_bimestral].subject == turno[h + 1][h_bimestral].subject:
-                                                result_value += points['lastResp']
-                                elif turno[h].subject == turno[h + 1].subject:
-                                    result_value += points['lastResp']
-                    """
+
                     # Professor dando aula no dia que ele quer
                     for h in range(0, len(turno)):
                         hor = turno[h] if not(type(turno[h]) is list) else turno[h][b]
@@ -302,55 +287,7 @@ def validation(horario, position, board, subjectPos, typeNum, sala='', bimestral
         return INVALIDO
 
     # Não pode ter um intervalo entre uma aula e outra maior que 3h
-    """
-    h_teacher = horario.teacher.schedule
-    h_in_day = h_teacher[0] + h_teacher[1]
-    free_time = 0 # In minutes
-    for c in range(0, 12):
-        if c == 3 or c == 9:
-            free_time += 20
-        elif c == 6:
-            free_time += 40
-        # Tempo livre que provem de horários vagos
-        if h_in_day[c] == 0:
-            free_time += 50
-            if free_time >= 180:
-                return INVALIDO
-
-        elif str(type(h_in_day[c])) == "<class 'list'>":
-            bimestral_free_time = 0
-            for i in range(0, 4):
-                current = h_in_day[c]
-                a = c
-                while str(type(current)) == "<class 'list'>":
-                    bimestral_free_time = bimestral_free_time + 50 if current[i] == 0 else 0
-                    a += 1
-                    current = h_in_day[a]
-                    if bimestral_free_time + free_time >= 180:
-                        return INVALIDO
-
-            for i in range(0, 4):
-                if h_in_day[c][i] == 0:
-                    zero_in_sequence += 1
-                    if h_in_day[c + 1][i] == 0:
-                        zero_in_sequence += 1
-                        if h_in_day[c + 2][i] == 0:
-                            zero_in_sequence += 1
-                    else:
-                        zero_in_sequence = 0
-
-            for thing in range(0, 4):
-                if h_in_day[c][thing] == 0:
-                    zero_in_sequence += 1
-                    if zero_in_sequence >= 3:
-                        return INVALIDO
-                    if h_in_day[c][thing + 1] == 0 or (h_in_day[c + 1] == 0):
-                        zero_in_sequence += 1
-                        c += 1
-                        if zero_in_sequence >= 3:
-                            return INVALIDO"""
-
-
     # Devem ser ao menos 11h entre o primeiro e o último horário de descanso
-    # Status: aguardando reunião, atualmente seria impossível o estado acima citado não ser válido
+    # Status: atualmente seria impossível o estado acima citado não ser válido
+
     return 0

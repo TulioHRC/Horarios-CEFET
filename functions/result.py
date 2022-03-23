@@ -38,7 +38,7 @@ def saveSheet(name, xData, yData={"Horarios": ['1', '2', '3', '4', '5', '6', '7'
                 horario = xData[day][int(hour)-1-factor]
 
                 if horario != 0:
-                    horario = str(horario).replace("0", "-")
+                    horario = str(horario).replace("0", "0")
 
                 if intervals and (int(hour) in hoursPreSelected): # Mudar o factor se necessário
                     factor += 1

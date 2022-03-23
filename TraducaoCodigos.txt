@@ -28,7 +28,4 @@ Rn;i,f - Room/Sala n=nome da sala; horário inicial, final
 Para salas:
 ESPECIFICA - Sala que só pode um tipo de matéria (tipo as salas/laboratórios de quimica, biologia, e matérias do técnico), para evitar selecionar randomicamente
 
-
-
-
 Bimestral -> 1 - é bimestral; 0 ou nada -> é normal
